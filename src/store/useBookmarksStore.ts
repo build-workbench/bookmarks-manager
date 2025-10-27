@@ -3,6 +3,8 @@ import { parseNetscapeBookmarks, type Bookmark } from '../utils/bookmarkParser'
 import { normalizeUrl, getHostname } from '../utils/url'
 import { exportAsNetscapeHTML } from '../utils/exporter'
 import { normalizePath } from '../utils/folders'
+import { saveBookmarks, loadBookmarks, type StoredBookmark } from '../utils/db'
+import { createSearchIndex, search as searchBookmarks } from '../utils/search'
 
 type Stats = { total: number, duplicates: number, byDomain: Record<string, number>, byYear: Record<string, number> }
 
@@ -11,11 +13,14 @@ type State = {
   mergedItems: Bookmark[]
   duplicates: Record<string, Bookmark[]>
   importing: boolean
+  loading: boolean
   stats: Stats
   importFiles: (files: FileList | File[]) => Promise<void>
   mergeAndDedup: () => Promise<void>
   clear: () => void
   exportHTML: () => string
+  loadFromDB: () => Promise<void>
+  search: (query: string) => Bookmark[]
 }
 
 const useBookmarksStore = create<State>((set: any, get: any) => ({
@@ -23,6 +28,7 @@ const useBookmarksStore = create<State>((set: any, get: any) => ({
   mergedItems: [],
   duplicates: {},
   importing: false,
+  loading: false,
   stats: { total: 0, duplicates: 0, byDomain: {}, byYear: {} },
   async importFiles(files) {
     set({ importing: true })
@@ -33,7 +39,7 @@ const useBookmarksStore = create<State>((set: any, get: any) => ({
       const items = parseNetscapeBookmarks(text, f.name).map(it => ({ ...it, path: normalizePath(it.path) }))
       all.push(...items)
     }
-    set(state => ({ rawItems: state.rawItems.concat(all), importing: false }))
+    set((state: State) => ({ rawItems: state.rawItems.concat(all), importing: false }))
   },
   async mergeAndDedup() {
     const raw = get().rawItems
@@ -67,6 +73,38 @@ const useBookmarksStore = create<State>((set: any, get: any) => ({
     }
     const stats: Stats = { total: merged.length, duplicates: raw.length - merged.length, byDomain, byYear }
     set({ mergedItems: merged, duplicates: dups, stats })
+    
+    const storedItems: StoredBookmark[] = merged.map(it => ({
+      ...it,
+      normalized: normalizeUrl(it.url)
+    }))
+    await saveBookmarks(storedItems)
+    createSearchIndex(merged)
+  },
+  async loadFromDB() {
+    set({ loading: true })
+    try {
+      const stored = await loadBookmarks()
+      if (stored.length > 0) {
+        const merged = stored.map(({ normalized, ...rest }) => rest)
+        const byDomain: Record<string, number> = {}
+        const byYear: Record<string, number> = {}
+        for (const it of merged) {
+          const host = getHostname(it.url) || 'unknown'
+          byDomain[host] = (byDomain[host] || 0) + 1
+          const ts = it.addDate || it.lastModified
+          const year = ts ? new Date(ts * 1000).getFullYear().toString() : 'Unknown'
+          byYear[year] = (byYear[year] || 0) + 1
+        }
+        const stats: Stats = { total: merged.length, duplicates: 0, byDomain, byYear }
+        set({ mergedItems: merged, stats })
+        createSearchIndex(merged)
+      }
+    } catch (error) {
+      console.error('Failed to load bookmarks from DB:', error)
+    } finally {
+      set({ loading: false })
+    }
   },
   clear() {
     set({ rawItems: [], mergedItems: [], duplicates: {}, stats: { total: 0, duplicates: 0, byDomain: {}, byYear: {} } })
@@ -74,6 +112,9 @@ const useBookmarksStore = create<State>((set: any, get: any) => ({
   exportHTML() {
     const { mergedItems } = get()
     return exportAsNetscapeHTML(mergedItems)
+  },
+  search(query: string) {
+    return searchBookmarks(query)
   }
 }))
 

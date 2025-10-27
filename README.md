@@ -9,6 +9,8 @@ Bookmarks Analysis 是一个以隐私为前提的开源工具，用于快速合�
 - **本地优先 & 零云端依赖**：所有解析、合并与可视化均在浏览器内完成，保障数据隐私。
 - **多源书签合并**：支持同时导入多个 Netscape Bookmark HTML 文件，统一目录别名后进行合并。
 - **智能去重**：URL 规范化（scheme、host、端口、路径、参数排序、追踪参数剔除），避免重复条目。
+- **持久化存储**：使用 IndexedDB 自动保存合并结果，刷新页面后数据不丢失。
+- **全文搜索**：基于 MiniSearch 的快速搜索，支持模糊匹配和多字段查询。
 - **层级导出**：生成带目录结构的 Netscape HTML，可导回任意浏览器。
 - **可视化洞察**：仪表盘展示重复占比、Top 域名、按年份新增等指标。
 - **AI 扩展预留**：提供 BYOK API Key 占位页，后续可接入 LLM 输出主题摘要与整理建议。
@@ -16,10 +18,11 @@ Bookmarks Analysis 是一个以隐私为前提的开源工具，用于快速合�
 ## 🧱 技术栈
 
 - React 18 + TypeScript + Vite
-- Tailwind CSS + 自定义组件
-- Zustand（全局状态，后续可接 Dexie 持久化）
-- ECharts（仪表盘）、规划接入 Cytoscape.js（结构图）
-- Vite PWA 插件（vite-plugin-pwa）
+- Tailwind CSS + Lucide Icons
+- Zustand（全局状态） + Dexie（IndexedDB 持久化）
+- MiniSearch（全文搜索）+ ECharts（数据可视化）
+- Vite PWA 插件（离线支持）
+- Cytoscape.js（预留网络图功能）
 
 ## 🚀 快速开始
 
@@ -55,19 +58,23 @@ npm run preview
 
 ## 🧭 典型使用流程
 
-1. 进入“上传合并”页面，选择一个或多个导出的书签 HTML 文件（Chrome/Firefox/Edge/Safari 等）
-2. 点击“合并去重”，查看原始条目数、合并后数量以及重复统计
-3. 如需导出，点击“导出 HTML”，获取带目录层级的 Netscape Bookmark 文件
-4. 前往“仪表盘”，查看重复占比、域名分布、按年份新增等可视化结果
+1. **上传合并**：进入"上传合并"页面，选择一个或多个导出的书签 HTML 文件（Chrome/Firefox/Edge/Safari 等）
+2. **合并去重**：点击"合并去重"，自动进行 URL 规范化和去重，数据会自动保存到本地数据库
+3. **查看统计**：前往"仪表盘"，查看重复占比、域名分布、按年份新增等可视化结果，可展开书签列表查看详情
+4. **搜索查找**：使用"搜索"页面快速查找特定书签，支持模糊匹配和多字段搜索
+5. **管理重复**：在"去重"页面查看所有重复书签簇，了解哪些被保留、哪些被标记为重复
+6. **导出数据**：回到"上传合并"页面，点击"导出 HTML"获取带目录层级的 Netscape Bookmark 文件
+7. **AI 分析**（可选）：配置 API Key 后，可以运行智能分析（功能开发中）
 
 ## 📁 目录结构
 
 ```
-├─ public/                    # 静态资源（可选）
 ├─ src/
 │  ├─ pages/
 │  │  ├─ UploadMerge.tsx      # 导入/合并/导出页面
-│  │  ├─ Dashboard.tsx        # 仪表盘
+│  │  ├─ Dashboard.tsx        # 仪表盘 + 书签列表
+│  │  ├─ Search.tsx           # 全文搜索页面
+│  │  ├─ Duplicates.tsx       # 去重工作台
 │  │  └─ AI.tsx               # AI 扩展占位
 │  ├─ store/
 │  │  └─ useBookmarksStore.ts # Zustand store 与统计逻辑
@@ -75,19 +82,23 @@ npm run preview
 │  │  ├─ bookmarkParser.ts    # Netscape Bookmark 解析
 │  │  ├─ folders.ts           # 目录归一与树构建
 │  │  ├─ url.ts               # URL 规范化与指纹
-│  │  └─ exporter.ts          # 层级 Netscape 导出
+│  │  ├─ exporter.ts          # 层级 Netscape 导出
+│  │  ├─ db.ts                # Dexie IndexedDB 封装
+│  │  └─ search.ts            # MiniSearch 索引与搜索
 │  ├─ ui/Chart.tsx            # ECharts 包装组件
 │  ├─ App.tsx / main.tsx      # 路由与应用入口
 │  └─ index.css               # Tailwind 样式入口
 ├─ vite.config.ts             # Vite + PWA 配置
 ├─ tailwind.config.js         # Tailwind 配置
+├─ CHANGELOG.md               # 版本更新日志
 └─ README.md
 ```
 
 ## 🔐 架构与隐私理念
 
 - **Local-first**：默认不依赖任何云端服务，所有数据仅在用户浏览器中处理。
-- **目录归一**：内置常见浏览器的根目录别名映射，实现“同目录合并”。
+- **IndexedDB 存储**：使用 Dexie 管理本地数据库，支持离线访问和数据持久化。
+- **目录归一**：内置常见浏览器的根目录别名映射，实现"同目录合并"。
 - **可扩展后端（规划中）**：可选启用链接健康检查、元数据抓取、嵌入与向量检索等增强能力。
 - **BYOK**：AI 功能将采用自带密钥/自托管模型，避免泄露用户数据。
 
@@ -97,16 +108,33 @@ npm run preview
 | --- | --- |
 | `npm run dev` | 启动开发服务器（支持 PWA 调试） |
 | `npm run build` | 生成生产构建产物到 `dist/` |
+| `npm run typecheck` | 运行 TypeScript 类型检查 |
 | `npm run preview` | 本地预览构建结果 |
 | `npm run lint` | 预留脚本（当前输出占位） |
 
+## ✅ 最新更新
+
+### v0.2.0 - 核心功能完善 (2024-10-27)
+
+- ✅ **Dexie 持久化**：自动保存合并结果到 IndexedDB，页面刷新后数据不丢失
+- ✅ **本地搜索**：基于 MiniSearch 的全文搜索，支持标题、URL、路径模糊查询
+- ✅ **去重工作台**：可视化展示重复书签簇，标注保留/重复项
+- ✅ **增强仪表盘**：新增书签列表视图，支持展开/折叠和分页加载
+- ✅ **改进 UI/UX**：拖拽上传、加载状态、成功/错误提示、图标美化
+- ✅ **API Key 管理**：使用 IndexedDB 安全存储 AI API Key
+
+详见 [CHANGELOG.md](CHANGELOG.md)
+
 ## 🗺️ Roadmap
 
-- 去重工作台：重复簇识别、批量处理（保留/移动/删除标记）
-- 本地搜索：MiniSearch 驱动的全文搜索与高亮
-- Web Worker：解析与统计异步化，支撑大体量书签
-- Dexie 持久化：保存合并结果、用户设置、AI Key
-- AI 智能分析：主题聚类、阅读清单、自然语言查询与整理建议
+- [ ] Web Worker：解析与统计异步化，支撑大体量书签
+- [ ] AI 智能分析：接入 BYOK LLM API，主题聚类、阅读清单、自然语言查询
+- [ ] 高级过滤：按域名、日期、目录筛选书签
+- [ ] 批量编辑：选中多个书签进行移动、删除、标签添加
+- [ ] 导出选项：支持导出为 JSON、CSV、Markdown
+- [ ] Cytoscape 可视化：书签关系网络图
+- [ ] 标签系统：为书签添加自定义标签
+- [ ] 备份恢复：导出/导入 IndexedDB 数据
 
 ## 🤝 贡献指南
 

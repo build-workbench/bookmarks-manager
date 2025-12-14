@@ -1,5 +1,6 @@
 import { NavLink, Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import { AlertCircle } from 'lucide-react'
 import UploadMerge from './pages/UploadMerge'
 import Dashboard from './pages/Dashboard'
 import Search from './pages/Search'
@@ -8,7 +9,7 @@ import AI from './pages/AI'
 import useBookmarksStore from './store/useBookmarksStore'
 
 export default function App() {
-  const { loadFromDB } = useBookmarksStore()
+  const { loadFromDB, needsMerge } = useBookmarksStore()
 
   useEffect(() => {
     loadFromDB()
@@ -28,6 +29,19 @@ export default function App() {
           </nav>
         </div>
       </header>
+      {needsMerge && (
+        <div className="border-b border-amber-500/30 bg-amber-500/10 text-amber-300">
+          <div className="mx-auto max-w-6xl px-4 py-2 flex items-start gap-2 text-sm">
+            <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+            <div className="flex-1">
+              已导入新的书签文件，请前往“上传合并”重新合并去重，以更新统计、搜索与导出结果。
+            </div>
+            <NavLink to="/upload" className="px-3 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 transition">
+              去合并
+            </NavLink>
+          </div>
+        </div>
+      )}
       <main className="mx-auto max-w-6xl px-4 py-6">
         <Routes>
           <Route path="/" element={<Navigate to="/upload" replace />} />

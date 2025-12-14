@@ -3,8 +3,8 @@ import { parseNetscapeBookmarks, type Bookmark } from '../utils/bookmarkParser'
 import { normalizeUrl, getHostname } from '../utils/url'
 import { exportAsNetscapeHTML } from '../utils/exporter'
 import { normalizePath } from '../utils/folders'
-import { saveBookmarks, loadBookmarks, type StoredBookmark } from '../utils/db'
-import { createSearchIndex, search as searchBookmarks } from '../utils/search'
+import { clearBookmarks, saveBookmarks, loadBookmarks, type StoredBookmark } from '../utils/db'
+import { createSearchIndex, resetSearchIndex, search as searchBookmarks, type SearchResultItem } from '../utils/search'
 
 type Stats = { total: number, duplicates: number, byDomain: Record<string, number>, byYear: Record<string, number> }
 
@@ -14,32 +14,38 @@ type State = {
   duplicates: Record<string, Bookmark[]>
   importing: boolean
   loading: boolean
+  needsMerge: boolean
   stats: Stats
   importFiles: (files: FileList | File[]) => Promise<void>
   mergeAndDedup: () => Promise<void>
-  clear: () => void
+  clear: () => Promise<void>
   exportHTML: () => string
   loadFromDB: () => Promise<void>
-  search: (query: string) => Bookmark[]
+  search: (query: string) => SearchResultItem[]
 }
 
-const useBookmarksStore = create<State>((set: any, get: any) => ({
+const useBookmarksStore = create<State>((set, get) => ({
   rawItems: [],
   mergedItems: [],
   duplicates: {},
   importing: false,
   loading: false,
+  needsMerge: false,
   stats: { total: 0, duplicates: 0, byDomain: {}, byYear: {} },
   async importFiles(files) {
     set({ importing: true })
-    const list = Array.from(files as any as File[])
-    const all: Bookmark[] = []
-    for (const f of list) {
-      const text = await f.text()
-      const items = parseNetscapeBookmarks(text, f.name).map(it => ({ ...it, path: normalizePath(it.path) }))
-      all.push(...items)
+    try {
+      const list = Array.isArray(files) ? files : Array.from(files)
+      const all: Bookmark[] = []
+      for (const f of list) {
+        const text = await f.text()
+        const items = parseNetscapeBookmarks(text, f.name).map(it => ({ ...it, path: normalizePath(it.path) }))
+        all.push(...items)
+      }
+      set((state) => ({ rawItems: state.rawItems.concat(all), needsMerge: true }))
+    } finally {
+      set({ importing: false })
     }
-    set((state: State) => ({ rawItems: state.rawItems.concat(all), importing: false }))
   },
   async mergeAndDedup() {
     const raw = get().rawItems
@@ -52,13 +58,19 @@ const useBookmarksStore = create<State>((set: any, get: any) => ({
     }
     const merged: Bookmark[] = []
     const dups: Record<string, Bookmark[]> = {}
+
+    const getBookmarkTimestamp = (it: Bookmark): number => {
+      const ts = it.addDate ?? it.lastModified
+      return typeof ts === 'number' && ts > 0 ? ts : Number.POSITIVE_INFINITY
+    }
+
     for (const [k, arr] of groups) {
-      if (arr.length > 1) dups[k] = arr
       let best = arr[0]
       for (const it of arr) {
-        const tBest = best.addDate || best.lastModified || 0
-        const t = it.addDate || it.lastModified || 0
-        if (t < tBest) best = it
+        if (getBookmarkTimestamp(it) < getBookmarkTimestamp(best)) best = it
+      }
+      if (arr.length > 1) {
+        dups[k] = [best, ...arr.filter((it) => it.id !== best.id)]
       }
       merged.push(best)
     }
@@ -72,7 +84,7 @@ const useBookmarksStore = create<State>((set: any, get: any) => ({
       byYear[year] = (byYear[year] || 0) + 1
     }
     const stats: Stats = { total: merged.length, duplicates: raw.length - merged.length, byDomain, byYear }
-    set({ mergedItems: merged, duplicates: dups, stats })
+    set({ mergedItems: merged, duplicates: dups, stats, needsMerge: false })
     
     const storedItems: StoredBookmark[] = merged.map(it => ({
       ...it,
@@ -97,7 +109,7 @@ const useBookmarksStore = create<State>((set: any, get: any) => ({
           byYear[year] = (byYear[year] || 0) + 1
         }
         const stats: Stats = { total: merged.length, duplicates: 0, byDomain, byYear }
-        set({ mergedItems: merged, stats })
+        set({ rawItems: merged, mergedItems: merged, stats, needsMerge: false })
         createSearchIndex(merged)
       }
     } catch (error) {
@@ -106,8 +118,14 @@ const useBookmarksStore = create<State>((set: any, get: any) => ({
       set({ loading: false })
     }
   },
-  clear() {
-    set({ rawItems: [], mergedItems: [], duplicates: {}, stats: { total: 0, duplicates: 0, byDomain: {}, byYear: {} } })
+  async clear() {
+    resetSearchIndex()
+    set({ rawItems: [], mergedItems: [], duplicates: {}, needsMerge: false, stats: { total: 0, duplicates: 0, byDomain: {}, byYear: {} } })
+    try {
+      await clearBookmarks()
+    } catch (error) {
+      console.error('Failed to clear bookmarks from DB:', error)
+    }
   },
   exportHTML() {
     const { mergedItems } = get()

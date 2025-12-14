@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { Search as SearchIcon, ExternalLink, Folder } from 'lucide-react'
 import useBookmarksStore from '../store/useBookmarksStore'
+import type { SearchResultItem } from '../utils/search'
 
 export default function Search() {
   const { search, mergedItems } = useBookmarksStore()
   const [query, setQuery] = useState('')
-  const [results, setResults] = useState<any[]>([])
+  const [results, setResults] = useState<SearchResultItem[]>([])
 
   function handleSearch(q: string) {
     setQuery(q)
@@ -46,7 +47,7 @@ export default function Search() {
       {results.length > 0 && (
         <div className="space-y-1">
           <div className="text-sm text-slate-400 mb-2">找到 {results.length} 条结果</div>
-          {results.map((item: any) => (
+          {results.map((item) => (
             <div key={item.id} className="rounded-lg bg-slate-900 border border-slate-800 p-4 hover:border-slate-700 transition">
               <div className="flex items-start gap-3">
                 <ExternalLink className="w-4 h-4 text-slate-400 mt-1 flex-shrink-0" />

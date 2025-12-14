@@ -1,13 +1,13 @@
-import { useState } from 'react'
+import { useState, type ChangeEvent } from 'react'
 import { Upload, FileText, Trash2, Download, AlertCircle, CheckCircle } from 'lucide-react'
 import useBookmarksStore from '../store/useBookmarksStore'
 
 export default function UploadMerge() {
-  const { rawItems, mergedItems, duplicates, importing, importFiles, mergeAndDedup, clear, exportHTML } = useBookmarksStore()
-  const [readyToExport, setReadyToExport] = useState(false)
+  const { rawItems, mergedItems, duplicates, importing, needsMerge, importFiles, mergeAndDedup, clear, exportHTML } = useBookmarksStore()
+  const readyToExport = mergedItems.length > 0 && !needsMerge
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
 
-  async function onChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function onChange(e: ChangeEvent<HTMLInputElement>) {
     const files = e.target.files
     if (!files || files.length === 0) return
     setMessage(null)
@@ -27,7 +27,6 @@ export default function UploadMerge() {
     setMessage(null)
     try {
       await mergeAndDedup()
-      setReadyToExport(true)
       setMessage({ type: 'success', text: '合并完成！数据已保存到本地数据库' })
     } catch (error) {
       setMessage({ type: 'error', text: '合并失败' })
@@ -85,6 +84,15 @@ export default function UploadMerge() {
         </div>
       )}
 
+      {needsMerge && mergedItems.length > 0 && (
+        <div className="rounded-lg border p-4 flex items-start gap-3 bg-amber-500/10 border-amber-500/50 text-amber-400">
+          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <div className="text-sm">
+            你已导入新的书签文件，但当前统计/搜索/导出仍基于上一次合并结果。请点击“合并去重”更新。
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="rounded-lg border border-slate-800 p-5 bg-slate-900/30">
           <div className="text-slate-400 text-sm mb-1">原始条目</div>
@@ -121,7 +129,7 @@ export default function UploadMerge() {
           导出 HTML
         </button>
         <button 
-          onClick={() => { clear(); setReadyToExport(false); setMessage(null) }} 
+          onClick={() => { void clear(); setMessage(null) }} 
           className="px-5 py-2.5 rounded-lg bg-slate-700 hover:bg-slate-600 font-medium transition flex items-center gap-2"
         >
           <Trash2 className="w-4 h-4" />

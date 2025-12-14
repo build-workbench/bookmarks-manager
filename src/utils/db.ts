@@ -26,6 +26,10 @@ class BookmarksDB extends Dexie {
 
 export const db = new BookmarksDB()
 
+export async function clearBookmarks() {
+  await db.bookmarks.clear()
+}
+
 export async function saveBookmarks(items: StoredBookmark[]) {
   await db.bookmarks.clear()
   await db.bookmarks.bulkAdd(items)

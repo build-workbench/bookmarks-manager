@@ -25,7 +25,7 @@ export function parseNetscapeBookmarks(html: string, sourceFile: string): Bookma
         if (h3) {
           const name = (h3.textContent || '').trim() || 'Untitled'
           path.push(name)
-          let next = child.nextElementSibling as HTMLElement | null
+          const next = child.nextElementSibling as HTMLElement | null
           if (next && next.tagName.toLowerCase() === 'dl') {
             walk(next)
           }

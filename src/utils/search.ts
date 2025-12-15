@@ -3,10 +3,10 @@ import type { Bookmark } from './bookmarkParser'
 
 let searchIndex: MiniSearch<Bookmark> | null = null
 
-export type SearchResultItem = Pick<
-  Bookmark,
-  'id' | 'title' | 'url' | 'path' | 'addDate' | 'lastModified' | 'sourceFile'
+export type SearchResultItem = Partial<
+  Pick<Bookmark, 'title' | 'url' | 'path' | 'addDate' | 'lastModified' | 'sourceFile'>
 > & {
+  id: string
   score?: number
 }
 
@@ -34,7 +34,7 @@ export function createSearchIndex(bookmarks: Bookmark[]): MiniSearch<Bookmark> {
 export function search(query: string, limit = 50): SearchResultItem[] {
   if (!searchIndex || !query.trim()) return []
   const results = searchIndex.search(query)
-  return results.slice(0, limit) as SearchResultItem[]
+  return results.slice(0, limit) as unknown as SearchResultItem[]
 }
 
 export function getSearchIndex(): MiniSearch<Bookmark> | null {

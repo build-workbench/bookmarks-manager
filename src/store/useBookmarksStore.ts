@@ -98,7 +98,7 @@ const useBookmarksStore = create<State>((set, get) => ({
     try {
       const stored = await loadBookmarks()
       if (stored.length > 0) {
-        const merged = stored.map(({ normalized, ...rest }) => rest)
+        const merged = stored.map(({ normalized: _normalized, ...rest }) => rest)
         const byDomain: Record<string, number> = {}
         const byYear: Record<string, number> = {}
         for (const it of merged) {

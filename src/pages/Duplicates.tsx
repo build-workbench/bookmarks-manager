@@ -1,9 +1,10 @@
-import { ExternalLink, Trash2, Check, Calendar } from 'lucide-react'
+import { Trash2, Check, Calendar } from 'lucide-react'
 import useBookmarksStore from '../store/useBookmarksStore'
+import type { Bookmark } from '../utils/bookmarkParser'
 
 export default function Duplicates() {
   const { duplicates } = useBookmarksStore()
-  const dupEntries = Object.entries(duplicates)
+  const dupEntries = Object.entries(duplicates) as Array<[string, Bookmark[]]>
 
   function formatDate(ts?: number) {
     if (!ts) return 'N/A'

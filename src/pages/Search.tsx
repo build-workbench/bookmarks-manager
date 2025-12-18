@@ -8,6 +8,29 @@ export default function Search() {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SearchResultItem[]>([])
 
+  function escapeRegExp(str: string) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  }
+
+  function highlightText(text: string, q: string) {
+    const tokens = q.trim().split(/\s+/).filter(Boolean)
+    if (tokens.length === 0) return text
+    const re = new RegExp(`(${tokens.map(escapeRegExp).join('|')})`, 'gi')
+    const parts = text.split(re)
+    return parts.map((part, i) =>
+      i % 2 === 1 ? (
+        <mark
+          key={`${part}-${i}`}
+          className="rounded bg-sky-500/20 px-1 text-sky-200"
+        >
+          {part}
+        </mark>
+      ) : (
+        <span key={`${part}-${i}`}>{part}</span>
+      )
+    )
+  }
+
   function handleSearch(q: string) {
     setQuery(q)
     if (q.trim()) {
@@ -53,13 +76,13 @@ export default function Search() {
                 <ExternalLink className="w-4 h-4 text-slate-400 mt-1 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:text-sky-300 font-medium break-all">
-                    {item.title || item.url}
+                    {highlightText(item.title || item.url, query)}
                   </a>
-                  <div className="text-xs text-slate-500 mt-1 break-all">{item.url}</div>
+                  <div className="text-xs text-slate-500 mt-1 break-all">{highlightText(item.url, query)}</div>
                   {item.path && item.path.length > 0 && (
                     <div className="flex items-center gap-1 mt-2 text-xs text-slate-400">
                       <Folder className="w-3 h-3" />
-                      <span>{item.path.join(' / ')}</span>
+                      <span>{highlightText(item.path.join(' / '), query)}</span>
                     </div>
                   )}
                 </div>

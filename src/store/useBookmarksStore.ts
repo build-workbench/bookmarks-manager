@@ -17,6 +17,7 @@ type State = {
   needsMerge: boolean
   stats: Stats
   importFiles: (files: FileList | File[]) => Promise<void>
+  removeSourceFile: (sourceFile: string) => void
   mergeAndDedup: () => Promise<void>
   clear: () => Promise<void>
   exportHTML: () => string
@@ -46,6 +47,18 @@ const useBookmarksStore = create<State>((set, get) => ({
     } finally {
       set({ importing: false })
     }
+  },
+  removeSourceFile(sourceFile: string) {
+    const { rawItems, mergedItems } = get()
+    const next = rawItems.filter((it) => (it.sourceFile || 'Unknown') !== sourceFile)
+    if (next.length === rawItems.length) return
+
+    if (next.length === 0) {
+      void get().clear()
+      return
+    }
+
+    set({ rawItems: next, needsMerge: mergedItems.length > 0 ? true : get().needsMerge })
   },
   async mergeAndDedup() {
     const raw = get().rawItems

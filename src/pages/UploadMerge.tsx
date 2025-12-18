@@ -1,22 +1,49 @@
-import { useState, type ChangeEvent } from 'react'
+import { useMemo, useRef, useState, type ChangeEvent } from 'react'
 import { Upload, FileText, Trash2, Download, AlertCircle, CheckCircle } from 'lucide-react'
 import useBookmarksStore from '../store/useBookmarksStore'
 
 export default function UploadMerge() {
-  const { rawItems, mergedItems, duplicates, importing, needsMerge, importFiles, mergeAndDedup, clear, exportHTML } = useBookmarksStore()
+  const { rawItems, mergedItems, duplicates, importing, needsMerge, importFiles, mergeAndDedup, clear, exportHTML, removeSourceFile } = useBookmarksStore()
   const readyToExport = mergedItems.length > 0 && !needsMerge
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+  const [dragActive, setDragActive] = useState(false)
+  const dragCounter = useRef(0)
+
+  const importedFiles = useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const it of rawItems) {
+      const key = it.sourceFile || 'Unknown'
+      counts.set(key, (counts.get(key) || 0) + 1)
+    }
+    return Array.from(counts.entries()).sort((a, b) => a[0].localeCompare(b[0]))
+  }, [rawItems])
+
+  const isBookmarkFile = (f: File) => {
+    const name = f.name.toLowerCase()
+    return name.endsWith('.html') || name.endsWith('.htm')
+  }
+
+  async function doImport(files: FileList | File[]) {
+    const list = Array.isArray(files) ? files : Array.from(files)
+    const accepted = list.filter(isBookmarkFile)
+    if (accepted.length === 0) {
+      setMessage({ type: 'error', text: '未检测到可导入的 HTML 书签文件（.html/.htm）' })
+      return
+    }
+    setMessage(null)
+    try {
+      await importFiles(accepted)
+      setMessage({ type: 'success', text: `成功导入 ${accepted.length} 个文件` })
+    } catch {
+      setMessage({ type: 'error', text: '导入文件失败，请检查文件格式' })
+    }
+  }
 
   async function onChange(e: ChangeEvent<HTMLInputElement>) {
     const files = e.target.files
     if (!files || files.length === 0) return
-    setMessage(null)
-    try {
-      await importFiles(files)
-      setMessage({ type: 'success', text: `成功导入 ${files.length} 个文件` })
-    } catch (error) {
-      setMessage({ type: 'error', text: '导入文件失败，请检查文件格式' })
-    }
+    await doImport(files)
+    e.target.value = ''
   }
 
   async function onMerge() {
@@ -60,7 +87,38 @@ export default function UploadMerge() {
           <h3 className="font-medium">选择导出的书签 HTML 文件，支持多选</h3>
         </div>
         <label className="block cursor-pointer">
-          <div className="border-2 border-dashed border-slate-700 hover:border-sky-500 rounded-lg p-8 text-center transition">
+          <div
+            onDragEnter={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              dragCounter.current += 1
+              setDragActive(true)
+            }}
+            onDragOver={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              setDragActive(true)
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              dragCounter.current -= 1
+              if (dragCounter.current <= 0) {
+                dragCounter.current = 0
+                setDragActive(false)
+              }
+            }}
+            onDrop={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              dragCounter.current = 0
+              setDragActive(false)
+              void doImport(Array.from(e.dataTransfer.files))
+            }}
+            className={`border-2 border-dashed rounded-lg p-8 text-center transition ${
+              dragActive ? 'border-sky-500 bg-sky-500/10' : 'border-slate-700 hover:border-sky-500'
+            } ${importing ? 'opacity-60 pointer-events-none' : ''}`}
+          >
             <FileText className="w-12 h-12 mx-auto mb-3 text-slate-400" />
             <div className="text-sm text-slate-300 mb-1">点击选择文件或拖拽到此处</div>
             <div className="text-xs text-slate-500">支持 Chrome、Firefox、Edge、Safari 导出的 Netscape Bookmark 格式</div>
@@ -68,6 +126,34 @@ export default function UploadMerge() {
           <input type="file" multiple accept=".html,.htm" onChange={onChange} className="hidden" />
         </label>
       </div>
+
+      {importedFiles.length > 0 && (
+        <div className="rounded-lg border border-slate-800 p-6 bg-slate-900/30">
+          <div className="text-sm font-medium mb-3">已导入文件</div>
+          <div className="space-y-2">
+            {importedFiles.map(([name, count]) => (
+              <div
+                key={name}
+                className="flex items-center justify-between gap-3 rounded border border-slate-800 bg-slate-900/50 px-3 py-2"
+              >
+                <div className="min-w-0">
+                  <div className="text-sm text-slate-200 truncate">{name}</div>
+                  <div className="text-xs text-slate-500">{count} 条书签</div>
+                </div>
+                <button
+                  onClick={() => {
+                    removeSourceFile(name)
+                    setMessage({ type: 'success', text: `已移除文件：${name}` })
+                  }}
+                  className="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm transition"
+                >
+                  移除
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {message && (
         <div className={`rounded-lg border p-4 flex items-center gap-3 ${

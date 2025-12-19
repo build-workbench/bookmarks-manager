@@ -1,12 +1,13 @@
 import { NavLink, Routes, Route, Navigate } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, Suspense, lazy } from 'react'
 import { AlertCircle } from 'lucide-react'
-import UploadMerge from './pages/UploadMerge'
-import Dashboard from './pages/Dashboard'
-import Search from './pages/Search'
-import Duplicates from './pages/Duplicates'
-import AI from './pages/AI'
 import useBookmarksStore from './store/useBookmarksStore'
+
+const UploadMerge = lazy(() => import('./pages/UploadMerge'))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Search = lazy(() => import('./pages/Search'))
+const Duplicates = lazy(() => import('./pages/Duplicates'))
+const AI = lazy(() => import('./pages/AI'))
 
 export default function App() {
   const { loadFromDB, needsMerge } = useBookmarksStore()
@@ -43,14 +44,23 @@ export default function App() {
         </div>
       )}
       <main className="mx-auto max-w-6xl px-4 py-6">
-        <Routes>
-          <Route path="/" element={<Navigate to="/upload" replace />} />
-          <Route path="/upload" element={<UploadMerge />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/duplicates" element={<Duplicates />} />
-          <Route path="/ai" element={<AI />} />
-        </Routes>
+        <Suspense
+          fallback={
+            <div className="flex items-center gap-2 text-sm text-slate-400">
+              <div className="w-4 h-4 border-2 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
+              <span>页面加载中...</span>
+            </div>
+          }
+        >
+          <Routes>
+            <Route path="/" element={<Navigate to="/upload" replace />} />
+            <Route path="/upload" element={<UploadMerge />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/duplicates" element={<Duplicates />} />
+            <Route path="/ai" element={<AI />} />
+          </Routes>
+        </Suspense>
       </main>
     </div>
   )

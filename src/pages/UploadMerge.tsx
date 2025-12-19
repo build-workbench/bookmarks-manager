@@ -3,8 +3,9 @@ import { Upload, FileText, Trash2, Download, AlertCircle, CheckCircle } from 'lu
 import useBookmarksStore from '../store/useBookmarksStore'
 
 export default function UploadMerge() {
-  const { rawItems, mergedItems, duplicates, importing, needsMerge, importFiles, mergeAndDedup, clear, exportHTML, removeSourceFile } = useBookmarksStore()
+  const { rawItems, mergedItems, duplicates, importing, merging, loading, stage, needsMerge, importFiles, mergeAndDedup, clear, exportHTML, removeSourceFile } = useBookmarksStore()
   const readyToExport = mergedItems.length > 0 && !needsMerge
+  const busy = importing || merging || loading || Boolean(stage)
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
   const [dragActive, setDragActive] = useState(false)
   const dragCounter = useRef(0)
@@ -24,6 +25,7 @@ export default function UploadMerge() {
   }
 
   async function doImport(files: FileList | File[]) {
+    if (busy) return
     const list = Array.isArray(files) ? files : Array.from(files)
     const accepted = list.filter(isBookmarkFile)
     if (accepted.length === 0) {
@@ -47,6 +49,7 @@ export default function UploadMerge() {
   }
 
   async function onMerge() {
+    if (busy) return
     if (rawItems.length === 0) {
       setMessage({ type: 'error', text: '请先导入书签文件' })
       return
@@ -117,13 +120,13 @@ export default function UploadMerge() {
             }}
             className={`border-2 border-dashed rounded-lg p-8 text-center transition ${
               dragActive ? 'border-sky-500 bg-sky-500/10' : 'border-slate-700 hover:border-sky-500'
-            } ${importing ? 'opacity-60 pointer-events-none' : ''}`}
+            } ${busy ? 'opacity-60 pointer-events-none' : ''}`}
           >
             <FileText className="w-12 h-12 mx-auto mb-3 text-slate-400" />
             <div className="text-sm text-slate-300 mb-1">点击选择文件或拖拽到此处</div>
             <div className="text-xs text-slate-500">支持 Chrome、Firefox、Edge、Safari 导出的 Netscape Bookmark 格式</div>
           </div>
-          <input type="file" multiple accept=".html,.htm" onChange={onChange} className="hidden" />
+          <input type="file" multiple accept=".html,.htm" disabled={busy} onChange={onChange} className="hidden" />
         </label>
       </div>
 
@@ -145,6 +148,7 @@ export default function UploadMerge() {
                     removeSourceFile(name)
                     setMessage({ type: 'success', text: `已移除文件：${name}` })
                   }}
+                  disabled={busy}
                   className="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm transition"
                 >
                   移除
@@ -199,7 +203,7 @@ export default function UploadMerge() {
 
       <div className="flex flex-wrap gap-3">
         <button 
-          disabled={importing || rawItems.length === 0} 
+          disabled={busy || rawItems.length === 0} 
           onClick={onMerge} 
           className="px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
         >
@@ -207,7 +211,7 @@ export default function UploadMerge() {
           合并去重
         </button>
         <button 
-          disabled={!readyToExport || mergedItems.length === 0} 
+          disabled={busy || !readyToExport || mergedItems.length === 0} 
           onClick={onExport} 
           className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
         >
@@ -215,18 +219,19 @@ export default function UploadMerge() {
           导出 HTML
         </button>
         <button 
+          disabled={busy}
           onClick={() => { void clear(); setMessage(null) }} 
-          className="px-5 py-2.5 rounded-lg bg-slate-700 hover:bg-slate-600 font-medium transition flex items-center gap-2"
+          className="px-5 py-2.5 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
         >
           <Trash2 className="w-4 h-4" />
           清空
         </button>
       </div>
 
-      {importing && (
+      {stage && (
         <div className="flex items-center gap-2 text-sm text-slate-400">
           <div className="w-4 h-4 border-2 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
-          <span>正在导入与解析...</span>
+          <span>{stage}</span>
         </div>
       )}
     </div>

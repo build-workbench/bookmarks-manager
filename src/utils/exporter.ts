@@ -5,14 +5,31 @@ function esc(s: string) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
 }
 
-export function exportAsNetscapeHTML(items: Bookmark[]): string {
+export type ExportOptions = {
+  preserveFolders?: boolean
+}
+
+export function exportAsNetscapeHTML(items: Bookmark[], options: ExportOptions = {}): string {
   const lines: string[] = []
   lines.push('<!DOCTYPE NETSCAPE-Bookmark-file-1>')
   lines.push('<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">')
   lines.push('<TITLE>Bookmarks</TITLE>')
   lines.push('<H1>Bookmarks</H1>')
-  const tree = buildFolderTree(items)
+  const preserveFolders = options.preserveFolders !== false
   lines.push('<DL><p>')
+
+  if (!preserveFolders) {
+    for (const b of items) {
+      const ts = b.addDate || Math.floor(Date.now() / 1000)
+      const title = esc(b.title || b.url)
+      const href = esc(b.url)
+      lines.push(`<DT><A HREF="${href}" ADD_DATE="${ts}">${title}</A>`)
+    }
+    lines.push('</DL><p>')
+    return lines.join('\n')
+  }
+
+  const tree = buildFolderTree(items)
 
   for (const b of tree.bookmarks) {
     const ts = b.addDate || Math.floor(Date.now() / 1000)

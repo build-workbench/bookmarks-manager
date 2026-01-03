@@ -17,7 +17,7 @@ Bookmarks Analysis 是一个以隐私为前提的开源工具，用于快速合�
 - **全文搜索 + 高级过滤**：基于 MiniSearch 的快速搜索，命中词高亮；支持按域名/目录/时间范围组合过滤。
 - **导出增强**：支持导出全量/当前筛选结果；可保留目录结构或平铺导出（不保留目录）。
 - **可视化洞察**：仪表盘展示重复占比、Top 域名、按年份新增等指标。
-- **AI（可选）**：本地报告模板 + 可复制 Prompt；后续可接入适配器式 LLM API（BYOK）。
+- **AI 智能分析**：支持 OpenAI、Claude、自定义端点（BYOK），提供书签分类、摘要生成、重复分析、健康检查、自然语言搜索、集合报告等功能。
 
 ## 技术栈
 
@@ -56,14 +56,29 @@ npm run preview
 
 ```
 ├─ src/
+│  ├─ ai/                     # AI 模块
+│  │  ├─ adapters/            # LLM Provider 适配器
+│  │  │  ├─ base.ts           # 基础适配器类
+│  │  │  ├─ openai.ts         # OpenAI 适配器
+│  │  │  ├─ claude.ts         # Claude 适配器
+│  │  │  └─ custom.ts         # 自定义端点适配器
+│  │  ├─ types.ts             # AI 类型定义
+│  │  ├─ constants.ts         # 常量和默认配置
+│  │  ├─ configService.ts     # 配置管理服务
+│  │  ├─ promptService.ts     # 提示词模板服务
+│  │  ├─ cacheService.ts      # 缓存服务
+│  │  ├─ usageService.ts      # 用量追踪服务
+│  │  ├─ aiService.ts         # 核心 AI 分析服务
+│  │  └─ index.ts             # 模块入口
 │  ├─ pages/
 │  │  ├─ UploadMerge.tsx      # 导入/合并/导出页面
 │  │  ├─ Dashboard.tsx        # 仪表盘 + 书签列表
 │  │  ├─ Search.tsx           # 全文搜索页面
 │  │  ├─ Duplicates.tsx       # 去重工作台
-│  │  └─ AI.tsx               # AI 扩展占位
+│  │  └─ AI.tsx               # AI 智能分析页面
 │  ├─ store/
-│  │  └─ useBookmarksStore.ts # Zustand store 与统计逻辑
+│  │  ├─ useBookmarksStore.ts # 书签状态管理
+│  │  └─ useAIStore.ts        # AI 状态管理
 │  ├─ utils/
 │  │  ├─ bookmarkParser.ts    # Netscape Bookmark 解析
 │  │  ├─ folders.ts           # 目录归一与树构建
@@ -85,8 +100,9 @@ npm run preview
 - **Local-first**：默认不依赖任何云端服务，所有数据仅在用户浏览器中处理。
 - **IndexedDB 存储**：使用 Dexie 管理本地数据库，支持离线访问和数据持久化。
 - **目录归一**：内置常见浏览器的根目录别名映射，实现"同目录合并"。
-- **可扩展后端（规划中）**：可选启用链接健康检查、元数据抓取、嵌入与向量检索等增强能力。
-- **BYOK**：AI 功能将采用自带密钥/自托管模型，避免泄露用户数据。
+- **BYOK（Bring Your Own Key）**：AI 功能采用自带密钥模式，支持 OpenAI、Claude 和自定义端点，API Key 安全存储在本地 IndexedDB。
+- **AI 分析缓存**：分析结果本地缓存，避免重复调用 API，节省成本。
+- **用量追踪**：本地追踪 Token 使用量和成本估算，支持设置限额。
 
 ## 可用脚本
 
@@ -99,6 +115,19 @@ npm run preview
 | `npm run lint` | 运行 ESLint 代码检查 |
 
 ## 最新更新
+
+### v0.3.0 - AI 智能分析 (2024-12-31)
+
+- ✅ **AI 书签分类**：智能分析书签内容，推荐分类和标签
+- ✅ **AI 摘要生成**：为书签生成简洁摘要和关键词
+- ✅ **AI 重复分析**：智能分析重复书签组，推荐保留项
+- ✅ **AI 健康检查**：识别问题书签（无效链接、过时内容等）
+- ✅ **自然语言搜索**：用自然语言描述查找书签
+- ✅ **集合报告**：生成书签集合分析报告，支持 Markdown/HTML 导出
+- ✅ **多 Provider 支持**：OpenAI、Claude、自定义端点（BYOK）
+- ✅ **用量追踪**：Token 使用量统计、成本估算、限额控制
+- ✅ **提示词模板**：可自定义 AI 提示词模板
+- ✅ **结果缓存**：分析结果本地缓存，避免重复调用
 
 ### v0.2.0 - 核心功能完善 (2024-10-27)
 

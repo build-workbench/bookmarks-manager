@@ -19,10 +19,14 @@
 ### 2.2 分层与模块
 
 - **UI 层**：`src/pages/*` 页面组件 + `src/ui/*` 可复用组件
-- **状态/应用层**：`src/store/useBookmarksStore.ts`（Zustand）
-- **领域/能力层**：`src/utils/*`（解析、URL 归一、目录归一、导出、搜索、DB）
+- **状态/应用层**：
+  - `src/store/useBookmarksStore.ts`（Zustand）- 书签状态管理
+  - `src/store/useAIStore.ts`（Zustand）- AI 功能状态管理
+- **领域/能力层**：
+  - `src/utils/*`（解析、URL 归一、目录归一、导出、搜索、DB）
+  - `src/ai/*`（AI 服务、适配器、缓存、用量追踪）
 
-> 现阶段是典型的小型前端单仓结构：页面直接调用 store，store 组合 utils。
+> 现阶段是典型的小型前端单仓结构：页面直接调用 store，store 组合 utils/ai。
 
 ## 3. 核心数据模型
 
@@ -45,8 +49,53 @@
 ### 3.3 AppSettings
 
 - `id`：键
-- `apiKey?`：AI Key（可选）
+- `apiKey?`：AI Key（已废弃，迁移到 AIConfig）
 - `lastUpdated`：更新时间（毫秒）
+
+### 3.4 AIConfig
+
+- `provider`：LLM 提供商（openai / claude / custom）
+- `apiKey`：API 密钥
+- `model`：模型名称
+- `baseUrl?`：自定义端点 URL
+- `maxTokens`：最大 Token 数
+- `temperature`：温度参数
+
+### 3.5 AICache
+
+- `key`：缓存键（操作类型 + 内容哈希）
+- `type`：缓存类型（category / summary / duplicate / health / report）
+- `value`：缓存值（JSON）
+- `contentHash`：内容哈希（用于失效检测）
+- `createdAt`：创建时间
+- `expiresAt`：过期时间
+
+### 3.6 AIUsage
+
+- `timestamp`：记录时间
+- `operation`：操作类型
+- `promptTokens`：Prompt Token 数
+- `completionTokens`：Completion Token 数
+- `totalTokens`：总 Token 数
+- `estimatedCost`：估算成本
+- `model`：使用的模型
+
+### 3.7 AIPrompt
+
+- `id`：模板 ID
+- `name`：模板名称
+- `description`：模板描述
+- `template`：模板内容（支持 `{{variable}}` 变量）
+- `variables`：变量列表
+- `isDefault`：是否为默认模板
+- `isCustomized`：是否已自定义
+
+### 3.8 AIUsageLimit
+
+- `id`：限额 ID
+- `type`：限额类型（daily_tokens / daily_cost / monthly_tokens / monthly_cost）
+- `limit`：限额值
+- `enabled`：是否启用
 
 ## 4. 关键数据流（端到端）
 
@@ -154,3 +203,101 @@
 
 - **配置重复风险**：仓库内同时存在 `vite.config.ts` 与 `vite.config.js`，建议后续统一保留一份作为唯一配置源。
 - **AI 直连风险**：浏览器直连第三方 LLM API 可能存在 CORS/密钥暴露面问题，建议以“可选适配器”形式推进，并优先提供可复制的本地报告与 Prompt。
+
+
+## 9. AI 模块架构
+
+### 9.1 模块结构
+
+```
+src/ai/
+├── adapters/           # LLM Provider 适配器
+│   ├── base.ts         # 基础适配器抽象类
+│   ├── openai.ts       # OpenAI 适配器
+│   ├── claude.ts       # Claude 适配器
+│   ├── custom.ts       # 自定义端点适配器
+│   └── index.ts        # 适配器工厂
+├── types.ts            # 类型定义
+├── constants.ts        # 常量和默认配置
+├── configService.ts    # 配置管理服务
+├── promptService.ts    # 提示词模板服务
+├── cacheService.ts     # 缓存服务
+├── usageService.ts     # 用量追踪服务
+├── aiService.ts        # 核心 AI 分析服务
+└── index.ts            # 模块入口
+```
+
+### 9.2 适配器模式
+
+采用适配器模式支持多个 LLM Provider：
+
+```typescript
+interface LLMAdapter {
+  chat(request: LLMRequest): Promise<LLMResponse>
+  validateApiKey(): Promise<boolean>
+  estimateCost(tokens: number): number
+}
+```
+
+- **OpenAIAdapter**：调用 OpenAI Chat Completions API
+- **ClaudeAdapter**：调用 Anthropic Messages API
+- **CustomAdapter**：调用 OpenAI 兼容的自定义端点
+
+### 9.3 服务层设计
+
+#### ConfigService
+- 配置的 CRUD 操作
+- API Key 验证
+- Provider/Model 管理
+
+#### PromptService
+- 模板的 CRUD 操作
+- 变量替换 `{{variable}}`
+- 默认模板管理
+
+#### CacheService
+- 基于内容哈希的缓存
+- 过期策略
+- 缓存统计和清理
+
+#### UsageService
+- Token 使用记录
+- 成本估算
+- 限额检查和警告
+
+#### AIService
+- 书签分类
+- 摘要生成
+- 重复分析
+- 健康检查
+- 自然语言搜索
+- 集合报告
+
+### 9.4 数据流
+
+```
+用户操作 → useAIStore → AIService → CacheService（检查缓存）
+                                   ↓
+                            PromptService（渲染模板）
+                                   ↓
+                            LLMAdapter（调用 API）
+                                   ↓
+                            UsageService（记录用量）
+                                   ↓
+                            CacheService（存储结果）
+                                   ↓
+                            返回结果 → UI 更新
+```
+
+### 9.5 错误处理
+
+- **重试机制**：可重试错误自动重试（指数退避）
+- **限流处理**：429 错误时等待 retry-after
+- **Fallback**：API 失败时返回默认值
+- **用量限制**：超限时阻止请求
+
+### 9.6 测试策略
+
+- **属性测试**：使用 fast-check 进行属性测试
+- **测试覆盖**：80 个测试用例，100% 通过
+- **Mock**：使用 vitest mock 模拟 API 调用

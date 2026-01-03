@@ -64,6 +64,14 @@ export interface AIUsageLimits {
   updatedAt: number
 }
 
+// Cleanup Session for workflow persistence
+export interface CleanupSessionRecord {
+  id: string
+  sessionData: string // JSON stringified CleanupSession
+  createdAt: number
+  updatedAt: number
+}
+
 class BookmarksDB extends Dexie {
   bookmarks!: Table<StoredBookmark, string>
   settings!: Table<AppSettings, string>
@@ -72,16 +80,17 @@ class BookmarksDB extends Dexie {
   aiUsage!: Table<AIUsage, number>
   aiPrompts!: Table<AIPrompt, string>
   aiUsageLimits!: Table<AIUsageLimits, string>
+  cleanupSessions!: Table<CleanupSessionRecord, string>
 
   constructor() {
     super('BookmarksDB')
-    
+
     // Version 1: Original schema
     this.version(1).stores({
       bookmarks: 'id, url, normalized, title, sourceFile',
       settings: 'id'
     })
-    
+
     // Version 2: Add AI-related tables
     this.version(2).stores({
       bookmarks: 'id, url, normalized, title, sourceFile',
@@ -91,6 +100,18 @@ class BookmarksDB extends Dexie {
       aiUsage: '++id, timestamp, operation',
       aiPrompts: 'id, isDefault',
       aiUsageLimits: 'id'
+    })
+
+    // Version 3: Add cleanup sessions table
+    this.version(3).stores({
+      bookmarks: 'id, url, normalized, title, sourceFile',
+      settings: 'id',
+      aiConfig: 'id',
+      aiCache: 'id, type, expiresAt',
+      aiUsage: '++id, timestamp, operation',
+      aiPrompts: 'id, isDefault',
+      aiUsageLimits: 'id',
+      cleanupSessions: 'id, updatedAt'
     })
   }
 }
@@ -164,14 +185,14 @@ export async function recordAIUsage(usage: Omit<AIUsage, 'id'>): Promise<void> {
 
 export async function getAIUsage(startDate?: Date, endDate?: Date): Promise<AIUsage[]> {
   let query = db.aiUsage.orderBy('timestamp')
-  
+
   if (startDate) {
     query = query.filter(u => u.timestamp >= startDate.getTime())
   }
   if (endDate) {
     query = query.filter(u => u.timestamp <= endDate.getTime())
   }
-  
+
   return await query.toArray()
 }
 
@@ -207,4 +228,51 @@ export async function saveAIUsageLimits(limits: Omit<AIUsageLimits, 'id' | 'upda
     id: 'default',
     updatedAt: Date.now()
   })
+}
+
+
+// Cleanup Session functions
+export async function saveCleanupSession(session: CleanupSessionRecord): Promise<void> {
+  await db.cleanupSessions.put({
+    ...session,
+    updatedAt: Date.now()
+  })
+}
+
+export async function loadCleanupSession(id: string): Promise<CleanupSessionRecord | undefined> {
+  return await db.cleanupSessions.get(id)
+}
+
+export async function getLatestCleanupSession(): Promise<CleanupSessionRecord | undefined> {
+  const sessions = await db.cleanupSessions.orderBy('updatedAt').reverse().limit(1).toArray()
+  return sessions[0]
+}
+
+export async function deleteCleanupSession(id: string): Promise<void> {
+  await db.cleanupSessions.delete(id)
+}
+
+export async function clearAllCleanupSessions(): Promise<void> {
+  await db.cleanupSessions.clear()
+}
+
+// Bookmark deletion functions for cleanup workflow
+export async function deleteBookmarksByIds(ids: string[]): Promise<void> {
+  await db.bookmarks.bulkDelete(ids)
+}
+
+export async function updateBookmarkPath(id: string, newPath: string[]): Promise<void> {
+  await db.bookmarks.update(id, { path: newPath })
+}
+
+export async function bulkUpdateBookmarkPaths(updates: Array<{ id: string; path: string[] }>): Promise<void> {
+  await db.transaction('rw', db.bookmarks, async () => {
+    for (const update of updates) {
+      await db.bookmarks.update(update.id, { path: update.path })
+    }
+  })
+}
+
+export async function restoreBookmarks(bookmarks: StoredBookmark[]): Promise<void> {
+  await db.bookmarks.bulkPut(bookmarks)
 }

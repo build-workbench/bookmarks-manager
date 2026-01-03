@@ -8,6 +8,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Search = lazy(() => import('./pages/Search'))
 const Duplicates = lazy(() => import('./pages/Duplicates'))
 const AI = lazy(() => import('./pages/AI'))
+const Cleanup = lazy(() => import('./pages/Cleanup'))
 
 export default function App() {
   const { loadFromDB, needsMerge } = useBookmarksStore()
@@ -22,11 +23,12 @@ export default function App() {
         <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
           <div className="font-semibold">Bookmarks Analysis</div>
           <nav className="flex gap-2 text-sm">
-            <NavLink to="/upload" className={({isActive}) => `px-3 py-2 rounded ${isActive ? 'bg-sky-600 text-white' : 'hover:bg-slate-800'}`}>上传合并</NavLink>
-            <NavLink to="/dashboard" className={({isActive}) => `px-3 py-2 rounded ${isActive ? 'bg-sky-600 text-white' : 'hover:bg-slate-800'}`}>仪表盘</NavLink>
-            <NavLink to="/search" className={({isActive}) => `px-3 py-2 rounded ${isActive ? 'bg-sky-600 text-white' : 'hover:bg-slate-800'}`}>搜索</NavLink>
-            <NavLink to="/duplicates" className={({isActive}) => `px-3 py-2 rounded ${isActive ? 'bg-sky-600 text-white' : 'hover:bg-slate-800'}`}>去重</NavLink>
-            <NavLink to="/ai" className={({isActive}) => `px-3 py-2 rounded ${isActive ? 'bg-sky-600 text-white' : 'hover:bg-slate-800'}`}>AI</NavLink>
+            <NavLink to="/upload" className={({ isActive }) => `px-3 py-2 rounded ${isActive ? 'bg-sky-600 text-white' : 'hover:bg-slate-800'}`}>上传合并</NavLink>
+            <NavLink to="/dashboard" className={({ isActive }) => `px-3 py-2 rounded ${isActive ? 'bg-sky-600 text-white' : 'hover:bg-slate-800'}`}>仪表盘</NavLink>
+            <NavLink to="/search" className={({ isActive }) => `px-3 py-2 rounded ${isActive ? 'bg-sky-600 text-white' : 'hover:bg-slate-800'}`}>搜索</NavLink>
+            <NavLink to="/duplicates" className={({ isActive }) => `px-3 py-2 rounded ${isActive ? 'bg-sky-600 text-white' : 'hover:bg-slate-800'}`}>去重</NavLink>
+            <NavLink to="/cleanup" className={({ isActive }) => `px-3 py-2 rounded ${isActive ? 'bg-sky-600 text-white' : 'hover:bg-slate-800'}`}>整理</NavLink>
+            <NavLink to="/ai" className={({ isActive }) => `px-3 py-2 rounded ${isActive ? 'bg-sky-600 text-white' : 'hover:bg-slate-800'}`}>AI</NavLink>
           </nav>
         </div>
       </header>
@@ -58,6 +60,7 @@ export default function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/search" element={<Search />} />
             <Route path="/duplicates" element={<Duplicates />} />
+            <Route path="/cleanup" element={<Cleanup />} />
             <Route path="/ai" element={<AI />} />
           </Routes>
         </Suspense>

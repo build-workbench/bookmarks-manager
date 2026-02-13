@@ -9,13 +9,13 @@ import { createAdapter } from './adapters'
 import { usageService } from './usageService'
 import { cacheService, generateCacheKey, generateBookmarkHash } from './cacheService'
 import { MAX_RETRIES, RETRY_DELAY_MS } from './constants'
-import type { Bookmark } from '../utils/bookmarkParser'
+import type { Bookmark } from '@/utils/bookmarkParser'
 import type {
     AICleanupRecommendation,
     SuggestedFolder,
     RecommendationType,
     ReasonType
-} from '../cleanup/types'
+} from '@/cleanup/types'
 
 // Rate limiting state
 let lastRequestTime = 0

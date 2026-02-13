@@ -3,10 +3,9 @@
  * Shows final bookmark structure and change summary before export
  */
 
-import { useMemo } from 'react'
 import { Download, Trash2, MoveRight, FolderPlus, CheckCircle, AlertTriangle } from 'lucide-react'
-import type { Bookmark } from '../../utils/bookmarkParser'
-import type { ChangeSummary } from '../types'
+import type { Bookmark } from '@/utils/bookmarkParser'
+import type { ChangeSummary } from '@/cleanup/types'
 import FolderTree from './FolderTree'
 
 interface ExportPreviewProps {

@@ -4,9 +4,9 @@
  */
 
 import { ArrowLeft, ArrowRight } from 'lucide-react'
-import type { Bookmark } from '../../utils/bookmarkParser'
-import type { SuggestedFolder, BookmarkMove } from '../types'
-import CategoryManager from '../components/CategoryManager'
+import type { Bookmark } from '@/utils/bookmarkParser'
+import type { SuggestedFolder, BookmarkMove } from '@/cleanup/types'
+import CategoryManager from '@/cleanup/components/CategoryManager'
 
 interface OrganizeStageProps {
     bookmarks: Bookmark[]

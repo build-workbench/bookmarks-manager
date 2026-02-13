@@ -5,9 +5,9 @@
 
 import { useState, useMemo } from 'react'
 import { Trash2, CheckCircle, HelpCircle, Check, X, ChevronDown, ChevronRight } from 'lucide-react'
-import type { Bookmark } from '../../utils/bookmarkParser'
-import type { AICleanupRecommendation, RecommendationType } from '../types'
-import { groupRecommendationsByType, getRecommendationStats } from '../../ai/cleanupAnalysis'
+import type { Bookmark } from '@/utils/bookmarkParser'
+import type { AICleanupRecommendation, RecommendationType } from '@/cleanup/types'
+import { groupRecommendationsByType, getRecommendationStats } from '@/ai/cleanupAnalysis'
 
 interface AIRecommendationsProps {
     recommendations: AICleanupRecommendation[]

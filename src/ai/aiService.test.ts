@@ -6,10 +6,10 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import * as fc from 'fast-check'
-import { aiService, exportReportToMarkdown, exportReportToHTML } from './aiService'
+import { aiService as _aiService, exportReportToMarkdown, exportReportToHTML } from './aiService'
 import { cacheService } from './cacheService'
 import { usageService } from './usageService'
-import type { Bookmark } from '../utils/bookmarkParser'
+import type { Bookmark } from '@/utils/bookmarkParser'
 import type { CollectionReport, CategorySuggestion, BookmarkSummary, DuplicateRecommendation, HealthIssue } from './types'
 
 // Test configuration
@@ -26,7 +26,7 @@ const bookmarkArb = fc.record({
 }) as fc.Arbitrary<Bookmark>
 
 // Mock category suggestion generator
-const categorySuggestionArb = (bookmarkId: string) => fc.record({
+const _categorySuggestionArb = (bookmarkId: string) => fc.record({
   bookmarkId: fc.constant(bookmarkId),
   suggestedCategory: fc.constantFrom('技术/编程', '新闻/资讯', '工具/效率', '学习/教程', '娱乐/视频'),
   confidence: fc.integer({ min: 0, max: 100 }).map(n => n / 100),
@@ -34,7 +34,7 @@ const categorySuggestionArb = (bookmarkId: string) => fc.record({
 })
 
 // Mock summary generator
-const summaryArb = (bookmarkId: string) => fc.record({
+const _summaryArb = (bookmarkId: string) => fc.record({
   bookmarkId: fc.constant(bookmarkId),
   summary: fc.string({ minLength: 10, maxLength: 100 }),
   keywords: fc.array(fc.string({ minLength: 1, maxLength: 20 }), { minLength: 1, maxLength: 5 }),

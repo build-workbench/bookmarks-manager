@@ -3,7 +3,7 @@
  * Tracks API usage, costs, and enforces limits
  */
 
-import { db, getAIUsageLimits, saveAIUsageLimits } from '../utils/db'
+import { db, getAIUsageLimits, saveAIUsageLimits } from '@/utils/db'
 import { TOKEN_COSTS } from './constants'
 import type { UsageRecord, UsageStats, UsageLimits } from './types'
 
@@ -266,11 +266,12 @@ export async function clearHistoryBefore(date: Date): Promise<number> {
  * Get recent usage records
  */
 export async function getRecentRecords(limit: number = 50): Promise<UsageRecord[]> {
-  return db.aiUsage
+  const rows = await db.aiUsage
     .orderBy('timestamp')
     .reverse()
     .limit(limit)
     .toArray()
+  return rows.map((r) => ({ ...r, id: r.id != null ? String(r.id) : undefined }))
 }
 
 // Export as a service object for convenience

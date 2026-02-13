@@ -7,7 +7,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import * as fc from 'fast-check'
 import { cacheService, CacheType, generateCacheKey, generateBookmarkHash } from './cacheService'
-import { db } from '../utils/db'
+import { db as _db } from '@/utils/db'
 
 // Test configuration
 const PBT_CONFIG = { numRuns: 100 }
@@ -26,7 +26,7 @@ const cacheValueArb = fc.oneof(
   fc.array(fc.string(), { maxLength: 10 })
 )
 
-const cacheKeyArb = fc.tuple(cacheTypeArb, fc.uuid()).map(([type, id]) => generateCacheKey(type, id))
+const _cacheKeyArb = fc.tuple(cacheTypeArb, fc.uuid()).map(([type, id]) => generateCacheKey(type, id))
 
 const bookmarkDataArb = fc.record({
   id: fc.uuid(),

@@ -4,10 +4,10 @@
  */
 
 import { Trash2, Sparkles, ArrowRight, Loader2 } from 'lucide-react'
-import type { Bookmark } from '../../utils/bookmarkParser'
-import type { AICleanupRecommendation, CleanupFilters, RecommendationType } from '../types'
-import BookmarkSelector from '../components/BookmarkSelector'
-import AIRecommendations from '../components/AIRecommendations'
+import type { Bookmark } from '@/utils/bookmarkParser'
+import type { AICleanupRecommendation, CleanupFilters, RecommendationType } from '@/cleanup/types'
+import BookmarkSelector from '@/cleanup/components/BookmarkSelector'
+import AIRecommendations from '@/cleanup/components/AIRecommendations'
 
 interface ReviewDeleteStageProps {
     bookmarks: Bookmark[]

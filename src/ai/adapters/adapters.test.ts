@@ -9,9 +9,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import * as fc from 'fast-check'
 import { createAdapter, OpenAIAdapter, ClaudeAdapter, CustomAdapter } from './index'
-import { AIServiceError, AIErrorCode } from '../types'
-import type { LLMConfig } from '../types'
-import { PBT_CONFIG } from '../../test/generators'
+import { AIServiceError, AIErrorCode } from '@/ai/types'
+import type { LLMConfig } from '@/ai/types'
+import { PBT_CONFIG } from '@/test/generators'
 
 // Mock fetch globally
 const mockFetch = vi.fn()

@@ -13,13 +13,13 @@ import type {
   QueryInterpretation,
   UsageStats,
   UsageLimits
-} from '../ai/types'
-import { configService } from '../ai/configService'
-import { aiService } from '../ai/aiService'
-import { usageService } from '../ai/usageService'
-import { cacheService } from '../ai/cacheService'
-import { createAdapter } from '../ai/adapters'
-import type { Bookmark } from '../utils/bookmarkParser'
+} from '@/ai/types'
+import { configService } from '@/ai/configService'
+import { aiService } from '@/ai/aiService'
+import { usageService } from '@/ai/usageService'
+import { cacheService } from '@/ai/cacheService'
+import { createAdapter } from '@/ai/adapters'
+import type { Bookmark } from '@/utils/bookmarkParser'
 
 interface AIState {
   // Configuration
@@ -98,7 +98,7 @@ export const useAIStore = create<AIState>((set, get) => ({
 
   loadConfig: async () => {
     try {
-      const config = await configService.loadConfig()
+      const config = await configService.getConfig()
       const limits = await usageService.getLimits()
       set({
         config,

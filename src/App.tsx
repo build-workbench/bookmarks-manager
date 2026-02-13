@@ -1,14 +1,14 @@
 import { NavLink, Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect, Suspense, lazy } from 'react'
 import { AlertCircle } from 'lucide-react'
-import useBookmarksStore from './store/useBookmarksStore'
+import useBookmarksStore from '@/store/useBookmarksStore'
 
-const UploadMerge = lazy(() => import('./pages/UploadMerge'))
-const Dashboard = lazy(() => import('./pages/Dashboard'))
-const Search = lazy(() => import('./pages/Search'))
-const Duplicates = lazy(() => import('./pages/Duplicates'))
-const AI = lazy(() => import('./pages/AI'))
-const Cleanup = lazy(() => import('./pages/Cleanup'))
+const UploadMerge = lazy(() => import('@/pages/UploadMerge'))
+const Dashboard = lazy(() => import('@/pages/Dashboard'))
+const Search = lazy(() => import('@/pages/Search'))
+const Duplicates = lazy(() => import('@/pages/Duplicates'))
+const AI = lazy(() => import('@/pages/AI'))
+const Cleanup = lazy(() => import('@/pages/Cleanup'))
 
 export default function App() {
   const { loadFromDB, needsMerge } = useBookmarksStore()

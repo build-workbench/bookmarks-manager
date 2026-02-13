@@ -4,9 +4,9 @@
  */
 
 import { useState, useMemo } from 'react'
-import { Folder, FolderOpen, ChevronRight, ChevronDown, FileText, Plus } from 'lucide-react'
-import type { Bookmark } from '../../utils/bookmarkParser'
-import type { FolderTreeNode } from '../types'
+import { Folder, FolderOpen, ChevronRight, ChevronDown, FileText } from 'lucide-react'
+import type { Bookmark } from '@/utils/bookmarkParser'
+import type { FolderTreeNode } from '@/cleanup/types'
 
 interface FolderTreeProps {
     bookmarks: Bookmark[]

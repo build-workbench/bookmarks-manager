@@ -4,9 +4,9 @@
  * (e.g., local LLMs, self-hosted models, or other compatible APIs)
  */
 
-import type { LLMConfig, LLMRequest, LLMResponse } from '../types'
-import { AIServiceError, AIErrorCode } from '../types'
-import { DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE } from '../constants'
+import type { LLMConfig, LLMRequest, LLMResponse } from '@/ai/types'
+import { AIServiceError, AIErrorCode } from '@/ai/types'
+import { DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE } from '@/ai/constants'
 import { BaseLLMAdapter } from './base'
 
 interface OpenAICompatibleMessage {

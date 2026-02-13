@@ -4,7 +4,7 @@
  */
 
 import type { LLMConfig } from './types'
-import { getAIConfig, saveAIConfig, type AIConfig } from '../utils/db'
+import { getAIConfig, saveAIConfig } from '@/utils/db'
 import { LLM_PROVIDERS, DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE } from './constants'
 import { createAdapter } from './adapters'
 

@@ -1,5 +1,33 @@
 node_modules
-.DS_Store
 dist
+dev-dist
+
+# IDE
 .vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment
 .env
+.env.*
+!.env.example
+
+# Build artifacts
+tsconfig.tsbuildinfo
+tsconfig.node.tsbuildinfo
+vite.config.d.ts
+vite.config.js
+*.tsbuildinfo
+
+# Coverage
+coverage
+
+# Logs
+*.log
+npm-debug.log*

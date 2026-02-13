@@ -3,8 +3,8 @@
  * Factory function to create the appropriate adapter based on provider
  */
 
-import type { LLMAdapter, LLMConfig } from '../types'
-import { AIServiceError, AIErrorCode } from '../types'
+import type { LLMAdapter, LLMConfig } from '@/ai/types'
+import { AIServiceError, AIErrorCode } from '@/ai/types'
 import { OpenAIAdapter } from './openai'
 import { ClaudeAdapter } from './claude'
 import { CustomAdapter } from './custom'

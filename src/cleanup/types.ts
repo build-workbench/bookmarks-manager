@@ -2,7 +2,7 @@
  * AI Bookmark Cleanup Workflow Type Definitions
  */
 
-import type { Bookmark } from '../utils/bookmarkParser'
+import type { Bookmark } from '@/utils/bookmarkParser'
 
 // Workflow Stage Types
 export type CleanupStage = 'review' | 'organize' | 'preview'

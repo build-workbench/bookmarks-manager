@@ -3,7 +3,7 @@
  * Manages caching of AI analysis results
  */
 
-import { db, getAICache, setAICache, clearExpiredCache, clearAllAICache } from '../utils/db'
+import { db, getAICache, setAICache, clearExpiredCache, clearAllAICache } from '@/utils/db'
 import { DEFAULT_CACHE_TTL_MS } from './constants'
 
 export type CacheType = 'category' | 'summary' | 'duplicate' | 'health' | 'report'

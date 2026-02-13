@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Search as SearchIcon, ExternalLink, Folder, Filter, Download, AlertCircle, CheckCircle } from 'lucide-react'
-import useBookmarksStore from '../store/useBookmarksStore'
-import type { SearchResultItem } from '../utils/search'
-import type { Bookmark } from '../utils/bookmarkParser'
-import { exportAsNetscapeHTML } from '../utils/exporter'
-import { getHostname } from '../utils/url'
+import useBookmarksStore from '@/store/useBookmarksStore'
+import type { SearchResultItem } from '@/utils/search'
+import type { Bookmark } from '@/utils/bookmarkParser'
+import { exportAsNetscapeHTML } from '@/utils/exporter'
+import { getHostname } from '@/utils/url'
 
 export default function Search() {
   const { search, mergedItems } = useBookmarksStore()

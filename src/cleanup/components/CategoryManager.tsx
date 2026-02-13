@@ -5,8 +5,8 @@
 
 import { useState } from 'react'
 import { FolderPlus, Sparkles, Check, X, MoveRight, Loader2 } from 'lucide-react'
-import type { Bookmark } from '../../utils/bookmarkParser'
-import type { SuggestedFolder, BookmarkMove } from '../types'
+import type { Bookmark } from '@/utils/bookmarkParser'
+import type { SuggestedFolder, BookmarkMove } from '@/cleanup/types'
 import FolderTree from './FolderTree'
 
 interface CategoryManagerProps {

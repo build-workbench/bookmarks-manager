@@ -1,10 +1,10 @@
 import { create } from 'zustand'
-import { parseNetscapeBookmarks, type Bookmark } from '../utils/bookmarkParser'
-import { normalizeUrl, getHostname } from '../utils/url'
-import { exportAsNetscapeHTML } from '../utils/exporter'
-import { normalizePath } from '../utils/folders'
-import { clearBookmarks, saveBookmarks, loadBookmarks, type StoredBookmark } from '../utils/db'
-import { createSearchIndex, resetSearchIndex, search as searchBookmarks, type SearchResultItem } from '../utils/search'
+import { parseNetscapeBookmarks, type Bookmark } from '@/utils/bookmarkParser'
+import { normalizeUrl, getHostname } from '@/utils/url'
+import { exportAsNetscapeHTML } from '@/utils/exporter'
+import { normalizePath } from '@/utils/folders'
+import { clearBookmarks, saveBookmarks, loadBookmarks, type StoredBookmark } from '@/utils/db'
+import { createSearchIndex, resetSearchIndex, search as searchBookmarks, type SearchResultItem } from '@/utils/search'
 
 type Stats = { total: number, duplicates: number, byDomain: Record<string, number>, byYear: Record<string, number> }
 

@@ -11,8 +11,8 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import * as fc from 'fast-check'
 import { promptService, renderPrompt, extractVariables, validateVariables } from './promptService'
 import { DEFAULT_PROMPTS } from './constants'
-import { db } from '../utils/db'
-import { PBT_CONFIG } from '../test/generators'
+import { db } from '@/utils/db'
+import { PBT_CONFIG } from '@/test/generators'
 import type { PromptTemplate } from './types'
 
 describe('Prompt Service', () => {

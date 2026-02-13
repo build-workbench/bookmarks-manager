@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ChevronDown, ExternalLink, TrendingUp, Database, Calendar } from 'lucide-react'
-import useBookmarksStore from '../store/useBookmarksStore'
-import Chart from '../ui/Chart'
+import useBookmarksStore from '@/store/useBookmarksStore'
+import Chart from '@/ui/Chart'
 
 export default function Dashboard() {
   const { stats, mergedItems } = useBookmarksStore()

@@ -3,13 +3,13 @@
  * Manages operation history and provides undo functionality
  */
 
-import type { Bookmark } from '../../utils/bookmarkParser'
+import type { Bookmark } from '@/utils/bookmarkParser'
 import type {
     CleanupOperation,
     DeleteOperationData,
     MoveOperationData,
     CreateFolderOperationData
-} from '../types'
+} from '@/cleanup/types'
 import { restoreDeletedBookmarks, moveBookmarks } from './cleanupService'
 
 const MAX_HISTORY_SIZE = 10

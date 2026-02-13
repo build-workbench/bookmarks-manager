@@ -3,9 +3,9 @@
  * Provides filtering functions for bookmarks based on various criteria
  */
 
-import type { Bookmark } from '../../utils/bookmarkParser'
-import type { CleanupFilters, AICleanupRecommendation, CleanupBookmark } from '../types'
-import { getHostname } from '../../utils/url'
+import type { Bookmark } from '@/utils/bookmarkParser'
+import type { CleanupFilters, AICleanupRecommendation, CleanupBookmark } from '@/cleanup/types'
+import { getHostname } from '@/utils/url'
 
 /**
  * Filter bookmarks by domain name

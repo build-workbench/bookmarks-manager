@@ -3,9 +3,9 @@
  * Implements the LLM adapter interface for OpenAI API
  */
 
-import type { LLMConfig, LLMRequest, LLMResponse } from '../types'
-import { AIServiceError, AIErrorCode } from '../types'
-import { LLM_PROVIDERS, DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE } from '../constants'
+import type { LLMConfig, LLMRequest, LLMResponse } from '@/ai/types'
+import { AIServiceError, AIErrorCode } from '@/ai/types'
+import { LLM_PROVIDERS, DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE } from '@/ai/constants'
 import { BaseLLMAdapter } from './base'
 
 interface OpenAIMessage {

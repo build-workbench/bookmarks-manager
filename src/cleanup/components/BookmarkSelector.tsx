@@ -5,9 +5,9 @@
 
 import { useState, useMemo } from 'react'
 import { CheckSquare, Square, ExternalLink, Trash2, AlertCircle, CheckCircle, HelpCircle } from 'lucide-react'
-import type { Bookmark } from '../../utils/bookmarkParser'
-import type { AICleanupRecommendation, CleanupFilters } from '../types'
-import { combineFilters } from '../services/filterService'
+import type { Bookmark } from '@/utils/bookmarkParser'
+import type { AICleanupRecommendation, CleanupFilters } from '@/cleanup/types'
+import { combineFilters } from '@/cleanup/services/filterService'
 import FilterPanel from './FilterPanel'
 
 interface BookmarkSelectorProps {

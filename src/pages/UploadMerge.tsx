@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState, type ChangeEvent } from 'react'
 import { Upload, FileText, Trash2, Download, AlertCircle, CheckCircle } from 'lucide-react'
-import useBookmarksStore from '../store/useBookmarksStore'
+import useBookmarksStore from '@/store/useBookmarksStore'
 
 export default function UploadMerge() {
   const { rawItems, mergedItems, duplicates, importing, merging, loading, stage, needsMerge, importFiles, mergeAndDedup, clear, exportHTML, removeSourceFile } = useBookmarksStore()

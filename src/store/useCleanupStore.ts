@@ -4,39 +4,33 @@
  */
 
 import { create } from 'zustand'
-import type { Bookmark } from '../utils/bookmarkParser'
+import type { Bookmark } from '@/utils/bookmarkParser'
 import type {
     CleanupStage,
     CleanupFilters,
     AICleanupRecommendation,
     SuggestedFolder,
     BookmarkMove,
-    CleanupOperation,
     CleanupSession,
     ChangeSummary,
     RecommendationType
-} from '../cleanup/types'
+} from '@/cleanup/types'
 import {
-    deleteBookmarks,
-    restoreDeletedBookmarks,
     createDeleteOperation,
     createMoveOperation,
     createFolderOperation,
-    folderNameExistsAtLevel,
-    groupRecommendationsByType
-} from '../cleanup/services/cleanupService'
+    folderNameExistsAtLevel
+} from '@/cleanup/services/cleanupService'
 import {
     OperationHistory,
     executeUndo
-} from '../cleanup/services/undoService'
+} from '@/cleanup/services/undoService'
 import {
     saveCleanupSession,
-    loadCleanupSession,
     getLatestCleanupSession,
-    deleteCleanupSession,
-    bulkUpdateBookmarkPaths
-} from '../utils/db'
-import { exportAsNetscapeHTML } from '../utils/exporter'
+    deleteCleanupSession
+} from '@/utils/db'
+import { exportAsNetscapeHTML } from '@/utils/exporter'
 
 interface CleanupState {
     // Workflow state

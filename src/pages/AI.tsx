@@ -1,28 +1,28 @@
 import { useEffect, useState } from 'react'
 import {
-  Key, Save, Play, Sparkles, AlertCircle, Settings, Zap,
-  Tag, FileText, Copy, Heart, Search, BarChart3, Loader2,
+  Key, Save, Sparkles, AlertCircle, Settings, Zap,
+  Tag, FileText, Heart, Search, BarChart3, Loader2,
   CheckCircle, XCircle, RefreshCw, Trash2, Download
 } from 'lucide-react'
-import { useAIStore } from '../store/useAIStore'
-import useBookmarksStore from '../store/useBookmarksStore'
-import { LLM_PROVIDERS } from '../ai/constants'
-import type { LLMConfig } from '../ai/types'
-import { aiService } from '../ai/aiService'
+import { useAIStore } from '@/store/useAIStore'
+import useBookmarksStore from '@/store/useBookmarksStore'
+import { LLM_PROVIDERS } from '@/ai/constants'
+import type { LLMConfig } from '@/ai/types'
+import { aiService } from '@/ai/aiService'
 
 type TabType = 'config' | 'categorize' | 'summarize' | 'health' | 'search' | 'report' | 'usage'
 
 export default function AI() {
-  const { mergedItems, stats, duplicates } = useBookmarksStore()
+  const { mergedItems, stats } = useBookmarksStore()
   const {
     config, isConfigured, connectionStatus, connectionError,
     isProcessing, currentOperation, progress,
     categorySuggestions, summaries, healthIssues, latestReport,
-    lastSearchResult, usageStats, usageLimits,
+    lastSearchResult, usageStats,
     loadConfig, saveConfig, testConnection,
     categorizeBookmarks, summarizeBookmarks, analyzeHealth,
     searchWithAI, generateReport, dismissHealthIssue,
-    refreshUsageStats, setUsageLimits, clearCache
+    refreshUsageStats, clearCache
   } = useAIStore()
 
   const [activeTab, setActiveTab] = useState<TabType>('config')

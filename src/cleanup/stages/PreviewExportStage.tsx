@@ -4,9 +4,9 @@
  */
 
 import { ArrowLeft } from 'lucide-react'
-import type { Bookmark } from '../../utils/bookmarkParser'
-import type { ChangeSummary } from '../types'
-import ExportPreview from '../components/ExportPreview'
+import type { Bookmark } from '@/utils/bookmarkParser'
+import type { ChangeSummary } from '@/cleanup/types'
+import ExportPreview from '@/cleanup/components/ExportPreview'
 
 interface PreviewExportStageProps {
     bookmarks: Bookmark[]

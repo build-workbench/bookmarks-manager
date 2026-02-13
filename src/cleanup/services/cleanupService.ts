@@ -3,16 +3,15 @@
  * Handles deletion, moving, and folder creation with transaction support
  */
 
-import type { Bookmark } from '../../utils/bookmarkParser'
-import type { BookmarkMove, CleanupOperation, DeleteOperationData, MoveOperationData, CreateFolderOperationData } from '../types'
+import type { Bookmark } from '@/utils/bookmarkParser'
+import type { BookmarkMove, CleanupOperation, DeleteOperationData, MoveOperationData, CreateFolderOperationData } from '@/cleanup/types'
 import {
     deleteBookmarksByIds,
     bulkUpdateBookmarkPaths,
     restoreBookmarks,
-    loadBookmarks,
     type StoredBookmark
-} from '../../utils/db'
-import { normalizeUrl } from '../../utils/url'
+} from '@/utils/db'
+import { normalizeUrl } from '@/utils/url'
 
 /**
  * Delete bookmarks by IDs
@@ -117,7 +116,7 @@ export function folderNameExistsAtLevel(
     parentPath: string[],
     folderName: string
 ): boolean {
-    const targetPath = [...parentPath, folderName]
+    const _targetPath = [...parentPath, folderName]
     const lowerFolderName = folderName.toLowerCase()
 
     // Get all unique folder paths at the target level

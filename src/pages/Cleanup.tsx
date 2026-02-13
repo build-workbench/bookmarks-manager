@@ -3,7 +3,7 @@
  * Page wrapper for the AI-assisted bookmark cleanup workflow
  */
 
-import CleanupWorkflow from '../cleanup/CleanupWorkflow'
+import CleanupWorkflow from '@/cleanup/CleanupWorkflow'
 
 export default function Cleanup() {
     return (

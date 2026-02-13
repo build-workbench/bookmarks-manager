@@ -5,9 +5,9 @@
 
 import { useState, useEffect } from 'react'
 import { Settings, Key, Server, Cpu, CheckCircle, XCircle, Loader2, Eye, EyeOff } from 'lucide-react'
-import { configService } from '../ai/configService'
-import { LLM_PROVIDERS } from '../ai/constants'
-import type { LLMConfig } from '../ai/types'
+import { configService } from '@/ai/configService'
+import { LLM_PROVIDERS } from '@/ai/constants'
+import type { LLMConfig } from '@/ai/types'
 
 type Provider = 'openai' | 'claude' | 'custom'
 

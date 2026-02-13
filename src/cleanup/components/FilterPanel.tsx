@@ -5,9 +5,9 @@
 
 import { useState, useMemo } from 'react'
 import { Filter, X, Calendar, Folder, Globe, Tag } from 'lucide-react'
-import type { Bookmark } from '../../utils/bookmarkParser'
-import type { CleanupFilters, AICleanupRecommendation, RecommendationType } from '../types'
-import { getUniqueDomains, getUniqueFolders, getDateRange } from '../services/filterService'
+import type { Bookmark } from '@/utils/bookmarkParser'
+import type { CleanupFilters, AICleanupRecommendation } from '@/cleanup/types'
+import { getUniqueDomains, getUniqueFolders, getDateRange } from '@/cleanup/services/filterService'
 
 interface FilterPanelProps {
     bookmarks: Bookmark[]

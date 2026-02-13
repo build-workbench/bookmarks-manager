@@ -3,9 +3,9 @@
  * Abstract base class for all LLM provider adapters
  */
 
-import type { LLMAdapter, LLMConfig, LLMRequest, LLMResponse } from '../types'
-import { AIServiceError, AIErrorCode } from '../types'
-import { TOKEN_COSTS, MAX_RETRIES, RETRY_DELAY_MS } from '../constants'
+import type { LLMAdapter, LLMConfig, LLMRequest, LLMResponse } from '@/ai/types'
+import { AIServiceError, AIErrorCode } from '@/ai/types'
+import { TOKEN_COSTS, MAX_RETRIES, RETRY_DELAY_MS } from '@/ai/constants'
 
 export abstract class BaseLLMAdapter implements LLMAdapter {
   protected config: LLMConfig

@@ -13,16 +13,16 @@ import type {
   DuplicateRecommendation,
   HealthIssue,
   CollectionReport,
-  QueryInterpretation,
-  AIErrorCode
+  QueryInterpretation
 } from './types'
+import { AIErrorCode } from './types'
 import { AIServiceError } from './types'
 import { createAdapter } from './adapters'
 import { promptService, renderPrompt } from './promptService'
 import { cacheService, generateCacheKey, generateBookmarkHash } from './cacheService'
 import { usageService } from './usageService'
 import { SYSTEM_PROMPTS, DEFAULT_BATCH_SIZE, MAX_RETRIES, RETRY_DELAY_MS } from './constants'
-import type { Bookmark } from '../utils/bookmarkParser'
+import type { Bookmark } from '@/utils/bookmarkParser'
 
 // Rate limiting state
 let lastRequestTime = 0

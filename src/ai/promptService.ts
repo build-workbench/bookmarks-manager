@@ -5,7 +5,7 @@
 
 import type { PromptTemplate } from './types'
 import { DEFAULT_PROMPTS } from './constants'
-import { getAIPrompt, getAllAIPrompts, saveAIPrompt, deleteAIPrompt } from '../utils/db'
+import { getAIPrompt, getAllAIPrompts, saveAIPrompt, deleteAIPrompt } from '@/utils/db'
 
 /**
  * Get a prompt template by ID

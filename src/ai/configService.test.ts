@@ -9,8 +9,8 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import * as fc from 'fast-check'
 import { configService } from './configService'
 import type { LLMConfig } from './types'
-import { db } from '../utils/db'
-import { PBT_CONFIG } from '../test/generators'
+import { db } from '@/utils/db'
+import { PBT_CONFIG } from '@/test/generators'
 
 describe('Config Service', () => {
   beforeEach(async () => {

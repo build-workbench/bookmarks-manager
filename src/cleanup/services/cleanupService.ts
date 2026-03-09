@@ -116,7 +116,6 @@ export function folderNameExistsAtLevel(
     parentPath: string[],
     folderName: string
 ): boolean {
-    const _targetPath = [...parentPath, folderName]
     const lowerFolderName = folderName.toLowerCase()
 
     // Get all unique folder paths at the target level
@@ -215,24 +214,6 @@ export function createFolderOperation(path: string[]): CleanupOperation {
         timestamp: Date.now(),
         data
     }
-}
-
-/**
- * Group recommendations by type
- */
-export function groupRecommendationsByType<T extends { recommendation: string }>(
-    recommendations: T[]
-): Map<string, T[]> {
-    const groups = new Map<string, T[]>()
-
-    for (const rec of recommendations) {
-        const type = rec.recommendation
-        const group = groups.get(type) || []
-        group.push(rec)
-        groups.set(type, group)
-    }
-
-    return groups
 }
 
 /**

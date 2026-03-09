@@ -116,8 +116,8 @@ export default function CleanupWorkflow() {
                 activeBookmarks,
                 {
                     batchSize: 20,
-                    onProgress: (processed, total) => {
-                        console.log(`AI Analysis: ${processed}/${total}`)
+                    onProgress: (_processed, _total) => {
+                        // Progress tracked in store
                     }
                 }
             )

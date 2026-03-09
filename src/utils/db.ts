@@ -131,15 +131,6 @@ export async function loadBookmarks(): Promise<StoredBookmark[]> {
   return await db.bookmarks.toArray()
 }
 
-export async function getSetting(key: string): Promise<string | undefined> {
-  const item = await db.settings.get(key)
-  return item?.apiKey
-}
-
-export async function setSetting(key: string, value: string) {
-  await db.settings.put({ id: key, apiKey: value, lastUpdated: Date.now() })
-}
-
 // AI Config functions
 export async function getAIConfig(): Promise<AIConfig | undefined> {
   return await db.aiConfig.get('default')
@@ -259,10 +250,6 @@ export async function clearAllCleanupSessions(): Promise<void> {
 // Bookmark deletion functions for cleanup workflow
 export async function deleteBookmarksByIds(ids: string[]): Promise<void> {
   await db.bookmarks.bulkDelete(ids)
-}
-
-export async function updateBookmarkPath(id: string, newPath: string[]): Promise<void> {
-  await db.bookmarks.update(id, { path: newPath })
 }
 
 export async function bulkUpdateBookmarkPaths(updates: Array<{ id: string; path: string[] }>): Promise<void> {

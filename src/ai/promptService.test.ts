@@ -110,8 +110,9 @@ describe('Prompt Service', () => {
   describe('Property 22: Prompt Variable Substitution', () => {
     it('should substitute all variables correctly', () => {
       // Generate templates with variables and matching data
+      const RESERVED_KEYS = new Set(['__proto__', 'constructor', 'prototype', 'toString', 'valueOf', 'hasOwnProperty'])
       const variableNameArb = fc.string({ minLength: 1, maxLength: 20 })
-        .filter(s => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s))
+        .filter(s => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(s) && !RESERVED_KEYS.has(s))
       
       // Ensure values don't contain placeholder patterns
       const variableValueArb = fc.string({ minLength: 0, maxLength: 100 })

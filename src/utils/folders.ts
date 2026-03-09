@@ -24,7 +24,7 @@ export function normalizePath(path: string[]): string[] {
   return [mapped, ...rest.map(s => s.trim())]
 }
 
-type FolderNode = { name: string; folders: Map<string, FolderNode>; bookmarks: Bookmark[] }
+export type FolderNode = { name: string; folders: Map<string, FolderNode>; bookmarks: Bookmark[] }
 
 export function buildFolderTree(items: Bookmark[]): FolderNode {
   const root: FolderNode = { name: 'ROOT', folders: new Map(), bookmarks: [] }

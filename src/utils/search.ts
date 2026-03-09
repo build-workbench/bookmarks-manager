@@ -23,7 +23,7 @@ export function createSearchIndex(bookmarks: Bookmark[]): MiniSearch<Bookmark> {
       if (fieldName === 'path') {
         return document.path.join(' ')
       }
-      return (document as any)[fieldName]
+      return (document as Record<string, unknown>)[fieldName] as string
     }
   })
 
@@ -34,11 +34,16 @@ export function createSearchIndex(bookmarks: Bookmark[]): MiniSearch<Bookmark> {
 export function search(query: string, limit = 50): SearchResultItem[] {
   if (!searchIndex || !query.trim()) return []
   const results = searchIndex.search(query)
-  return results.slice(0, limit) as unknown as SearchResultItem[]
-}
-
-export function getSearchIndex(): MiniSearch<Bookmark> | null {
-  return searchIndex
+  return results.slice(0, limit).map(r => ({
+    id: r.id as string,
+    score: r.score,
+    title: r.title as string | undefined,
+    url: r.url as string | undefined,
+    path: r.path as string[] | undefined,
+    addDate: r.addDate as number | undefined,
+    lastModified: r.lastModified as number | undefined,
+    sourceFile: r.sourceFile as string | undefined
+  }))
 }
 
 export function resetSearchIndex() {

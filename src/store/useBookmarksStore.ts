@@ -8,6 +8,19 @@ import { createSearchIndex, resetSearchIndex, search as searchBookmarks, type Se
 
 type Stats = { total: number, duplicates: number, byDomain: Record<string, number>, byYear: Record<string, number> }
 
+function computeStats(merged: Bookmark[], duplicates: number): Stats {
+  const byDomain: Record<string, number> = {}
+  const byYear: Record<string, number> = {}
+  for (const it of merged) {
+    const host = getHostname(it.url) || 'unknown'
+    byDomain[host] = (byDomain[host] || 0) + 1
+    const ts = it.addDate || it.lastModified
+    const year = ts ? new Date(ts * 1000).getFullYear().toString() : 'Unknown'
+    byYear[year] = (byYear[year] || 0) + 1
+  }
+  return { total: merged.length, duplicates, byDomain, byYear }
+}
+
 type State = {
   rawItems: Bookmark[]
   mergedItems: Bookmark[]
@@ -96,17 +109,8 @@ const useBookmarksStore = create<State>((set, get) => ({
         }
         merged.push(best)
       }
-      const byDomain: Record<string, number> = {}
-      const byYear: Record<string, number> = {}
       set({ stage: '正在生成统计数据...' })
-      for (const it of merged) {
-        const host = getHostname(it.url) || 'unknown'
-        byDomain[host] = (byDomain[host] || 0) + 1
-        const ts = it.addDate || it.lastModified
-        const year = ts ? new Date(ts * 1000).getFullYear().toString() : 'Unknown'
-        byYear[year] = (byYear[year] || 0) + 1
-      }
-      const stats: Stats = { total: merged.length, duplicates: raw.length - merged.length, byDomain, byYear }
+      const stats = computeStats(merged, raw.length - merged.length)
       set({ mergedItems: merged, duplicates: dups, stats, needsMerge: false })
       
       set({ stage: '正在保存到本地数据库...' })
@@ -128,16 +132,7 @@ const useBookmarksStore = create<State>((set, get) => ({
       const stored = await loadBookmarks()
       if (stored.length > 0) {
         const merged = stored.map(({ normalized: _normalized, ...rest }) => rest)
-        const byDomain: Record<string, number> = {}
-        const byYear: Record<string, number> = {}
-        for (const it of merged) {
-          const host = getHostname(it.url) || 'unknown'
-          byDomain[host] = (byDomain[host] || 0) + 1
-          const ts = it.addDate || it.lastModified
-          const year = ts ? new Date(ts * 1000).getFullYear().toString() : 'Unknown'
-          byYear[year] = (byYear[year] || 0) + 1
-        }
-        const stats: Stats = { total: merged.length, duplicates: 0, byDomain, byYear }
+        const stats = computeStats(merged, 0)
         set({ rawItems: merged, mergedItems: merged, stats, needsMerge: false })
         createSearchIndex(merged)
       }

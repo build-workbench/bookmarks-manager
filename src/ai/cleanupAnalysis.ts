@@ -3,12 +3,9 @@
  * Provides AI-powered analysis for bookmark cleanup workflow
  */
 
-import type { LLMConfig, LLMRequest, AIErrorCode } from './types'
-import { AIServiceError } from './types'
-import { createAdapter } from './adapters'
-import { usageService } from './usageService'
+import type { LLMConfig, LLMRequest } from './types'
 import { cacheService, generateCacheKey, generateBookmarkHash } from './cacheService'
-import { MAX_RETRIES, RETRY_DELAY_MS } from './constants'
+import { callLLM, parseJSONResponse } from './llmHelpers'
 import type { Bookmark } from '@/utils/bookmarkParser'
 import type {
     AICleanupRecommendation,
@@ -16,23 +13,6 @@ import type {
     RecommendationType,
     ReasonType
 } from '@/cleanup/types'
-
-// Rate limiting state
-let lastRequestTime = 0
-const MIN_REQUEST_INTERVAL_MS = 100
-
-function sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms))
-}
-
-async function enforceRateLimit(): Promise<void> {
-    const now = Date.now()
-    const elapsed = now - lastRequestTime
-    if (elapsed < MIN_REQUEST_INTERVAL_MS) {
-        await sleep(MIN_REQUEST_INTERVAL_MS - elapsed)
-    }
-    lastRequestTime = Date.now()
-}
 
 // System prompts for cleanup analysis
 const CLEANUP_SYSTEM_PROMPTS = {
@@ -57,80 +37,6 @@ const CLEANUP_SYSTEM_PROMPTS = {
 返回JSON格式的分类建议。`
 }
 
-/**
- * Make an LLM API call with retry logic
- */
-async function callLLM(
-    config: LLMConfig,
-    request: LLMRequest,
-    operation: string
-): Promise<string> {
-    const limitCheck = await usageService.checkLimits()
-    if (limitCheck.exceeded) {
-        throw new AIServiceError({
-            code: 'USAGE_LIMIT_REACHED' as AIErrorCode,
-            message: limitCheck.message || 'Usage limit exceeded',
-            retryable: false
-        })
-    }
-
-    const adapter = createAdapter(config)
-    let lastError: Error | null = null
-
-    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
-        try {
-            await enforceRateLimit()
-            const response = await adapter.chat(request)
-
-            await usageService.recordUsage({
-                timestamp: Date.now(),
-                operation,
-                promptTokens: response.usage.promptTokens,
-                completionTokens: response.usage.completionTokens,
-                totalTokens: response.usage.totalTokens,
-                estimatedCost: usageService.estimateCost(
-                    config.model,
-                    response.usage.promptTokens,
-                    response.usage.completionTokens
-                ),
-                model: response.model
-            })
-
-            return response.content
-        } catch (error) {
-            lastError = error as Error
-
-            if (error instanceof AIServiceError) {
-                if (!error.retryable) throw error
-                if (error.retryAfterMs) {
-                    await sleep(error.retryAfterMs)
-                } else {
-                    await sleep(RETRY_DELAY_MS * Math.pow(2, attempt))
-                }
-            } else {
-                await sleep(RETRY_DELAY_MS * Math.pow(2, attempt))
-            }
-        }
-    }
-
-    throw lastError || new Error('Unknown error during LLM call')
-}
-
-/**
- * Parse JSON from LLM response
- */
-function parseJSONResponse<T>(content: string): T {
-    const jsonMatch = content.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) {
-        throw new Error('No JSON found in response')
-    }
-
-    try {
-        return JSON.parse(jsonMatch[0]) as T
-    } catch {
-        throw new Error('Failed to parse JSON response')
-    }
-}
 
 /**
  * Validate recommendation type
@@ -226,7 +132,7 @@ ${bookmarksText}
                             reasonType: string
                             confidence: number
                         }>
-                    }>(response)
+                    }>(response.content)
 
                     return parsed.recommendations.map(r => ({
                         bookmarkId: r.bookmarkId,
@@ -335,7 +241,7 @@ ${bookmarksText}
                         description: string
                         suggestedBookmarkIds: string[]
                     }>
-                }>(response)
+                }>(response.content)
 
                 // Validate bookmark IDs exist
                 const validIds = new Set(bookmarks.map(b => b.id))

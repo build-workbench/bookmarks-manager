@@ -7,7 +7,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import * as fc from 'fast-check'
 import { usageService } from './usageService'
-import type { UsageLimits } from './types'
 
 // Test configuration
 const PBT_CONFIG = { numRuns: 100 }
@@ -39,11 +38,16 @@ const usageRecordArb = fc.record({
   model: modelArb
 })
 
+const optionalInt = (min: number, max: number) =>
+  fc.option(fc.integer({ min, max })).map(v => v ?? undefined)
+const optionalFloat = (min: number, max: number, div: number) =>
+  fc.option(fc.integer({ min, max }).map(n => n / div)).map(v => v ?? undefined)
+
 const usageLimitsArb = fc.record({
-  dailyTokenLimit: fc.option(fc.integer({ min: 1000, max: 1000000 })),
-  monthlyTokenLimit: fc.option(fc.integer({ min: 10000, max: 10000000 })),
-  dailyCostLimit: fc.option(fc.integer({ min: 10, max: 10000 }).map(n => n / 100)), // 0.1 to 100
-  monthlyCostLimit: fc.option(fc.integer({ min: 100, max: 100000 }).map(n => n / 100)) // 1 to 1000
+  dailyTokenLimit: optionalInt(1000, 1000000),
+  monthlyTokenLimit: optionalInt(10000, 10000000),
+  dailyCostLimit: optionalFloat(10, 10000, 100), // 0.1 to 100
+  monthlyCostLimit: optionalFloat(100, 100000, 100) // 1 to 1000
 })
 
 describe('UsageService', () => {

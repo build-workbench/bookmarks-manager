@@ -16,5 +16,8 @@ export { cacheService, generateCacheKey, generateBookmarkHash } from './cacheSer
 export { usageService } from './usageService'
 export { aiService } from './aiService'
 
+// LLM Helpers
+export { callLLM, parseJSONResponse, processBatches, sleep, enforceRateLimit } from './llmHelpers'
+
 // Adapters
 export { createAdapter, BaseLLMAdapter, OpenAIAdapter, ClaudeAdapter, CustomAdapter } from './adapters'

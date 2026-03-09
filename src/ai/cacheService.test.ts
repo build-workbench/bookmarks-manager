@@ -26,8 +26,6 @@ const cacheValueArb = fc.oneof(
   fc.array(fc.string(), { maxLength: 10 })
 )
 
-const _cacheKeyArb = fc.tuple(cacheTypeArb, fc.uuid()).map(([type, id]) => generateCacheKey(type, id))
-
 const bookmarkDataArb = fc.record({
   id: fc.uuid(),
   title: fc.string({ minLength: 1, maxLength: 100 }),
@@ -62,7 +60,7 @@ describe('CacheService', () => {
         fc.property(
           cacheTypeArb,
           fc.uuid(),
-          fc.uuid().filter(id2 => true),
+          fc.uuid().filter(_id => true),
           (type, id1, id2) => {
             fc.pre(id1 !== id2)
             const key1 = generateCacheKey(type, id1)

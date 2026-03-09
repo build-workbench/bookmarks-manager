@@ -26,15 +26,6 @@ export function normalizeUrl(u: string): string {
   }
 }
 
-export async function fingerprintUrl(u: string): Promise<string> {
-  const data = new TextEncoder().encode(u)
-  const buf = await crypto.subtle.digest('SHA-1', data)
-  const bytes = new Uint8Array(buf)
-  let s = ''
-  for (const b of bytes) s += b.toString(16).padStart(2, '0')
-  return s
-}
-
 export function getHostname(u: string): string {
   try { return new URL(u).hostname.toLowerCase() } catch { return '' }
 }

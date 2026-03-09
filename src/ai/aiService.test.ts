@@ -25,22 +25,6 @@ const bookmarkArb = fc.record({
   sourceFile: fc.string({ minLength: 1, maxLength: 50 })
 }) as fc.Arbitrary<Bookmark>
 
-// Mock category suggestion generator
-const _categorySuggestionArb = (bookmarkId: string) => fc.record({
-  bookmarkId: fc.constant(bookmarkId),
-  suggestedCategory: fc.constantFrom('技术/编程', '新闻/资讯', '工具/效率', '学习/教程', '娱乐/视频'),
-  confidence: fc.integer({ min: 0, max: 100 }).map(n => n / 100),
-  reasoning: fc.string({ minLength: 10, maxLength: 100 })
-})
-
-// Mock summary generator
-const _summaryArb = (bookmarkId: string) => fc.record({
-  bookmarkId: fc.constant(bookmarkId),
-  summary: fc.string({ minLength: 10, maxLength: 100 }),
-  keywords: fc.array(fc.string({ minLength: 1, maxLength: 20 }), { minLength: 1, maxLength: 5 }),
-  generatedAt: fc.constant(Date.now())
-})
-
 // Mock report generator
 const reportArb: fc.Arbitrary<CollectionReport> = fc.record({
   generatedAt: fc.constant(Date.now()),

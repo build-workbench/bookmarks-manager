@@ -1,5 +1,5 @@
 import type { Bookmark } from './bookmarkParser'
-import { buildFolderTree } from './folders'
+import { buildFolderTree, type FolderNode } from './folders'
 
 function esc(s: string) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
@@ -38,7 +38,7 @@ export function exportAsNetscapeHTML(items: Bookmark[], options: ExportOptions =
     lines.push(`<DT><A HREF="${href}" ADD_DATE="${ts}">${title}</A>`)
   }
 
-  function emitFolder(name: string, node: ReturnType<typeof buildFolderTree>, depth: number) {
+  function emitFolder(name: string, node: FolderNode, depth: number) {
     const title = esc(name)
     lines.push(`<DT><H3>${title}</H3>`) 
     lines.push('<DL><p>')
@@ -49,13 +49,13 @@ export function exportAsNetscapeHTML(items: Bookmark[], options: ExportOptions =
       lines.push(`<DT><A HREF="${href}" ADD_DATE="${ts}">${t}</A>`)
     }
     for (const [childName, child] of node.folders) {
-      emitFolder(childName, child as any, depth + 1)
+      emitFolder(childName, child, depth + 1)
     }
     lines.push('</DL><p>')
   }
 
   for (const [name, node] of tree.folders) {
-    emitFolder(name, node as any, 0)
+    emitFolder(name, node, 0)
   }
 
   lines.push('</DL><p>')

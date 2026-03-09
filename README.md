@@ -1,4 +1,9 @@
- # Bookmarks Analysis (Local-first PWA)
+# Bookmarks Analysis (Local-first PWA)
+
+[![App](https://img.shields.io/badge/App-GitHub%20Pages-blue?logo=github)](https://lessup.github.io/bookmarks-manager/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+简体中文 | [English](README.en.md)
 
 > 本地解析、多文件合并、零上传，可视化你的浏览器书签资产。
 

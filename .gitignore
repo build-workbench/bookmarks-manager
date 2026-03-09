@@ -31,3 +31,6 @@ coverage
 # Logs
 *.log
 npm-debug.log*
+
+# Windsurf
+.windsurf/

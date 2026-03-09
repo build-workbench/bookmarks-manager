@@ -1,5 +1,7 @@
 # Bookmarks Analysis (Local-first PWA)
 
+[![CI](https://github.com/LessUp/bookmarks-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/LessUp/bookmarks-manager/actions/workflows/ci.yml)
+[![Deploy](https://github.com/LessUp/bookmarks-manager/actions/workflows/pages.yml/badge.svg)](https://github.com/LessUp/bookmarks-manager/actions/workflows/pages.yml)
 [![App](https://img.shields.io/badge/App-GitHub%20Pages-blue?logo=github)](https://lessup.github.io/bookmarks-manager/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 

@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  base: '/bookmarks-manager/',
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src')
@@ -23,7 +24,7 @@ export default defineConfig({
         background_color: '#0b1220',
         display: 'standalone',
         icons: [
-          { src: '/favicon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' }
+          { src: 'favicon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' }
         ]
       },
       workbox: {

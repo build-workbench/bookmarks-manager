@@ -4,8 +4,10 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const base = process.env.VITE_BASE_PATH || '/'
+
 export default defineConfig({
-  base: '/bookmarks-manager/',
+  base,
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src')

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import type * as ECharts from 'echarts'
 
-type Props = { option: any, height?: number }
+type Props = { option: ECharts.EChartsOption, height?: number }
 
 export default function Chart({ option, height = 320 }: Props) {
   const ref = useRef<HTMLDivElement | null>(null)
@@ -12,6 +12,7 @@ export default function Chart({ option, height = 320 }: Props) {
   useEffect(() => {
     let active = true
     let onResize: (() => void) | null = null
+    let resizeObserver: ResizeObserver | null = null
 
     void (async () => {
       if (!ref.current) return
@@ -25,11 +26,19 @@ export default function Chart({ option, height = 320 }: Props) {
 
       onResize = () => inst.resize()
       window.addEventListener('resize', onResize)
+
+      if (typeof ResizeObserver !== 'undefined') {
+        resizeObserver = new ResizeObserver(() => {
+          inst.resize()
+        })
+        resizeObserver.observe(ref.current)
+      }
     })()
 
     return () => {
       active = false
       if (onResize) window.removeEventListener('resize', onResize)
+      resizeObserver?.disconnect()
       instRef.current?.dispose()
       instRef.current = null
     }
@@ -44,5 +53,6 @@ export default function Chart({ option, height = 320 }: Props) {
     if (!instRef.current) return
     requestAnimationFrame(() => instRef.current?.resize())
   }, [height])
+
   return <div ref={ref} style={{ width: '100%', height }} />
 }

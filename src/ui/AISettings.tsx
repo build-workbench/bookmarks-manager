@@ -1,12 +1,7 @@
-/**
- * AI Settings Component
- * Provides UI for configuring AI API settings
- */
-
 import { useState, useEffect } from 'react'
 import { Settings, Key, Server, Cpu, CheckCircle, XCircle, Loader2, Eye, EyeOff } from 'lucide-react'
+import { useAIStore } from '@/store/useAIStore'
 import { configService } from '@/ai/configService'
-import { LLM_PROVIDERS } from '@/ai/constants'
 import type { LLMConfig } from '@/ai/types'
 
 type Provider = 'openai' | 'claude' | 'custom'
@@ -16,65 +11,55 @@ interface AISettingsProps {
 }
 
 export function AISettings({ onConfigSaved }: AISettingsProps) {
+  const { config, saveConfig, testConnection, connectionStatus, connectionError, loadConfig } = useAIStore()
   const [provider, setProvider] = useState<Provider>('openai')
   const [apiKey, setApiKey] = useState('')
   const [model, setModel] = useState('')
   const [baseUrl, setBaseUrl] = useState('')
+  const [maxTokens, setMaxTokens] = useState(2000)
+  const [temperature, setTemperature] = useState(0.7)
   const [showApiKey, setShowApiKey] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isTesting, setIsTesting] = useState(false)
-  const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null)
   const [saveResult, setSaveResult] = useState<{ success: boolean; message: string } | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Load existing config on mount
   useEffect(() => {
-    loadConfig()
-  }, [])
+    void loadConfig()
+  }, [loadConfig])
 
-  // Update model when provider changes
+  useEffect(() => {
+    if (config) {
+      setProvider(config.provider)
+      setApiKey(config.apiKey)
+      setModel(config.model)
+      setBaseUrl(config.baseUrl || '')
+      setMaxTokens(config.maxTokens ?? 2000)
+      setTemperature(config.temperature ?? 0.7)
+    }
+    setIsLoading(false)
+  }, [config])
+
   useEffect(() => {
     if (!model || !configService.getModelsForProvider(provider).includes(model)) {
       setModel(configService.getDefaultModel(provider))
     }
-  }, [provider])
-
-  const loadConfig = async () => {
-    setIsLoading(true)
-    try {
-      const config = await configService.getConfig()
-      if (config) {
-        setProvider(config.provider)
-        setApiKey(config.apiKey)
-        setModel(config.model)
-        setBaseUrl(config.baseUrl || '')
-      }
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  }, [provider, model])
 
   const getConfig = (): LLMConfig => ({
     provider,
     apiKey,
     model,
-    baseUrl: provider === 'custom' ? baseUrl : undefined
+    baseUrl: provider === 'custom' ? baseUrl : undefined,
+    maxTokens,
+    temperature
   })
 
   const handleTestConnection = async () => {
     setIsTesting(true)
-    setTestResult(null)
     try {
-      const result = await configService.testConnection(getConfig())
-      setTestResult({
-        success: result.success,
-        message: result.success ? '连接成功！' : result.error || '连接失败'
-      })
-    } catch (error) {
-      setTestResult({
-        success: false,
-        message: error instanceof Error ? error.message : '连接测试失败'
-      })
+      await saveConfig(getConfig())
+      await testConnection()
     } finally {
       setIsTesting(false)
     }
@@ -84,14 +69,9 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
     setIsSaving(true)
     setSaveResult(null)
     try {
-      const result = await configService.saveConfig(getConfig())
-      setSaveResult({
-        success: result.success,
-        message: result.success ? '配置已保存' : result.error || '保存失败'
-      })
-      if (result.success && onConfigSaved) {
-        onConfigSaved()
-      }
+      await saveConfig(getConfig())
+      setSaveResult({ success: true, message: '配置已保存' })
+      onConfigSaved?.()
     } catch (error) {
       setSaveResult({
         success: false,
@@ -121,7 +101,6 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
       </div>
 
       <div className="space-y-6">
-        {/* Provider Selection */}
         <div>
           <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
             <Server className="w-4 h-4" />
@@ -132,13 +111,12 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
             onChange={(e) => setProvider(e.target.value as Provider)}
             className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
           >
-            <option value="openai">{LLM_PROVIDERS.openai.name}</option>
-            <option value="claude">{LLM_PROVIDERS.claude.name}</option>
-            <option value="custom">{LLM_PROVIDERS.custom.name}</option>
+            <option value="openai">OpenAI</option>
+            <option value="claude">Claude (Anthropic)</option>
+            <option value="custom">自定义端点</option>
           </select>
         </div>
 
-        {/* API Key */}
         <div>
           <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
             <Key className="w-4 h-4" />
@@ -165,7 +143,6 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
           </p>
         </div>
 
-        {/* Custom Base URL */}
         {provider === 'custom' && (
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
@@ -179,13 +156,9 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
               placeholder="https://your-api.com/v1"
               className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-sky-500 focus:border-transparent"
             />
-            <p className="mt-1 text-xs text-gray-500">
-              支持 OpenAI 兼容的 API 端点（如本地 LLM 服务）
-            </p>
           </div>
         )}
 
-        {/* Model Selection */}
         <div>
           <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
             <Cpu className="w-4 h-4" />
@@ -212,46 +185,62 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
           )}
         </div>
 
-        {/* Test Result */}
-        {testResult && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <label>
+            <div className="text-sm font-medium text-gray-300 mb-2">最大输出 Tokens</div>
+            <input
+              type="number"
+              min={1}
+              value={maxTokens}
+              onChange={(e) => setMaxTokens(Number(e.target.value) || 1)}
+              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+            />
+          </label>
+          <label>
+            <div className="text-sm font-medium text-gray-300 mb-2">Temperature</div>
+            <input
+              type="number"
+              min={0}
+              max={2}
+              step={0.1}
+              value={temperature}
+              onChange={(e) => setTemperature(Number(e.target.value))}
+              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+            />
+          </label>
+        </div>
+
+        {connectionStatus !== 'idle' && (
           <div className={`flex items-center gap-2 p-3 rounded-lg ${
-            testResult.success ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
+            connectionStatus === 'connected' ? 'bg-green-900/30 text-green-400' :
+            connectionStatus === 'error' ? 'bg-red-900/30 text-red-400' :
+            'bg-slate-700/50 text-slate-300'
           }`}>
-            {testResult.success ? (
-              <CheckCircle className="w-5 h-5" />
-            ) : (
-              <XCircle className="w-5 h-5" />
-            )}
-            <span>{testResult.message}</span>
+            {connectionStatus === 'connected' ? <CheckCircle className="w-5 h-5" /> :
+              connectionStatus === 'error' ? <XCircle className="w-5 h-5" /> :
+              <Loader2 className="w-5 h-5 animate-spin" />}
+            <span>
+              {connectionStatus === 'connected' ? '连接成功！' : connectionError || '正在测试连接...'}
+            </span>
           </div>
         )}
 
-        {/* Save Result */}
         {saveResult && (
           <div className={`flex items-center gap-2 p-3 rounded-lg ${
             saveResult.success ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
           }`}>
-            {saveResult.success ? (
-              <CheckCircle className="w-5 h-5" />
-            ) : (
-              <XCircle className="w-5 h-5" />
-            )}
+            {saveResult.success ? <CheckCircle className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
             <span>{saveResult.message}</span>
           </div>
         )}
 
-        {/* Action Buttons */}
         <div className="flex gap-3 pt-2">
           <button
             onClick={handleTestConnection}
             disabled={!apiKey || isTesting || (provider === 'custom' && !baseUrl)}
             className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500 text-white rounded-lg transition-colors"
           >
-            {isTesting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Server className="w-4 h-4" />
-            )}
+            {isTesting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Server className="w-4 h-4" />}
             测试连接
           </button>
           <button
@@ -259,11 +248,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
             disabled={!apiKey || !model || isSaving || (provider === 'custom' && !baseUrl)}
             className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-500 disabled:bg-gray-800 disabled:text-gray-500 text-white rounded-lg transition-colors"
           >
-            {isSaving ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <CheckCircle className="w-4 h-4" />
-            )}
+            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
             保存配置
           </button>
         </div>

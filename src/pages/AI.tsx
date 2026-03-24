@@ -1,58 +1,49 @@
 import { useEffect, useState } from 'react'
 import {
-  Key, Save, Sparkles, AlertCircle, Settings, Zap,
-  Tag, FileText, Heart, Search, BarChart3, Loader2,
-  CheckCircle, XCircle, RefreshCw, Trash2, Download
+  Sparkles, Settings, Zap, Tag, FileText, Heart, Search,
+  BarChart3, Loader2, XCircle, RefreshCw, Trash2, Download
 } from 'lucide-react'
 import { useAIStore } from '@/store/useAIStore'
 import useBookmarksStore from '@/store/useBookmarksStore'
-import { LLM_PROVIDERS } from '@/ai/constants'
-import type { LLMConfig } from '@/ai/types'
 import { aiService } from '@/ai/aiService'
+import { AISettings } from '@/ui/AISettings'
 
 type TabType = 'config' | 'categorize' | 'summarize' | 'health' | 'search' | 'report' | 'usage'
 
 export default function AI() {
   const { mergedItems, stats } = useBookmarksStore()
   const {
-    config, isConfigured, connectionStatus, connectionError,
-    isProcessing, currentOperation, progress,
-    categorySuggestions, summaries, healthIssues, latestReport,
-    lastSearchResult, usageStats,
-    loadConfig, saveConfig, testConnection,
-    categorizeBookmarks, summarizeBookmarks, analyzeHealth,
-    searchWithAI, generateReport, dismissHealthIssue,
-    refreshUsageStats, clearCache
+    isConfigured,
+    connectionStatus,
+    connectionError,
+    isProcessing,
+    currentOperation,
+    progress,
+    categorySuggestions,
+    summaries,
+    healthIssues,
+    latestReport,
+    lastSearchResult,
+    usageStats,
+    loadConfig,
+    testConnection,
+    categorizeBookmarks,
+    summarizeBookmarks,
+    analyzeHealth,
+    searchWithAI,
+    generateReport,
+    dismissHealthIssue,
+    refreshUsageStats,
+    clearCache
   } = useAIStore()
 
   const [activeTab, setActiveTab] = useState<TabType>('config')
-  const [localConfig, setLocalConfig] = useState<Partial<LLMConfig>>({
-    provider: 'openai',
-    apiKey: '',
-    model: 'gpt-4o-mini',
-    maxTokens: 2000,
-    temperature: 0.7
-  })
   const [searchQuery, setSearchQuery] = useState('')
-  const [saved, setSaved] = useState(false)
 
   useEffect(() => {
-    loadConfig()
-    refreshUsageStats()
+    void loadConfig()
+    void refreshUsageStats()
   }, [loadConfig, refreshUsageStats])
-
-  useEffect(() => {
-    if (config) {
-      setLocalConfig(config)
-    }
-  }, [config])
-
-  const handleSaveConfig = async () => {
-    if (!localConfig.apiKey) return
-    await saveConfig(localConfig as LLMConfig)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
-  }
 
   const handleTestConnection = async () => {
     await testConnection()
@@ -87,8 +78,6 @@ export default function AI() {
     })
   }
 
-  const provider = LLM_PROVIDERS[localConfig.provider || 'openai']
-
   const tabs: { id: TabType; label: string; icon: React.ReactNode }[] = [
     { id: 'config', label: '配置', icon: <Settings className="w-4 h-4" /> },
     { id: 'categorize', label: '分类', icon: <Tag className="w-4 h-4" /> },
@@ -99,10 +88,8 @@ export default function AI() {
     { id: 'usage', label: '用量', icon: <Zap className="w-4 h-4" /> }
   ]
 
-
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      {/* Header */}
       <div className="rounded-lg border border-slate-800 p-6 bg-gradient-to-br from-purple-500/5 to-pink-500/5">
         <div className="flex items-center gap-2 mb-4">
           <Sparkles className="w-6 h-6 text-purple-400" />
@@ -116,7 +103,6 @@ export default function AI() {
         </p>
       </div>
 
-      {/* Processing indicator */}
       {isProcessing && (
         <div className="rounded-lg border border-sky-800 p-4 bg-sky-900/20">
           <div className="flex items-center gap-3">
@@ -141,7 +127,6 @@ export default function AI() {
         </div>
       )}
 
-      {/* Tabs */}
       <div className="flex gap-1 p-1 bg-slate-800/50 rounded-lg overflow-x-auto">
         {tabs.map(tab => (
           <button
@@ -159,117 +144,11 @@ export default function AI() {
         ))}
       </div>
 
-      {/* Tab Content */}
       <div className="rounded-lg border border-slate-800 p-6 bg-slate-900/50">
-        {/* Config Tab */}
         {activeTab === 'config' && (
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <Key className="w-4 h-4 text-sky-400" />
-                <span>API 配置</span>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <label className="block text-sm text-slate-400 mb-1">提供商</label>
-                  <select
-                    value={localConfig.provider}
-                    onChange={e => setLocalConfig({ ...localConfig, provider: e.target.value as LLMConfig['provider'], model: LLM_PROVIDERS[e.target.value]?.defaultModel || '' })}
-                    className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 focus:border-sky-500 focus:outline-none"
-                  >
-                    <option value="openai">OpenAI</option>
-                    <option value="claude">Claude (Anthropic)</option>
-                    <option value="custom">自定义端点</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm text-slate-400 mb-1">模型</label>
-                  <select
-                    value={localConfig.model}
-                    onChange={e => setLocalConfig({ ...localConfig, model: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 focus:border-sky-500 focus:outline-none"
-                  >
-                    {provider?.models.map(model => (
-                      <option key={model} value={model}>{model}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm text-slate-400 mb-1">API Key</label>
-                <input
-                  type="password"
-                  value={localConfig.apiKey}
-                  onChange={e => setLocalConfig({ ...localConfig, apiKey: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 focus:border-sky-500 focus:outline-none"
-                  placeholder="在此粘贴你的 API Key"
-                />
-              </div>
-
-              {localConfig.provider === 'custom' && (
-                <div>
-                  <label className="block text-sm text-slate-400 mb-1">自定义端点 URL</label>
-                  <input
-                    type="text"
-                    value={localConfig.baseUrl || ''}
-                    onChange={e => setLocalConfig({ ...localConfig, baseUrl: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 focus:border-sky-500 focus:outline-none"
-                    placeholder="https://api.example.com/v1"
-                  />
-                </div>
-              )}
-
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={handleSaveConfig}
-                  disabled={!localConfig.apiKey}
-                  className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-2 text-sm font-medium"
-                >
-                  <Save className="w-4 h-4" />
-                  {saved ? '已保存' : '保存配置'}
-                </button>
-
-                <button
-                  onClick={handleTestConnection}
-                  disabled={!isConfigured || connectionStatus === 'testing'}
-                  className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-2 text-sm font-medium"
-                >
-                  {connectionStatus === 'testing' ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : connectionStatus === 'connected' ? (
-                    <CheckCircle className="w-4 h-4 text-green-400" />
-                  ) : connectionStatus === 'error' ? (
-                    <XCircle className="w-4 h-4 text-red-400" />
-                  ) : (
-                    <Zap className="w-4 h-4" />
-                  )}
-                  测试连接
-                </button>
-              </div>
-
-              {connectionError && (
-                <div className="text-sm text-red-400 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4" />
-                  {connectionError}
-                </div>
-              )}
-
-              <div className="flex items-start gap-2 text-xs text-slate-400 bg-slate-800/50 p-3 rounded">
-                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-medium mb-1">隐私说明</p>
-                  <p>API Key 仅存储在你的浏览器 IndexedDB 中，不会上传到任何服务器。分析时只发送书签的标题和 URL，不发送其他个人数据。</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <AISettings onConfigSaved={() => void loadConfig()} />
         )}
 
-
-        {/* Categorize Tab */}
         {activeTab === 'categorize' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -317,13 +196,12 @@ export default function AI() {
             {categorySuggestions.size === 0 && !isProcessing && (
               <div className="text-center py-8 text-slate-400">
                 <Tag className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p>点击"开始分类"让 AI 分析你的书签</p>
+                <p>点击“开始分类”让 AI 分析你的书签</p>
               </div>
             )}
           </div>
         )}
 
-        {/* Summarize Tab */}
         {activeTab === 'summarize' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -365,13 +243,12 @@ export default function AI() {
             {summaries.size === 0 && !isProcessing && (
               <div className="text-center py-8 text-slate-400">
                 <FileText className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p>点击"生成摘要"让 AI 描述你的书签内容</p>
+                <p>点击“生成摘要”让 AI 描述你的书签内容</p>
               </div>
             )}
           </div>
         )}
 
-        {/* Health Tab */}
         {activeTab === 'health' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -419,7 +296,7 @@ export default function AI() {
                         </span>
                       </div>
                       <div className="text-sm text-slate-400 mt-2">{issue.description}</div>
-                      <div className="text-sm text-emerald-400 mt-1">💡 {issue.suggestion}</div>
+                      <div className="text-sm text-emerald-400 mt-1">建议：{issue.suggestion}</div>
                     </div>
                   )
                 })}
@@ -429,14 +306,12 @@ export default function AI() {
             {healthIssues.filter(i => !i.dismissed).length === 0 && !isProcessing && (
               <div className="text-center py-8 text-slate-400">
                 <Heart className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p>点击"开始检查"让 AI 分析书签健康状况</p>
+                <p>点击“开始检查”让 AI 分析书签健康状况</p>
               </div>
             )}
           </div>
         )}
 
-
-        {/* Search Tab */}
         {activeTab === 'search' && (
           <div className="space-y-4">
             <div>
@@ -449,12 +324,12 @@ export default function AI() {
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleSearch()}
+                onKeyDown={e => e.key === 'Enter' && void handleSearch()}
                 className="flex-1 px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 focus:border-sky-500 focus:outline-none"
                 placeholder="例如：找出所有关于 React 的文章"
               />
               <button
-                onClick={handleSearch}
+                onClick={() => void handleSearch()}
                 disabled={!isConfigured || isProcessing || !searchQuery.trim()}
                 className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-2 text-sm font-medium"
               >
@@ -510,7 +385,6 @@ export default function AI() {
           </div>
         )}
 
-        {/* Report Tab */}
         {activeTab === 'report' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -520,26 +394,25 @@ export default function AI() {
               </div>
               <div className="flex gap-2">
                 {latestReport && (
-                  <>
-                    <button
-                      onClick={() => {
-                        const md = aiService.exportReportToMarkdown(latestReport)
-                        const blob = new Blob([md], { type: 'text/markdown' })
-                        const url = URL.createObjectURL(blob)
-                        const a = document.createElement('a')
-                        a.href = url
-                        a.download = `bookmark-report-${new Date().toISOString().split('T')[0]}.md`
-                        a.click()
-                      }}
-                      className="px-3 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition flex items-center gap-2 text-sm"
-                    >
-                      <Download className="w-4 h-4" />
-                      导出 MD
-                    </button>
-                  </>
+                  <button
+                    onClick={() => {
+                      const md = aiService.exportReportToMarkdown(latestReport)
+                      const blob = new Blob([md], { type: 'text/markdown' })
+                      const url = URL.createObjectURL(blob)
+                      const a = document.createElement('a')
+                      a.href = url
+                      a.download = `bookmark-report-${new Date().toISOString().split('T')[0]}.md`
+                      a.click()
+                      URL.revokeObjectURL(url)
+                    }}
+                    className="px-3 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition flex items-center gap-2 text-sm"
+                  >
+                    <Download className="w-4 h-4" />
+                    导出 MD
+                  </button>
                 )}
                 <button
-                  onClick={handleGenerateReport}
+                  onClick={() => void handleGenerateReport()}
                   disabled={!isConfigured || isProcessing || mergedItems.length === 0}
                   className="px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-2 text-sm font-medium"
                 >
@@ -579,7 +452,7 @@ export default function AI() {
                   <h4 className="font-medium mb-2">建议</h4>
                   <ul className="space-y-1 text-sm text-emerald-300">
                     {latestReport.recommendations.map((rec, i) => (
-                      <li key={i}>💡 {rec}</li>
+                      <li key={i}>• {rec}</li>
                     ))}
                   </ul>
                 </div>
@@ -593,13 +466,12 @@ export default function AI() {
             {!latestReport && !isProcessing && (
               <div className="text-center py-8 text-slate-400">
                 <BarChart3 className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p>点击"生成报告"获取 AI 分析洞察</p>
+                <p>点击“生成报告”获取 AI 分析洞察</p>
               </div>
             )}
           </div>
         )}
 
-        {/* Usage Tab */}
         {activeTab === 'usage' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -609,21 +481,36 @@ export default function AI() {
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={refreshUsageStats}
+                  onClick={() => void refreshUsageStats()}
                   className="px-3 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition flex items-center gap-2 text-sm"
                 >
                   <RefreshCw className="w-4 h-4" />
                   刷新
                 </button>
                 <button
-                  onClick={clearCache}
+                  onClick={() => void clearCache()}
                   className="px-3 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition flex items-center gap-2 text-sm"
                 >
                   <Trash2 className="w-4 h-4" />
                   清除缓存
                 </button>
+                <button
+                  onClick={() => void handleTestConnection()}
+                  disabled={!isConfigured || connectionStatus === 'testing'}
+                  className="px-3 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-2 text-sm"
+                >
+                  {connectionStatus === 'testing' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+                  测试连接
+                </button>
               </div>
             </div>
+
+            {connectionError && connectionStatus === 'error' && (
+              <div className="text-sm text-red-400 flex items-center gap-2">
+                <XCircle className="w-4 h-4" />
+                {connectionError}
+              </div>
+            )}
 
             {usageStats && (
               <div className="space-y-4">

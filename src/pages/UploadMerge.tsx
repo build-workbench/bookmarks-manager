@@ -3,8 +3,26 @@ import { Upload, FileText, Trash2, Download, AlertCircle, CheckCircle } from 'lu
 import useBookmarksStore from '@/store/useBookmarksStore'
 
 export default function UploadMerge() {
-  const { rawItems, mergedItems, duplicates, importing, merging, loading, stage, needsMerge, importFiles, mergeAndDedup, clear, exportHTML, removeSourceFile } = useBookmarksStore()
+  const {
+    rawItems,
+    restoredItems,
+    mergedItems,
+    duplicates,
+    importing,
+    merging,
+    loading,
+    stage,
+    needsMerge,
+    hasFullMergeData,
+    importFiles,
+    mergeAndDedup,
+    clear,
+    exportHTML,
+    removeSourceFile
+  } = useBookmarksStore()
+
   const readyToExport = mergedItems.length > 0 && !needsMerge
+  const hasRestoredSnapshot = restoredItems.length > 0 && rawItems.length === 0 && !hasFullMergeData
   const busy = importing || merging || loading || Boolean(stage)
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
   const [dragActive, setDragActive] = useState(false)
@@ -58,7 +76,7 @@ export default function UploadMerge() {
     try {
       await mergeAndDedup()
       setMessage({ type: 'success', text: '合并完成！数据已保存到本地数据库' })
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: '合并失败' })
     }
   }
@@ -77,7 +95,7 @@ export default function UploadMerge() {
       a.remove()
       URL.revokeObjectURL(url)
       setMessage({ type: 'success', text: '导出成功' })
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: '导出失败' })
     }
   }
@@ -132,7 +150,7 @@ export default function UploadMerge() {
 
       {importedFiles.length > 0 && (
         <div className="rounded-lg border border-slate-800 p-6 bg-slate-900/30">
-          <div className="text-sm font-medium mb-3">已导入文件</div>
+          <div className="text-sm font-medium mb-3">当前导入会话中的文件</div>
           <div className="space-y-2">
             {importedFiles.map(([name, count]) => (
               <div
@@ -159,10 +177,25 @@ export default function UploadMerge() {
         </div>
       )}
 
+      {hasRestoredSnapshot && (
+        <div className="rounded-lg border border-slate-800 p-4 bg-slate-900/30 text-sm text-slate-300">
+          已从本地数据库恢复上一次的合并结果，共 {restoredItems.length} 条书签。当前未保留原始导入文件和重复簇信息；如需重新整理，请重新导入书签文件并执行合并去重。
+        </div>
+      )}
+
+      {needsMerge && rawItems.length > 0 && (
+        <div className="rounded-lg border p-4 flex items-start gap-3 bg-amber-500/10 border-amber-500/50 text-amber-400">
+          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <div className="text-sm">
+            当前导入会话已发生变更，旧的合并结果、搜索索引和重复簇已失效。请点击“合并去重”重新生成最新结果。
+          </div>
+        </div>
+      )}
+
       {message && (
         <div className={`rounded-lg border p-4 flex items-center gap-3 ${
-          message.type === 'success' 
-            ? 'bg-green-500/10 border-green-500/50 text-green-400' 
+          message.type === 'success'
+            ? 'bg-green-500/10 border-green-500/50 text-green-400'
             : 'bg-red-500/10 border-red-500/50 text-red-400'
         }`}>
           {message.type === 'success' ? (
@@ -174,53 +207,50 @@ export default function UploadMerge() {
         </div>
       )}
 
-      {needsMerge && mergedItems.length > 0 && (
-        <div className="rounded-lg border p-4 flex items-start gap-3 bg-amber-500/10 border-amber-500/50 text-amber-400">
-          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-          <div className="text-sm">
-            你已导入新的书签文件，但当前统计/搜索/导出仍基于上一次合并结果。请点击“合并去重”更新。
-          </div>
-        </div>
-      )}
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="rounded-lg border border-slate-800 p-5 bg-slate-900/30">
           <div className="text-slate-400 text-sm mb-1">原始条目</div>
           <div className="text-3xl font-bold text-sky-400">{rawItems.length}</div>
-          <div className="text-xs text-slate-500 mt-2">已导入的总书签数</div>
+          <div className="text-xs text-slate-500 mt-2">
+            {rawItems.length > 0 ? '当前导入会话中的总书签数' : '当前没有活动中的原始导入会话'}
+          </div>
         </div>
         <div className="rounded-lg border border-slate-800 p-5 bg-slate-900/30">
           <div className="text-slate-400 text-sm mb-1">合并后</div>
           <div className="text-3xl font-bold text-emerald-400">{mergedItems.length}</div>
-          <div className="text-xs text-slate-500 mt-2">去重后的书签数</div>
+          <div className="text-xs text-slate-500 mt-2">
+            {hasRestoredSnapshot ? '从本地恢复的上次合并结果' : '去重后的书签数'}
+          </div>
         </div>
         <div className="rounded-lg border border-slate-800 p-5 bg-slate-900/30">
           <div className="text-slate-400 text-sm mb-1">重复总数</div>
           <div className="text-3xl font-bold text-orange-400">{Object.keys(duplicates).length}</div>
-          <div className="text-xs text-slate-500 mt-2">检测到的重复簇</div>
+          <div className="text-xs text-slate-500 mt-2">
+            {hasFullMergeData ? '检测到的重复簇' : '仅完整合并后可用'}
+          </div>
         </div>
       </div>
 
       <div className="flex flex-wrap gap-3">
-        <button 
-          disabled={busy || rawItems.length === 0} 
-          onClick={onMerge} 
+        <button
+          disabled={busy || rawItems.length === 0}
+          onClick={onMerge}
           className="px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
         >
           <CheckCircle className="w-4 h-4" />
           合并去重
         </button>
-        <button 
-          disabled={busy || !readyToExport || mergedItems.length === 0} 
-          onClick={onExport} 
+        <button
+          disabled={busy || !readyToExport || mergedItems.length === 0}
+          onClick={onExport}
           className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
         >
           <Download className="w-4 h-4" />
           导出 HTML
         </button>
-        <button 
+        <button
           disabled={busy}
-          onClick={() => { void clear(); setMessage(null) }} 
+          onClick={() => { void clear(); setMessage(null) }}
           className="px-5 py-2.5 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
         >
           <Trash2 className="w-4 h-4" />
@@ -230,7 +260,7 @@ export default function UploadMerge() {
 
       {stage && (
         <div className="flex items-center gap-2 text-sm text-slate-400">
-          <div className="w-4 h-4 border-2 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-4 h-4 border-2 border-sky-400 border-t-transparent rounded-full animate-spin" />
           <span>{stage}</span>
         </div>
       )}

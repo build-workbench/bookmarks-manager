@@ -7,7 +7,7 @@ import { exportAsNetscapeHTML } from '@/utils/exporter'
 import { getHostname } from '@/utils/url'
 
 export default function Search() {
-  const { search, mergedItems } = useBookmarksStore()
+  const { search, mergedItems, needsMerge } = useBookmarksStore()
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SearchResultItem[]>([])
 
@@ -94,7 +94,6 @@ export default function Search() {
   }, [baseItems, dateEnd, dateStart, domain, folderKeyword, rootFolder])
 
   const displayItems = useMemo(() => filteredItems.slice(0, limit), [filteredItems, limit])
-
   const hasActiveFilters = Boolean(domain || rootFolder || folderKeyword.trim() || dateStart || dateEnd)
 
   useEffect(() => {
@@ -166,6 +165,16 @@ export default function Search() {
     } catch {
       setMessage({ type: 'error', text: '导出失败' })
     }
+  }
+
+  if (needsMerge) {
+    return (
+      <div className="text-center py-12 text-slate-400">
+        <AlertCircle className="w-12 h-12 mx-auto mb-3 text-amber-400 opacity-80" />
+        <p>当前导入会话已变更，搜索索引已失效</p>
+        <p className="text-xs mt-2">请先回到“上传合并”重新执行合并去重</p>
+      </div>
+    )
   }
 
   return (
@@ -327,7 +336,7 @@ export default function Search() {
       {mergedItems.length === 0 && (
         <div className="text-center py-12 text-slate-400">
           <SearchIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
-          <p>请先在"上传合并"页面导入书签</p>
+          <p>请先在“上传合并”页面导入书签</p>
         </div>
       )}
 

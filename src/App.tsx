@@ -40,7 +40,7 @@ export default function App() {
           <div className="mx-auto max-w-6xl px-4 py-2 flex items-start gap-2 text-sm">
             <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
-              已导入新的书签文件，请前往“上传合并”重新合并去重，以更新统计、搜索与导出结果。
+              当前导入会话已变更，旧的统计、搜索结果和导出内容已失效。请前往“上传合并”重新合并去重。
             </div>
             <NavLink to="/upload" className="px-3 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 transition">
               去合并
@@ -52,7 +52,7 @@ export default function App() {
         <Suspense
           fallback={
             <div className="flex items-center gap-2 text-sm text-slate-400">
-              <div className="w-4 h-4 border-2 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-4 h-4 border-2 border-sky-400 border-t-transparent rounded-full animate-spin" />
               <span>页面加载中...</span>
             </div>
           }
@@ -65,6 +65,7 @@ export default function App() {
             <Route path="/duplicates" element={<Duplicates />} />
             <Route path="/cleanup" element={<Cleanup />} />
             <Route path="/ai" element={<AI />} />
+            <Route path="*" element={<Navigate to="/upload" replace />} />
           </Routes>
         </Suspense>
       </main>

@@ -1,14 +1,34 @@
-import { Trash2, Check, Calendar } from 'lucide-react'
+import { Trash2, Check, Calendar, AlertCircle } from 'lucide-react'
 import useBookmarksStore from '@/store/useBookmarksStore'
 import type { Bookmark } from '@/utils/bookmarkParser'
 
 export default function Duplicates() {
-  const { duplicates } = useBookmarksStore()
+  const { duplicates, needsMerge, hasFullMergeData } = useBookmarksStore()
   const dupEntries = Object.entries(duplicates) as Array<[string, Bookmark[]]>
 
   function formatDate(ts?: number) {
     if (!ts) return 'N/A'
     return new Date(ts * 1000).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })
+  }
+
+  if (needsMerge) {
+    return (
+      <div className="text-center py-12 text-slate-400">
+        <AlertCircle className="w-12 h-12 mx-auto mb-3 text-amber-400 opacity-80" />
+        <p>当前导入会话已变更，重复簇结果已失效</p>
+        <p className="text-xs mt-2">请先回到“上传合并”重新执行合并去重</p>
+      </div>
+    )
+  }
+
+  if (!hasFullMergeData && dupEntries.length === 0) {
+    return (
+      <div className="text-center py-12 text-slate-400">
+        <AlertCircle className="w-12 h-12 mx-auto mb-3 text-slate-500 opacity-80" />
+        <p>当前只恢复了上次合并快照，未保留重复簇明细</p>
+        <p className="text-xs mt-2">如需查看重复簇，请重新导入原始书签并执行合并去重</p>
+      </div>
+    )
   }
 
   return (
@@ -22,7 +42,7 @@ export default function Duplicates() {
         <div className="text-center py-12 text-slate-400">
           <Check className="w-12 h-12 mx-auto mb-3 text-green-500 opacity-50" />
           <p>没有发现重复书签</p>
-          <p className="text-xs mt-2">请先在"上传合并"页面进行合并去重</p>
+          <p className="text-xs mt-2">请先在“上传合并”页面进行合并去重</p>
         </div>
       )}
 
@@ -32,7 +52,7 @@ export default function Duplicates() {
             <div className="text-sm font-medium text-slate-300 mb-3">
               重复组 #{idx + 1} ({items.length} 个副本)
             </div>
-            
+
             <div className="space-y-2">
               {items.map((item, itemIdx) => (
                 <div key={item.id} className="rounded bg-slate-800/50 border border-slate-700 p-3 hover:border-slate-600 transition">
@@ -53,9 +73,9 @@ export default function Duplicates() {
                           <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded flex-shrink-0">保留</span>
                         )}
                       </div>
-                      
+
                       <div className="text-xs text-slate-500 mt-1 break-all">{item.url}</div>
-                      
+
                       <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-slate-400">
                         {item.path && item.path.length > 0 && (
                           <span>📁 {item.path.join(' / ')}</span>

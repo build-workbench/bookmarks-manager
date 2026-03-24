@@ -1,40 +1,75 @@
-import { useState } from 'react'
-import { ChevronDown, ExternalLink, TrendingUp, Database, Calendar } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import type { EChartsOption } from 'echarts'
+import { ChevronDown, ExternalLink, TrendingUp, Database, Calendar, AlertCircle } from 'lucide-react'
 import useBookmarksStore from '@/store/useBookmarksStore'
 import Chart from '@/ui/Chart'
 
+const pie = (total: number, duplicates: number): EChartsOption => ({
+  tooltip: { trigger: 'item' },
+  series: [{
+    type: 'pie',
+    radius: ['40%', '70%'],
+    data: [
+      { name: '去重后', value: total },
+      { name: '重复', value: duplicates }
+    ]
+  }]
+})
+
+const bar = (domains: Array<[string, number]>): EChartsOption => ({
+  tooltip: {},
+  xAxis: {
+    type: 'category',
+    data: domains.map((d) => d[0]),
+    axisLabel: { interval: 0, rotate: 30 }
+  },
+  yAxis: { type: 'value' },
+  series: [{ type: 'bar', data: domains.map((d) => d[1]) }]
+})
+
+const line = (years: Array<[string, number]>): EChartsOption => ({
+  tooltip: {},
+  xAxis: { type: 'category', data: years.map((y) => y[0]) },
+  yAxis: { type: 'value' },
+  series: [{ type: 'line', areaStyle: {}, data: years.map((y) => y[1]) }]
+})
+
 export default function Dashboard() {
-  const { stats, mergedItems } = useBookmarksStore()
+  const { stats, mergedItems, needsMerge, hasFullMergeData } = useBookmarksStore()
   const [showList, setShowList] = useState(false)
   const [limit, setLimit] = useState(20)
-  
-  const domains = Object.entries(stats.byDomain).sort((a,b)=>b[1]-a[1]).slice(0,10)
-  const years = Object.entries(stats.byYear).sort((a,b)=>a[0].localeCompare(b[0]))
-  
-  const pie = {
-    tooltip: { trigger: 'item' },
-    series: [{ type: 'pie', radius: ['40%','70%'], data: [
-      { name: '去重后', value: stats.total },
-      { name: '重复', value: stats.duplicates }
-    ] }]
-  }
-  const bar = {
-    tooltip: {},
-    xAxis: { type: 'category', data: domains.map(d=>d[0]), axisLabel: { interval: 0, rotate: 30 } },
-    yAxis: { type: 'value' },
-    series: [{ type: 'bar', data: domains.map(d=>d[1]) }]
-  }
-  const line = {
-    tooltip: {},
-    xAxis: { type: 'category', data: years.map(y=>y[0]) },
-    yAxis: { type: 'value' },
-    series: [{ type: 'line', areaStyle: {}, data: years.map(y=>y[1]) }]
-  }
 
-  const displayItems = mergedItems.slice(0, limit)
+  const domains = useMemo(
+    () => Object.entries(stats.byDomain).sort((a, b) => b[1] - a[1]).slice(0, 10),
+    [stats.byDomain]
+  )
+  const years = useMemo(
+    () => Object.entries(stats.byYear).sort((a, b) => a[0].localeCompare(b[0])),
+    [stats.byYear]
+  )
+  const displayItems = useMemo(() => mergedItems.slice(0, limit), [mergedItems, limit])
+  const pieOption = useMemo(() => pie(stats.total, stats.duplicates), [stats.total, stats.duplicates])
+  const barOption = useMemo(() => bar(domains), [domains])
+  const lineOption = useMemo(() => line(years), [years])
+
+  if (needsMerge) {
+    return (
+      <div className="text-center py-12 text-slate-400">
+        <AlertCircle className="w-12 h-12 mx-auto mb-3 text-amber-400 opacity-80" />
+        <p>当前导入会话已变更，仪表盘统计已失效</p>
+        <p className="text-xs mt-2">请先回到“上传合并”重新执行合并去重</p>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
+      {!hasFullMergeData && mergedItems.length > 0 && (
+        <div className="rounded border border-slate-800 bg-slate-900/50 p-4 text-sm text-slate-300">
+          当前显示的是从本地数据库恢复的合并快照。基础统计可用，但重复簇相关信息不代表上一次完整导入会话的全部结果。
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="rounded border border-slate-800 p-4">
           <div className="flex items-center gap-2 text-slate-400 text-sm mb-1">
@@ -58,21 +93,21 @@ export default function Dashboard() {
           <div className="text-2xl font-semibold mt-1">{Object.keys(stats.byDomain).length}</div>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="rounded border border-slate-800 p-4">
           <div className="text-sm mb-2 font-medium">重复占比</div>
-          <Chart option={pie} height={300} />
+          <Chart option={pieOption} height={300} />
         </div>
         <div className="rounded border border-slate-800 p-4">
           <div className="text-sm mb-2 font-medium">Top 10 域名</div>
-          <Chart option={bar} height={300} />
+          <Chart option={barOption} height={300} />
         </div>
       </div>
-      
+
       <div className="rounded border border-slate-800 p-4">
         <div className="text-sm mb-2 font-medium">按年份新增</div>
-        <Chart option={line} height={320} />
+        <Chart option={lineOption} height={320} />
       </div>
 
       {mergedItems.length > 0 && (
@@ -84,7 +119,7 @@ export default function Dashboard() {
             <ChevronDown className={`w-4 h-4 transition-transform ${showList ? 'rotate-180' : ''}`} />
             <span>书签列表 ({mergedItems.length} 条)</span>
           </button>
-          
+
           {showList && (
             <div className="space-y-2">
               {displayItems.map((item) => (
@@ -101,7 +136,7 @@ export default function Dashboard() {
                   </a>
                 </div>
               ))}
-              
+
               {mergedItems.length > limit && (
                 <button
                   onClick={() => setLimit(limit + 20)}

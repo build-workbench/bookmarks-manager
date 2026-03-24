@@ -162,7 +162,7 @@ export async function setAICache(entry: Omit<AICache, 'createdAt'>): Promise<voi
 
 export async function clearExpiredCache(): Promise<void> {
   const now = Date.now()
-  await db.aiCache.where('expiresAt').below(now).delete()
+  await db.aiCache.where('expiresAt').belowOrEqual(now).delete()
 }
 
 export async function clearAllAICache(): Promise<void> {

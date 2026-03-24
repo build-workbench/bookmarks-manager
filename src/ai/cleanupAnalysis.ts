@@ -15,6 +15,14 @@ import type {
 } from '@/cleanup/types'
 
 // System prompts for cleanup analysis
+function createOperationIdentity(data: unknown) {
+    const hash = generateBookmarkHash(data)
+    return {
+        key: hash,
+        bookmarkHash: hash
+    }
+}
+
 const CLEANUP_SYSTEM_PROMPTS = {
     cleanup: `你是一个书签整理助手。分析用户的书签并提供清理建议。
 对于每个书签，判断是否应该删除、保留或需要用户审查。
@@ -177,15 +185,16 @@ export async function suggestFolderStructure(
         forceRefresh?: boolean
     }
 ): Promise<SuggestedFolder[]> {
-    const cacheKey = generateCacheKey('category', generateBookmarkHash({
-        bookmarkIds: bookmarks.map(b => b.id),
+    const identity = createOperationIdentity({
+        bookmarks: bookmarks.map(b => ({ id: b.id, title: b.title, url: b.url, path: b.path })),
         existingFolders
-    }))
+    })
+    const cacheKey = generateCacheKey('category', identity.key)
 
     const result = await cacheService.getOrCompute(
         cacheKey,
         'category',
-        generateBookmarkHash({ count: bookmarks.length }),
+        identity.bookmarkHash,
         async () => {
             // Sample bookmarks if too many
             const sampleSize = 50

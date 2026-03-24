@@ -5,7 +5,8 @@
 
 import type { LLMAdapter, LLMConfig, LLMRequest, LLMResponse } from '@/ai/types'
 import { AIServiceError, AIErrorCode } from '@/ai/types'
-import { TOKEN_COSTS, MAX_RETRIES, RETRY_DELAY_MS } from '@/ai/constants'
+import { TOKEN_COSTS } from '@/ai/constants'
+import { parseJSONResponse } from '@/ai/llmHelpers'
 
 export abstract class BaseLLMAdapter implements LLMAdapter {
   protected config: LLMConfig
@@ -43,62 +44,30 @@ export abstract class BaseLLMAdapter implements LLMAdapter {
   }
 
   /**
-   * Retry logic with exponential backoff
+   * Parse JSON from LLM response using the shared helper
    */
-  protected async withRetry<T>(
-    operation: () => Promise<T>,
-    maxRetries: number = MAX_RETRIES
-  ): Promise<T> {
-    let lastError: Error | null = null
-    
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-      try {
-        return await operation()
-      } catch (error) {
-        lastError = error as Error
-        
-        // Check if error is retryable
-        if (error instanceof AIServiceError && !error.retryable) {
-          throw error
-        }
-        
-        // Wait before retry with exponential backoff
-        if (attempt < maxRetries - 1) {
-          const delay = RETRY_DELAY_MS * Math.pow(2, attempt)
-          await this.sleep(delay)
-        }
-      }
-    }
-    
-    throw lastError
+  protected parseJsonResponse<T>(content: string): T {
+    return parseJSONResponse(content)
+  }
+
+  /**
+   * Execute a single provider request without adapter-level retries.
+   * Retries are owned by callLLM to avoid nested retry loops.
+   */
+  protected execute<T>(operation: () => Promise<T>): Promise<T> {
+    return operation()
+  }
+
+  /**
+   * Compatibility wrapper retained for existing adapters.
+   * This intentionally does not retry.
+   */
+  protected withRetry<T>(operation: () => Promise<T>): Promise<T> {
+    return this.execute(operation)
   }
 
   protected sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms))
-  }
-
-  /**
-   * Parse JSON from LLM response, handling markdown code blocks
-   */
-  protected parseJsonResponse<T>(content: string): T {
-    // Remove markdown code blocks if present
-    let jsonStr = content.trim()
-    
-    // Handle ```json ... ``` format
-    const jsonBlockMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/)
-    if (jsonBlockMatch) {
-      jsonStr = jsonBlockMatch[1].trim()
-    }
-    
-    try {
-      return JSON.parse(jsonStr) as T
-    } catch {
-      throw new AIServiceError({
-        code: AIErrorCode.INVALID_RESPONSE,
-        message: `Failed to parse JSON response: ${content.substring(0, 100)}...`,
-        retryable: false
-      })
-    }
   }
 
   /**
@@ -112,7 +81,7 @@ export abstract class BaseLLMAdapter implements LLMAdapter {
           message: 'Invalid API key',
           retryable: false
         })
-      case 429:
+      case 429: {
         // Try to extract retry-after from response
         let retryAfterMs = 60000 // Default 1 minute
         try {
@@ -129,6 +98,7 @@ export abstract class BaseLLMAdapter implements LLMAdapter {
           retryable: true,
           retryAfterMs
         })
+      }
       case 402:
       case 403:
         throw new AIServiceError({

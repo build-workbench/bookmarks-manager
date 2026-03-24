@@ -20,6 +20,13 @@ import { SYSTEM_PROMPTS, DEFAULT_BATCH_SIZE } from './constants'
 import { callLLM, parseJSONResponse, processBatches } from './llmHelpers'
 import type { Bookmark } from '@/utils/bookmarkParser'
 
+function createOperationIdentity(data: unknown) {
+  const hash = generateBookmarkHash(data)
+  return {
+    key: hash,
+    bookmarkHash: hash
+  }
+}
 
 /**
  * Categorize bookmarks using AI
@@ -328,12 +335,16 @@ export async function interpretQuery(
     ? bookmarks.slice(0, maxBookmarksForContext)
     : bookmarks
 
-  const cacheKey = generateCacheKey('report', generateBookmarkHash({ query, bookmarkIds: bookmarksForContext.map(b => b.id) }))
+  const identity = createOperationIdentity({
+    query,
+    bookmarks: bookmarksForContext.map((b) => ({ id: b.id, title: b.title, url: b.url }))
+  })
+  const cacheKey = generateCacheKey('report', identity.key)
 
   const result = await cacheService.getOrCompute(
     cacheKey,
     'report',
-    generateBookmarkHash({ query }),
+    identity.bookmarkHash,
     async () => {
       const template = await promptService.getTemplate('natural_search')
       if (!template) throw new Error('Natural search template not found')
@@ -397,12 +408,16 @@ export async function generateReport(
   },
   options?: { forceRefresh?: boolean }
 ): Promise<CollectionReport> {
-  const cacheKey = generateCacheKey('report', generateBookmarkHash({ count: bookmarks.length, ...stats }))
+  const identity = createOperationIdentity({
+    bookmarks: bookmarks.map((bookmark) => ({ id: bookmark.id, url: bookmark.url, path: bookmark.path })),
+    stats
+  })
+  const cacheKey = generateCacheKey('report', identity.key)
 
   const result = await cacheService.getOrCompute(
     cacheKey,
     'report',
-    generateBookmarkHash(stats),
+    identity.bookmarkHash,
     async () => {
       const template = await promptService.getTemplate('collection_report')
       if (!template) throw new Error('Collection report template not found')

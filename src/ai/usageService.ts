@@ -7,58 +7,56 @@ import { db, getAIUsageLimits, saveAIUsageLimits } from '@/utils/db'
 import { TOKEN_COSTS } from './constants'
 import type { UsageRecord, UsageStats, UsageLimits } from './types'
 
-// Warning threshold (80% of limit)
 const WARNING_THRESHOLD = 0.8
 
-/**
- * Record an API usage event
- */
-export async function recordUsage(record: Omit<UsageRecord, 'id'>): Promise<void> {
-  await db.aiUsage.add({
-    ...record,
-    timestamp: record.timestamp || Date.now()
-  })
+function formatLocalDateKey(timestamp: number): string {
+  const date = new Date(timestamp)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
-/**
- * Get usage statistics for a time period
- */
-export async function getStats(startDate?: Date, endDate?: Date): Promise<UsageStats> {
-  const start = startDate?.getTime() || 0
-  const end = endDate?.getTime() || Date.now()
+function getDayRange(date: Date): { start: Date; end: Date } {
+  const start = new Date(date)
+  start.setHours(0, 0, 0, 0)
+  const end = new Date(start)
+  end.setDate(end.getDate() + 1)
+  end.setMilliseconds(end.getMilliseconds() - 1)
+  return { start, end }
+}
 
-  const records = await db.aiUsage
-    .where('timestamp')
-    .between(start, end)
-    .toArray()
+function getMonthRange(date: Date): { start: Date; end: Date } {
+  const start = new Date(date.getFullYear(), date.getMonth(), 1)
+  const end = new Date(date.getFullYear(), date.getMonth() + 1, 1)
+  end.setMilliseconds(end.getMilliseconds() - 1)
+  return { start, end }
+}
 
+function buildUsageStats(records: UsageRecord[]): UsageStats {
   const operationBreakdown: Record<string, { tokens: number; cost: number }> = {}
-  const dailyMap: Map<string, { tokens: number; cost: number }> = new Map()
+  const dailyMap = new Map<string, { tokens: number; cost: number }>()
 
   let totalTokens = 0
   let totalCost = 0
 
   for (const record of records) {
-    // Total
     totalTokens += record.totalTokens
     totalCost += record.estimatedCost
 
-    // By operation
     if (!operationBreakdown[record.operation]) {
       operationBreakdown[record.operation] = { tokens: 0, cost: 0 }
     }
     operationBreakdown[record.operation].tokens += record.totalTokens
     operationBreakdown[record.operation].cost += record.estimatedCost
 
-    // By day
-    const date = new Date(record.timestamp).toISOString().split('T')[0]
-    const daily = dailyMap.get(date) || { tokens: 0, cost: 0 }
+    const dateKey = formatLocalDateKey(record.timestamp)
+    const daily = dailyMap.get(dateKey) || { tokens: 0, cost: 0 }
     daily.tokens += record.totalTokens
     daily.cost += record.estimatedCost
-    dailyMap.set(date, daily)
+    dailyMap.set(dateKey, daily)
   }
 
-  // Convert daily map to sorted array
   const dailyUsage = Array.from(dailyMap.entries())
     .map(([date, data]) => ({ date, ...data }))
     .sort((a, b) => a.date.localeCompare(b.date))
@@ -71,16 +69,42 @@ export async function getStats(startDate?: Date, endDate?: Date): Promise<UsageS
   }
 }
 
+async function getRecords(startDate?: Date, endDate?: Date): Promise<UsageRecord[]> {
+  const start = startDate?.getTime() ?? 0
+  const end = endDate?.getTime() ?? Number.MAX_SAFE_INTEGER
+
+  const rows = await db.aiUsage
+    .where('timestamp')
+    .between(start, end, true, true)
+    .toArray()
+
+  return rows.map((row) => ({ ...row, id: row.id !== null ? String(row.id) : undefined }))
+}
+
+/**
+ * Record an API usage event
+ */
+export async function recordUsage(record: Omit<UsageRecord, 'id'>): Promise<void> {
+  await db.aiUsage.add({
+    ...record,
+    timestamp: typeof record.timestamp === 'number' ? record.timestamp : Date.now()
+  })
+}
+
+/**
+ * Get usage statistics for a time period
+ */
+export async function getStats(startDate?: Date, endDate?: Date): Promise<UsageStats> {
+  const records = await getRecords(startDate, endDate)
+  return buildUsageStats(records)
+}
+
 /**
  * Get today's usage statistics
  */
 export async function getTodayStats(): Promise<{ tokens: number; cost: number }> {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const tomorrow = new Date(today)
-  tomorrow.setDate(tomorrow.getDate() + 1)
-
-  const stats = await getStats(today, tomorrow)
+  const { start, end } = getDayRange(new Date())
+  const stats = await getStats(start, end)
   return {
     tokens: stats.totalTokens,
     cost: stats.totalCost
@@ -91,11 +115,8 @@ export async function getTodayStats(): Promise<{ tokens: number; cost: number }>
  * Get this month's usage statistics
  */
 export async function getMonthStats(): Promise<{ tokens: number; cost: number }> {
-  const now = new Date()
-  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1)
-  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999)
-
-  const stats = await getStats(firstDay, lastDay)
+  const { start, end } = getMonthRange(new Date())
+  const stats = await getStats(start, end)
   return {
     tokens: stats.totalTokens,
     cost: stats.totalCost
@@ -146,7 +167,6 @@ export async function checkLimits(): Promise<{
   let warning = false
   const messages: string[] = []
 
-  // Check daily token limit
   if (limits.dailyTokenLimit) {
     const percentage = todayStats.tokens / limits.dailyTokenLimit
     details.dailyTokens = {
@@ -163,7 +183,6 @@ export async function checkLimits(): Promise<{
     }
   }
 
-  // Check monthly token limit
   if (limits.monthlyTokenLimit) {
     const percentage = monthStats.tokens / limits.monthlyTokenLimit
     details.monthlyTokens = {
@@ -180,7 +199,6 @@ export async function checkLimits(): Promise<{
     }
   }
 
-  // Check daily cost limit
   if (limits.dailyCostLimit) {
     const percentage = todayStats.cost / limits.dailyCostLimit
     details.dailyCost = {
@@ -197,7 +215,6 @@ export async function checkLimits(): Promise<{
     }
   }
 
-  // Check monthly cost limit
   if (limits.monthlyCostLimit) {
     const percentage = monthStats.cost / limits.monthlyCostLimit
     details.monthlyCost = {
@@ -232,7 +249,6 @@ export function estimateCost(
 ): number {
   const costs = TOKEN_COSTS[model]
   if (!costs) {
-    // Default to gpt-4o-mini pricing if model not found
     return (promptTokens * 0.00015 + completionTokens * 0.0006) / 1000
   }
   return (promptTokens * costs.input + completionTokens * costs.output) / 1000
@@ -253,7 +269,7 @@ export async function clearHistoryBefore(date: Date): Promise<number> {
     .where('timestamp')
     .below(date.getTime())
     .toArray()
-  
+
   await db.aiUsage
     .where('timestamp')
     .below(date.getTime())
@@ -271,10 +287,10 @@ export async function getRecentRecords(limit: number = 50): Promise<UsageRecord[
     .reverse()
     .limit(limit)
     .toArray()
-  return rows.map((r) => ({ ...r, id: r.id != null ? String(r.id) : undefined }))
+
+  return rows.map((r) => ({ ...r, id: r.id !== null ? String(r.id) : undefined }))
 }
 
-// Export as a service object for convenience
 export const usageService = {
   recordUsage,
   getStats,

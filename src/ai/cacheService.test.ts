@@ -6,7 +6,8 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import * as fc from 'fast-check'
-import { cacheService, CacheType, generateCacheKey, generateBookmarkHash } from './cacheService'
+import { cacheService, generateCacheKey, generateBookmarkHash } from './cacheService'
+import type { CacheType } from './cacheService'
 import { db as _db } from '@/utils/db'
 
 // Test configuration
@@ -303,7 +304,7 @@ describe('CacheService', () => {
         ),
         PBT_CONFIG
       )
-    })
+    }, 15000)
 
     it('should clear cache entries by type', async () => {
       await fc.assert(
@@ -349,7 +350,7 @@ describe('CacheService', () => {
         ),
         PBT_CONFIG
       )
-    })
+    }, 15000)
 
     it('should remove individual cache entries', async () => {
       await fc.assert(

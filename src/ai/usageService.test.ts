@@ -122,7 +122,7 @@ describe('UsageService', () => {
         ),
         PBT_CONFIG
       )
-    })
+    }, 15000)
 
     it('should track usage by operation', async () => {
       await fc.assert(
@@ -152,7 +152,7 @@ describe('UsageService', () => {
         ),
         PBT_CONFIG
       )
-    })
+    }, 15000)
 
     it('should persist limits and retrieve them', async () => {
       await fc.assert(

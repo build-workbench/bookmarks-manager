@@ -104,7 +104,7 @@ export async function remove(key: string): Promise<void> {
  */
 export async function clearExpired(): Promise<number> {
   const now = Date.now()
-  const expired = await db.aiCache.where('expiresAt').below(now).toArray()
+  const expired = await db.aiCache.where('expiresAt').belowOrEqual(now).toArray()
   await clearExpiredCache()
   return expired.length
 }

@@ -1,10 +1,10 @@
 # 快速入门指南
 
-## 5分钟上手 Bookmarks Analysis
+> 这是详细的使用指南。想要快速开始？直接访问 **[在线版本](https://lessup.github.io/bookmarks-manager/)**
 
-相关需求与设计文档：
+## 5分钟上手书签管理器
 
-- [docs/README.md](docs/README.md)
+## 📖 详细使用步骤
 
 ### 第一步：导出浏览器书签
 

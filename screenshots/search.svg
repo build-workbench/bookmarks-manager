@@ -1,0 +1,43 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b"/>
+      <stop offset="100%" style="stop-color:#0f172a"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="800" height="450" fill="url(#bg)"/>
+  
+  <!-- 导航栏 -->
+  <rect x="0" y="0" width="800" height="50" fill="#0f172a"/>
+  <text x="30" y="32" fill="#f8fafc" font-family="system-ui" font-size="16" font-weight="600">Bookmarks Analysis</text>
+  
+  <rect x="580" y="12" width="80" height="26" rx="4" fill="#0284c7"/>
+  <text x="610" y="29" fill="white" font-family="system-ui" font-size="12" text-anchor="middle">搜索</text>
+  
+  <!-- 搜索区域 -->
+  <text x="400" y="100" fill="#f8fafc" font-family="system-ui" font-size="24" font-weight="600" text-anchor="middle">搜索预览</text>
+  
+  <!-- 搜索框 -->
+  <rect x="100" y="120" width="600" height="45" rx="8" fill="#334155" stroke="#475569" stroke-width="1"/>
+  <circle cx="125" cy="142" r="10" fill="none" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="132" y1="149" x2="138" y2="155" stroke="#94a3b8" stroke-width="2"/>
+  <text x="155" y="148" fill="#f8fafc" font-family="system-ui" font-size="14">python 教程</text>
+  
+  <!-- 搜索结果 -->
+  <rect x="100" y="180" width="600" height="70" rx="8" fill="#334155"/>
+  <text x="120" y="210" fill="#3b82f6" font-family="system-ui" font-size="14" font-weight="500">Python 官方教程 - 中文翻译</text>
+  <text x="120" y="232" fill="#64748b" font-family="system-ui" font-size="12">https://docs.python.org/zh-cn/3/tutorial/</text>
+  <text x="120" y="235" fill="#facc15" font-family="system-ui" font-size="12">python</text>
+  
+  <rect x="100" y="260" width="600" height="70" rx="8" fill="#334155"/>
+  <text x="120" y="290" fill="#3b82f6" font-family="system-ui" font-size="14" font-weight="500">Python 教程 | 菜鸟教程</text>
+  <text x="120" y="312" fill="#64748b" font-family="system-ui" font-size="12">https://www.runoob.com/python/python-tutorial.html</text>
+  
+  <rect x="100" y="340" width="600" height="70" rx="8" fill="#334155"/>
+  <text x="120" y="370" fill="#3b82f6" font-family="system-ui" font-size="14" font-weight="500">Python 教程 — Python 3.13.0 文档</text>
+  <text x="120" y="392" fill="#64748b" font-family="system-ui" font-size="12">https://docs.python.org/3/tutorial/</text>
+  
+  <!-- 说明 -->
+  <text x="400" y="435" fill="#64748b" font-family="system-ui" font-size="12" text-anchor="middle">截图示意 - 实际界面以在线版为准</text>
+</svg>

@@ -1,15 +1,24 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Search as SearchIcon, ExternalLink, Folder, Filter, Download, AlertCircle, CheckCircle } from 'lucide-react'
 import useBookmarksStore from '@/store/useBookmarksStore'
 import type { SearchResultItem } from '@/utils/search'
 import type { Bookmark } from '@/utils/bookmarkParser'
-import { exportAsNetscapeHTML } from '@/utils/exporter'
+import {
+  exportBookmarks,
+  type ExportFormat,
+  getExportFileExtension,
+  getExportMimeType,
+} from '@/utils/exporters'
 import { getHostname } from '@/utils/url'
+import { VirtualList } from '@/ui/VirtualList'
+import { EXPORT_FORMAT_OPTIONS } from '@/constants/exportFormats'
+import { downloadFile } from '@/utils/download'
 
 export default function Search() {
   const { search, mergedItems, needsMerge } = useBookmarksStore()
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SearchResultItem[]>([])
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const [domain, setDomain] = useState('')
   const [rootFolder, setRootFolder] = useState('')
@@ -19,6 +28,7 @@ export default function Search() {
 
   const [exportScope, setExportScope] = useState<'filtered' | 'all'>('filtered')
   const [preserveFolders, setPreserveFolders] = useState(true)
+  const [exportFormat, setExportFormat] = useState<ExportFormat>('html')
   const [limit, setLimit] = useState(50)
 
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
@@ -125,13 +135,27 @@ export default function Search() {
 
   function handleSearch(q: string) {
     setQuery(q)
-    if (q.trim()) {
-      const found = search(q.trim())
-      setResults(found)
-    } else {
-      setResults([])
+
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
     }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      if (q.trim()) {
+        setResults(search(q.trim()))
+      } else {
+        setResults([])
+      }
+    }, 200)
   }
+
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
+  }, [])
 
   function resetFilters() {
     setDomain('')
@@ -148,20 +172,20 @@ export default function Search() {
         setMessage({ type: 'error', text: '没有可导出的书签' })
         return
       }
-      const html = exportAsNetscapeHTML(items, { preserveFolders })
-      const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
+
+      const content = exportBookmarks(items, exportFormat, {
+        preserveFolders,
+        includeMetadata: exportFormat === 'json' || exportFormat === 'csv',
+      })
+
       const timestamp = new Date().toISOString().split('T')[0]
       const scopeTag = exportScope === 'all' ? 'all' : 'filtered'
       const folderTag = preserveFolders ? 'tree' : 'flat'
-      a.download = `bookmarks_${scopeTag}_${folderTag}_${timestamp}.html`
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
-      URL.revokeObjectURL(url)
-      setMessage({ type: 'success', text: '导出成功' })
+      const ext = getExportFileExtension(exportFormat)
+      const filename = `bookmarks_${scopeTag}_${folderTag}_${timestamp}.${ext}`
+
+      downloadFile(content, filename, getExportMimeType(exportFormat))
+      setMessage({ type: 'success', text: `已导出为 ${exportFormat.toUpperCase()} 格式` })
     } catch {
       setMessage({ type: 'error', text: '导出失败' })
     }
@@ -306,13 +330,26 @@ export default function Search() {
                 保留目录结构
               </label>
 
-              <button
-                onClick={onExport}
-                className="ml-auto px-4 py-2 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={exportScope === 'all' ? mergedItems.length === 0 : filteredItems.length === 0}
-              >
-                导出 HTML
-              </button>
+              <div className="ml-auto flex items-center gap-2">
+                <select
+                  value={exportFormat}
+                  onChange={(e) => setExportFormat(e.target.value as ExportFormat)}
+                  className="rounded bg-slate-800 border border-slate-700 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
+                >
+                  {EXPORT_FORMAT_OPTIONS.map((opt) => (
+                    <option key={opt.format} value={opt.format}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={onExport}
+                  className="px-4 py-2 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={exportScope === 'all' ? mergedItems.length === 0 : filteredItems.length === 0}
+                >
+                  导出 {EXPORT_FORMAT_OPTIONS.find(o => o.format === exportFormat)?.label}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -347,38 +384,69 @@ export default function Search() {
       )}
 
       {(query || hasActiveFilters) && filteredItems.length > 0 && (
-        <div className="space-y-1">
+        <div>
           <div className="text-sm text-slate-400 mb-2">
             找到 {filteredItems.length} 条结果
             {query && results.length > 0 && <span className="ml-2">（搜索命中 {results.length}）</span>}
           </div>
-          {displayItems.map((item) => (
-            <div key={item.id} className="rounded-lg bg-slate-900 border border-slate-800 p-4 hover:border-slate-700 transition">
-              <div className="flex items-start gap-3">
-                <ExternalLink className="w-4 h-4 text-slate-400 mt-1 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:text-sky-300 font-medium break-all">
-                    {highlightText(item.title || item.url, query)}
-                  </a>
-                  <div className="text-xs text-slate-500 mt-1 break-all">{highlightText(item.url, query)}</div>
-                  {item.path && item.path.length > 0 && (
-                    <div className="flex items-center gap-1 mt-2 text-xs text-slate-400">
-                      <Folder className="w-3 h-3" />
-                      <span>{highlightText(item.path.join(' / '), query)}</span>
+          
+          {/* Use virtual list for large datasets (>200 items) */}
+          {filteredItems.length > 200 ? (
+            <VirtualList
+              items={filteredItems}
+              itemHeight={88}
+              containerHeight={600}
+              renderItem={(item) => (
+                <div className="rounded-lg bg-slate-900 border border-slate-800 p-4 hover:border-slate-700 transition mx-1">
+                  <div className="flex items-start gap-3">
+                    <ExternalLink className="w-4 h-4 text-slate-400 mt-1 flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:text-sky-300 font-medium break-all">
+                        {highlightText(item.title || item.url, query)}
+                      </a>
+                      <div className="text-xs text-slate-500 mt-1 break-all">{highlightText(item.url, query)}</div>
+                      {item.path && item.path.length > 0 && (
+                        <div className="flex items-center gap-1 mt-2 text-xs text-slate-400">
+                          <Folder className="w-3 h-3" />
+                          <span>{highlightText(item.path.join(' / '), query)}</span>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              )}
+            />
+          ) : (
+            <div className="space-y-1">
+              {displayItems.map((item) => (
+                <div key={item.id} className="rounded-lg bg-slate-900 border border-slate-800 p-4 hover:border-slate-700 transition">
+                  <div className="flex items-start gap-3">
+                    <ExternalLink className="w-4 h-4 text-slate-400 mt-1 flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:text-sky-300 font-medium break-all">
+                        {highlightText(item.title || item.url, query)}
+                      </a>
+                      <div className="text-xs text-slate-500 mt-1 break-all">{highlightText(item.url, query)}</div>
+                      {item.path && item.path.length > 0 && (
+                        <div className="flex items-center gap-1 mt-2 text-xs text-slate-400">
+                          <Folder className="w-3 h-3" />
+                          <span>{highlightText(item.path.join(' / '), query)}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
 
-          {filteredItems.length > limit && (
-            <button
-              onClick={() => setLimit(limit + 50)}
-              className="w-full py-2 text-sm text-slate-400 hover:text-sky-400 transition"
-            >
-              加载更多 ({filteredItems.length - limit} 条)
-            </button>
+              {filteredItems.length > limit && (
+                <button
+                  onClick={() => setLimit(limit + 50)}
+                  className="w-full py-2 text-sm text-slate-400 hover:text-sky-400 transition"
+                >
+                  加载更多 ({filteredItems.length - limit} 条)
+                </button>
+              )}
+            </div>
           )}
         </div>
       )}

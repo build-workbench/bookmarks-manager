@@ -1,6 +1,10 @@
 import { useMemo, useRef, useState, type ChangeEvent } from 'react'
 import { Upload, FileText, Trash2, Download, AlertCircle, CheckCircle } from 'lucide-react'
 import useBookmarksStore from '@/store/useBookmarksStore'
+import type { ExportFormat } from '@/utils/exporters'
+import { getExportFileExtension, getExportMimeType } from '@/utils/exporters'
+import { EXPORT_FORMAT_OPTIONS } from '@/constants/exportFormats'
+import { downloadFile } from '@/utils/download'
 
 export default function UploadMerge() {
   const {
@@ -17,7 +21,7 @@ export default function UploadMerge() {
     importFiles,
     mergeAndDedup,
     clear,
-    exportHTML,
+    exportAsFormat,
     removeSourceFile
   } = useBookmarksStore()
 
@@ -39,23 +43,43 @@ export default function UploadMerge() {
 
   const isBookmarkFile = (f: File) => {
     const name = f.name.toLowerCase()
-    return name.endsWith('.html') || name.endsWith('.htm')
+    const validExtensions = ['.html', '.htm']
+    const validTypes = ['text/html', 'application/xhtml+xml']
+    const isValidByName = validExtensions.some(ext => name.endsWith(ext))
+    const isValidByType = validTypes.some(type => f.type === type) || f.type === '' // empty type for some OS
+    return isValidByName && isValidByType
+  }
+  
+  const getInvalidFiles = (files: File[]) => {
+    return files.filter(f => !isBookmarkFile(f))
   }
 
   async function doImport(files: FileList | File[]) {
     if (busy) return
     const list = Array.isArray(files) ? files : Array.from(files)
     const accepted = list.filter(isBookmarkFile)
+    const rejected = getInvalidFiles(list)
+    
     if (accepted.length === 0) {
-      setMessage({ type: 'error', text: '未检测到可导入的 HTML 书签文件（.html/.htm）' })
+      const rejectedNames = rejected.slice(0, 3).map(f => f.name).join(', ')
+      const moreCount = rejected.length > 3 ? `等 ${rejected.length} 个` : ''
+      setMessage({ 
+        type: 'error', 
+        text: `未检测到有效的 HTML 书签文件。请确保文件扩展名为 .html 或 .htm${rejectedNames ? `\n（${rejectedNames}${moreCount} 格式不支持）` : ''}` 
+      })
       return
     }
+    
     setMessage(null)
     try {
       await importFiles(accepted)
-      setMessage({ type: 'success', text: `成功导入 ${accepted.length} 个文件` })
-    } catch {
-      setMessage({ type: 'error', text: '导入文件失败，请检查文件格式' })
+      const successMsg = rejected.length > 0 
+        ? `成功导入 ${accepted.length} 个文件（跳过 ${rejected.length} 个非 HTML 文件）`
+        : `成功导入 ${accepted.length} 个文件`
+      setMessage({ type: 'success', text: successMsg })
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : '未知错误'
+      setMessage({ type: 'error', text: `导入文件失败: ${errorMsg}` })
     }
   }
 
@@ -81,20 +105,16 @@ export default function UploadMerge() {
     }
   }
 
-  function onExport() {
+  const [selectedFormat, setSelectedFormat] = useState<ExportFormat>('html')
+
+  function onExport(format: ExportFormat = selectedFormat) {
     try {
-      const html = exportHTML()
-      const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
+      const content = exportAsFormat(format)
       const timestamp = new Date().toISOString().split('T')[0]
-      a.download = `bookmarks_merged_${timestamp}.html`
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
-      URL.revokeObjectURL(url)
-      setMessage({ type: 'success', text: '导出成功' })
+      const ext = getExportFileExtension(format)
+      const filename = `bookmarks_merged_${timestamp}.${ext}`
+      downloadFile(content, filename, getExportMimeType(format))
+      setMessage({ type: 'success', text: `已导出为 ${format.toUpperCase()} 格式` })
     } catch {
       setMessage({ type: 'error', text: '导出失败' })
     }
@@ -240,14 +260,31 @@ export default function UploadMerge() {
           <CheckCircle className="w-4 h-4" />
           合并去重
         </button>
-        <button
-          disabled={busy || !readyToExport || mergedItems.length === 0}
-          onClick={onExport}
-          className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
-        >
-          <Download className="w-4 h-4" />
-          导出 HTML
-        </button>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex rounded-lg overflow-hidden border border-slate-600 bg-slate-800">
+            {EXPORT_FORMAT_OPTIONS.map((opt) => (
+              <button
+                key={opt.format}
+                onClick={() => setSelectedFormat(opt.format)}
+                disabled={busy || !readyToExport || mergedItems.length === 0}
+                title={opt.description}
+                className={`px-3 py-2.5 text-sm font-medium transition flex items-center gap-2 border-r border-slate-600 last:border-r-0 disabled:opacity-50 disabled:cursor-not-allowed
+                  ${selectedFormat === opt.format ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}
+              >
+                {opt.icon}
+                {opt.label}
+              </button>
+            ))}
+          </div>
+          <button
+            disabled={busy || !readyToExport || mergedItems.length === 0}
+            onClick={() => onExport()}
+            className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            导出 {EXPORT_FORMAT_OPTIONS.find(o => o.format === selectedFormat)?.label}
+          </button>
+        </div>
         <button
           disabled={busy}
           onClick={() => { void clear(); setMessage(null) }}

@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Changed
+- **Documentation**: Complete README overhaul with user-friendly structure
+  - Added prominent "Try Online" button
+  - Restructured for 30-second value comprehension
+  - Separated user and developer sections
+  - Added detailed browser export instructions
+  - Improved privacy and security messaging
+  - Created screenshots directory with generation guidelines
+
 ## [0.2.0] - 2024-10-27
 
 ### Added
@@ -43,3 +54,18 @@ All notable changes to this project will be documented in this file.
 - Export to Netscape Bookmark HTML format
 - PWA support with offline capability
 - Dark theme UI with Tailwind CSS
+
+## [Unreleased] - GitHub Health Files
+
+### Added
+- **GitHub Repository Health Files**
+  - Added CODE_OF_CONDUCT.md - Community standards and expectations
+  - Added SECURITY.md - Security vulnerability reporting guidelines
+  - Added PULL_REQUEST_TEMPLATE.md - Structured PR submission template
+  - Added ISSUE_TEMPLATE/bug_report.md - Bug report template
+  - Added ISSUE_TEMPLATE/feature_request.md - Feature request template
+
+### Changed
+- Enhanced project governance with standardized GitHub templates
+- Improved contributor experience with clear issue/PR guidelines
+

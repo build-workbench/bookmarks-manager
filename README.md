@@ -1,80 +1,184 @@
-# Bookmarks Analysis (Local-first PWA)
+# Bookmarks Manager
 
-[![CI](https://github.com/LessUp/bookmarks-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/LessUp/bookmarks-manager/actions/workflows/ci.yml)
-[![Deploy](https://github.com/LessUp/bookmarks-manager/actions/workflows/pages.yml/badge.svg)](https://github.com/LessUp/bookmarks-manager/actions/workflows/pages.yml)
-[![App](https://img.shields.io/badge/App-GitHub%20Pages-blue?logo=github)](https://lessup.github.io/bookmarks-manager/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+<p align="center">
+  <b>Merge, deduplicate, and analyze your browser bookmarks — privately and locally.</b>
+</p>
 
-English | [简体中文](README.zh-CN.md)
+<p align="center">
+  <a href="https://lessup.github.io/bookmarks-manager/">
+    <img src="https://img.shields.io/badge/🚀_Try_Online_Now-2ea44f?style=for-the-badge&logoColor=white" alt="Try Online">
+  </a>
+</p>
 
-> Local parsing, multi-file merging, zero uploads — visualize your browser bookmark assets.
+<p align="center">
+  <a href="https://github.com/LessUp/bookmarks-manager/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/LessUp/bookmarks-manager/ci.yml?label=CI" alt="CI"></a>
+  <a href="https://github.com/LessUp/bookmarks-manager/actions/workflows/pages.yml"><img src="https://img.shields.io/github/actions/workflow/status/LessUp/bookmarks-manager/pages.yml?label=Deploy" alt="Deploy"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+</p>
 
-A privacy-first open-source tool for quickly merging bookmarks from different browsers, removing duplicates, generating structured insights, and providing extensible AI analysis (BYOK). Ships as a PWA — install and use, works offline.
+<p align="center">
+  English | <a href="README.zh-CN.md">简体中文</a>
+</p>
 
-## Core Features
+---
 
-- **Local-First & Zero Cloud Dependency** — All parsing, merging and visualization in-browser
-- **Multi-Source Merging** — Import multiple Netscape Bookmark HTML files with unified folder aliases
-- **Smart Deduplication** — URL normalization (scheme, host, port, path, parameter sorting, tracker removal)
-- **Persistent Storage** — IndexedDB auto-save, data survives page refresh
-- **Full-Text Search + Advanced Filtering** — MiniSearch-powered search with highlight; domain/folder/date filters
-- **Enhanced Export** — Export all or filtered results; preserve folder structure or flatten
-- **Visual Insights** — Dashboard with duplicate ratio, top domains, yearly additions
-- **AI Analysis** — OpenAI, Claude, custom endpoint (BYOK): categorization, summaries, duplicate analysis, health check, NL search, collection reports
+## 🎯 What is this?
 
-## Tech Stack
+A **privacy-first, browser-based tool** that helps you:
 
-- React 18 + TypeScript + Vite
-- Tailwind CSS + Lucide Icons
-- Zustand (state) + Dexie (IndexedDB)
-- MiniSearch (full-text search) + ECharts (visualization)
-- Vite PWA Plugin (offline support)
+- 📥 **Import** bookmarks from multiple browsers (Chrome, Firefox, Edge, Safari)
+- 🔗 **Merge** them into one unified collection
+- 🧹 **Remove duplicates** intelligently 
+- 🔍 **Search** instantly with full-text search
+- 📊 **Visualize** your bookmark habits
+- 🤖 **Analyze** with AI (bring your own API key)
 
-## Quick Start
+**All processing happens in your browser.** No data ever leaves your device.
 
-Requires Node.js 18+.
+---
+
+## 🚀 Quick Start
+
+### Option 1: Use Online (Recommended)
+
+👉 **[Click here to open the app](https://lessup.github.io/bookmarks-manager/)**
+
+No installation required. Works offline after first load (PWA).
+
+### Option 2: Install as Desktop App
+
+After opening the online version:
+
+| Browser | Instructions |
+|---------|-------------|
+| Chrome/Edge | Click `⋮` → "Install Bookmarks Manager" |
+| Safari | Share → "Add to Home Screen" |
+| Firefox | Currently limited PWA support |
+
+### Option 3: Run Locally
 
 ```bash
+git clone https://github.com/LessUp/bookmarks-manager.git
+cd bookmarks-manager
 npm install
 npm run dev
+# Open http://localhost:5173
 ```
 
-Default: http://localhost:5173/
+---
 
-See [QUICKSTART.md](QUICKSTART.md) for the complete walkthrough.
+## 📖 How to Use
 
-### Build & Preview
+### 1. Export Bookmarks from Your Browser
+
+**Chrome / Edge / Brave:**
+1. Press `Ctrl+Shift+O` (Windows) or `Cmd+Shift+O` (Mac)
+2. Click `⋮` menu → "Export bookmarks"
+3. Save the HTML file
+
+**Firefox:**
+1. Press `Ctrl+Shift+B` (Windows) or `Cmd+Shift+B` (Mac)
+2. Click "Import and Backup" → "Export Bookmarks to HTML"
+
+**Safari:**
+1. File → "Export Bookmarks"
+
+### 2. Import & Merge
+
+1. Open the [app](https://lessup.github.io/bookmarks-manager/)
+2. Drag and drop your bookmark file(s) into the upload area
+3. Click "Merge & Deduplicate"
+4. Watch the magic happen ✨
+
+### 3. Explore Your Bookmarks
+
+- **Dashboard** — View stats, charts, and trends
+- **Search** — Find bookmarks with instant full-text search
+- **Duplicates** — Review what was deduplicated
+- **Export** — Download clean bookmarks back to your browser
+
+---
+
+## ✨ Key Features
+
+| Feature | Description |
+|---------|-------------|
+| 🔒 **100% Private** | Everything runs locally in your browser. No server, no uploads, no tracking. |
+| 🔗 **Smart Deduplication** | URL normalization removes true duplicates (handles http/https, trailing slashes, tracking params) |
+| 📥 **Multi-Browser** | Merge bookmarks from Chrome, Firefox, Edge, Safari in one go |
+| 🔍 **Full-Text Search** | Search across titles, URLs, and folder names with instant results |
+| 📊 **Visual Insights** | See your bookmark patterns: top domains, yearly trends, duplicates ratio |
+| 💾 **Auto-Save** | Data persists in browser storage — close the tab and come back later |
+| 🤖 **AI Analysis** | Optional AI features (BYOK) for categorization, summarization, and insights |
+| 📱 **PWA Support** | Install as a desktop/mobile app, works offline |
+
+---
+
+## 🔒 Privacy & Security
+
+Your bookmarks are precious. We take privacy seriously:
+
+- ✅ **Zero Cloud** — No backend server, no database
+- ✅ **Local Processing** — All parsing, merging, and analysis happens in your browser
+- ✅ **No Uploads** — Your bookmarks never leave your device
+- ✅ **Secure Storage** — Data stored in browser's IndexedDB (your control)
+- ✅ **Open Source** — Full transparency. Inspect the code yourself.
+
+**AI Features (Optional):**
+- Uses your own API key (BYOK — Bring Your Own Key)
+- API keys stored locally in your browser
+- Can be used entirely offline without AI
+
+---
+
+## 🛠️ For Developers
+
+Want to contribute or self-host? Check out:
+
+- [QUICKSTART.md](QUICKSTART.md) — Detailed development setup
+- [FEATURES.md](FEATURES.md) — Full feature documentation
+- [docs/](docs/) — Architecture and design docs
 
 ```bash
+# Development
+npm install
+npm run dev
+
+# Build
 npm run build
-npm run preview
+
+# Test
+npm run test
 ```
 
-## Project Structure
+**Tech Stack:** React 18 + TypeScript + Vite + Tailwind CSS + Dexie (IndexedDB) + ECharts
 
-```
-├─ src/
-│  ├─ ai/                     # AI module (adapters, services)
-│  ├─ pages/                  # UploadMerge, Dashboard, Search, Duplicates, AI
-│  ├─ store/                  # Zustand stores
-│  ├─ utils/                  # Parser, URL normalization, exporter, DB, search
-│  ├─ ui/Chart.tsx            # ECharts wrapper
-│  └─ App.tsx / main.tsx      # Router & entry
-├─ vite.config.ts
-├─ tailwind.config.js
-└─ README.md
-```
+---
 
-## Available Scripts
+## 📸 Screenshots
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start dev server (PWA debug) |
-| `npm run build` | Production build to `dist/` |
-| `npm run typecheck` | TypeScript type check |
-| `npm run preview` | Preview build locally |
-| `npm run lint` | ESLint check |
+### Dashboard
+![Dashboard Preview](screenshots/dashboard.svg)
+*Visual analytics showing bookmark distribution, yearly trends, and duplicate statistics.*
 
-## License
+### Search & Deduplication
+![Search Preview](screenshots/search.svg)
+*Instant full-text search across titles, URLs, and folders with duplicate detection.*
 
-MIT
+### AI Analysis
+![AI Preview](screenshots/ai-analysis.svg)
+*AI-powered categorization, link health checking, and natural language bookmark search.*
+
+> 💡 **Want to see it in action?** [Try the live demo](https://lessup.github.io/bookmarks-manager/)
+
+---
+
+## 📄 License
+
+[MIT License](LICENSE) — Free for personal and commercial use.
+
+---
+
+<p align="center">
+  <sub>Built with ❤️ for bookmark hoarders everywhere</sub>
+</p>

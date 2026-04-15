@@ -1,0 +1,53 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b"/>
+      <stop offset="100%" style="stop-color:#0f172a"/>
+    </linearGradient>
+    <linearGradient id="magic" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#ec4899"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="800" height="450" fill="url(#bg)"/>
+  
+  <!-- 导航栏 -->
+  <rect x="0" y="0" width="800" height="50" fill="#0f172a"/>
+  <text x="30" y="32" fill="#f8fafc" font-family="system-ui" font-size="16" font-weight="600">Bookmarks Analysis</text>
+  
+  <rect x="700" y="12" width="40" height="26" rx="4" fill="#8b5cf6"/>
+  <text x="720" y="29" fill="white" font-family="system-ui" font-size="12" text-anchor="middle">AI</text>
+  
+  <!-- 标题 -->
+  <text x="400" y="100" fill="#f8fafc" font-family="system-ui" font-size="24" font-weight="600" text-anchor="middle">AI 分析预览</text>
+  
+  <!-- AI 卡片区域 -->
+  <rect x="50" y="130" width="230" height="140" rx="12" fill="#334155"/>
+  <text x="165" y="165" fill="#94a3b8" font-family="system-ui" font-size="12" text-anchor="middle">智能分类</text>
+  <text x="165" y="200" fill="#f8fafc" font-family="system-ui" font-size="14" text-anchor="middle">自动将书签按主题分类</text>
+  <text x="165" y="225" fill="#64748b" font-family="system-ui" font-size="12" text-anchor="middle">编程 / 学习 / 工具 / 娱乐</text>
+  <circle cx="165" cy="240" r="15" fill="url(#magic)" opacity="0.3"/>
+  
+  <rect x="300" y="130" width="230" height="140" rx="12" fill="#334155"/>
+  <text x="415" y="165" fill="#94a3b8" font-family="system-ui" font-size="12" text-anchor="middle">链接健康检查</text>
+  <text x="415" y="200" fill="#f8fafc" font-family="system-ui" font-size="14" text-anchor="middle">检测失效和重复链接</text>
+  <text x="415" y="225" fill="#22c55e" font-family="system-ui" font-size="12" text-anchor="middle">✓ 正常 98% | ⚠ 需检查 2%</text>
+  <circle cx="415" cy="240" r="15" fill="url(#magic)" opacity="0.3"/>
+  
+  <rect x="550" y="130" width="200" height="140" rx="12" fill="#334155"/>
+  <text x="650" y="165" fill="#94a3b8" font-family="system-ui" font-size="12" text-anchor="middle">自然语言搜索</text>
+  <text x="650" y="200" fill="#f8fafc" font-family="system-ui" font-size="14" text-anchor="middle">用自然语言</text>
+  <text x="650" y="220" fill="#f8fafc" font-family="system-ui" font-size="14" text-anchor="middle">描述要找的内容</text>
+  <circle cx="650" cy="240" r="15" fill="url(#magic)" opacity="0.3"/>
+  
+  <!-- API Key 设置区域 -->
+  <rect x="50" y="290" width="700" height="120" rx="12" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <text x="80" y="325" fill="#f8fafc" font-family="system-ui" font-size="16" font-weight="600">🔐 API 配置</text>
+  <text x="80" y="355" fill="#94a3b8" font-family="system-ui" font-size="12">AI 功能使用你自己的 API Key，数据不会上传到任何服务器</text>
+  <rect x="80" y="375" width="120" height="32" rx="6" fill="#8b5cf6"/>
+  <text x="140" y="395" fill="white" font-family="system-ui" font-size="12" text-anchor="middle">配置 API Key</text>
+  
+  <!-- 说明 -->
+  <text x="400" y="435" fill="#64748b" font-family="system-ui" font-size="12" text-anchor="middle">截图示意 - 实际界面以在线版为准</text>
+</svg>

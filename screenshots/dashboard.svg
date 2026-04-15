@@ -1,0 +1,61 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b"/>
+      <stop offset="100%" style="stop-color:#0f172a"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="800" height="450" fill="url(#bg)"/>
+  
+  <!-- 顶部导航栏 -->
+  <rect x="0" y="0" width="800" height="50" fill="#0f172a"/>
+  <text x="30" y="32" fill="#f8fafc" font-family="system-ui" font-size="16" font-weight="600">Bookmarks Analysis</text>
+  
+  <!-- 导航按钮 -->
+  <rect x="400" y="12" width="80" height="26" rx="4" fill="#0284c7"/>
+  <text x="430" y="29" fill="white" font-family="system-ui" font-size="12" text-anchor="middle">上传合并</text>
+  
+  <rect x="490" y="12" width="80" height="26" rx="4" fill="#0284c7"/>
+  <text x="520" y="29" fill="white" font-family="system-ui" font-size="12" text-anchor="middle">仪表盘</text>
+  
+  <rect x="580" y="12" width="60" height="26" rx="4" fill="#1e293b"/>
+  <text x="610" y="29" fill="#94a3b8" font-family="system-ui" font-size="12" text-anchor="middle">搜索</text>
+  
+  <!-- 主内容区 -->
+  <text x="400" y="100" fill="#f8fafc" font-family="system-ui" font-size="24" font-weight="600" text-anchor="middle">仪表盘预览</text>
+  
+  <!-- 统计卡片 -->
+  <rect x="50" y="130" width="150" height="80" rx="8" fill="#334155"/>
+  <text x="125" y="165" fill="#94a3b8" font-family="system-ui" font-size="12" text-anchor="middle">总书签数</text>
+  <text x="125" y="195" fill="#f8fafc" font-family="system-ui" font-size="28" font-weight="600" text-anchor="middle">1,234</text>
+  
+  <rect x="220" y="130" width="150" height="80" rx="8" fill="#334155"/>
+  <text x="295" y="165" fill="#94a3b8" font-family="system-ui" font-size="12" text-anchor="middle">去重后</text>
+  <text x="295" y="195" fill="#22c55e" font-family="system-ui" font-size="28" font-weight="600" text-anchor="middle">1,156</text>
+  
+  <rect x="390" y="130" width="150" height="80" rx="8" fill="#334155"/>
+  <text x="465" y="165" fill="#94a3b8" font-family="system-ui" font-size="12" text-anchor="middle">去重数</text>
+  <text x="465" y="195" fill="#ef4444" font-family="system-ui" font-size="28" font-weight="600" text-anchor="middle">78</text>
+  
+  <rect x="560" y="130" width="190" height="80" rx="8" fill="#334155"/>
+  <text x="655" y="165" fill="#94a3b8" font-family="system-ui" font-size="12" text-anchor="middle">文件夹数</text>
+  <text x="655" y="195" fill="#f8fafc" font-family="system-ui" font-size="28" font-weight="600" text-anchor="middle">42</text>
+  
+  <!-- 图表区域占位 -->
+  <rect x="50" y="230" width="340" height="180" rx="8" fill="#334155"/>
+  <text x="220" y="260" fill="#94a3b8" font-family="system-ui" font-size="14" text-anchor="middle">域名分布</text>
+  <circle cx="150" cy="320" r="50" fill="#3b82f6" opacity="0.8"/>
+  <circle cx="280" cy="340" r="35" fill="#22c55e" opacity="0.8"/>
+  
+  <rect x="410" y="230" width="340" height="180" rx="8" fill="#334155"/>
+  <text x="580" y="260" fill="#94a3b8" font-family="system-ui" font-size="14" text-anchor="middle">年度趋势</text>
+  
+  <!-- 模拟折线 -->
+  <polyline points="430,380 460,360 490,370 520,340 550,350 580,330 610,340 640,320 670,330 700,310" 
+            fill="none" stroke="#3b82f6" stroke-width="2"/>
+  
+  <!-- 文字说明 -->
+  <text x="400" y="435" fill="#64748b" font-family="system-ui" font-size="12" text-anchor="middle">截图示意 - 实际界面以在线版为准</text>
+</svg>

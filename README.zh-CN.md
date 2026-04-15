@@ -1,170 +1,184 @@
-# Bookmarks Analysis (Local-first PWA)
+# 书签管理器 Bookmarks Manager
 
-[![CI](https://github.com/LessUp/bookmarks-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/LessUp/bookmarks-manager/actions/workflows/ci.yml)
-[![Deploy](https://github.com/LessUp/bookmarks-manager/actions/workflows/pages.yml/badge.svg)](https://github.com/LessUp/bookmarks-manager/actions/workflows/pages.yml)
-[![App](https://img.shields.io/badge/App-GitHub%20Pages-blue?logo=github)](https://lessup.github.io/bookmarks-manager/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+<p align="center">
+  <b>私密、本地化的浏览器书签合并与智能分析工具</b>
+</p>
 
-[English](README.md) | 简体中文
+<p align="center">
+  <a href="https://lessup.github.io/bookmarks-manager/">
+    <img src="https://img.shields.io/badge/🚀_立即在线使用-2ea44f?style=for-the-badge&logoColor=white" alt="立即使用">
+  </a>
+</p>
 
-> 本地解析、多文件合并、零上传，可视化你的浏览器书签资产。
+<p align="center">
+  <a href="https://github.com/LessUp/bookmarks-manager/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/LessUp/bookmarks-manager/ci.yml?label=CI" alt="CI"></a>
+  <a href="https://github.com/LessUp/bookmarks-manager/actions/workflows/pages.yml"><img src="https://img.shields.io/github/actions/workflow/status/LessUp/bookmarks-manager/pages.yml?label=Deploy" alt="Deploy"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+</p>
 
-Bookmarks Analysis 是一个以隐私为前提的开源工具，用于快速合并来自不同浏览器的书签 HTML 文件、去除重复项、输出结构化洞察，并为引入本地/自带模型（BYOK）的智能分析预留扩展位。项目采用 PWA 形态，安装即用，可离线运行。
-
-## 文档
-
-详见 [docs/README.md](docs/README.md)
-
-## 核心特性
-
-- **本地优先 & 零云端依赖**：所有解析、合并与可视化均在浏览器内完成，保障数据隐私。
-- **多源书签合并**：支持同时导入多个 Netscape Bookmark HTML 文件，统一目录别名后进行合并。
-- **智能去重**：URL 规范化（scheme、host、端口、路径、参数排序、追踪参数剔除），避免重复条目。
-- **持久化存储**：使用 IndexedDB 自动保存合并结果，刷新页面后数据不丢失。
-- **全文搜索 + 高级过滤**：基于 MiniSearch 的快速搜索，命中词高亮；支持按域名/目录/时间范围组合过滤。
-- **导出增强**：支持导出全量/当前筛选结果；可保留目录结构或平铺导出（不保留目录）。
-- **可视化洞察**：仪表盘展示重复占比、Top 域名、按年份新增等指标。
-- **AI 智能分析**：支持 OpenAI、Claude、自定义端点（BYOK），提供书签分类、摘要生成、重复分析、健康检查、自然语言搜索、集合报告等功能。
-
-## 技术栈
-
-- React 18 + TypeScript + Vite
-- Tailwind CSS + Lucide Icons
-- Zustand（全局状态） + Dexie（IndexedDB 持久化）
-- MiniSearch（全文搜索）+ ECharts（数据可视化）
-- Vite PWA 插件（离线支持）
-
-## 快速开始
-
-建议使用 Node.js 18+。
-
-```bash
-npm install
-npm run dev
-```
-默认访问地址：http://localhost:5173/
-
-更完整的上手步骤（含浏览器导出书签、合并去重、搜索与导出）见 [QUICKSTART.md](QUICKSTART.md)。
-
-### 构建与预览
-
-```bash
-npm run build
-npm run preview
-```
-
-> 如依赖尚未安装，IDE 可能出现 TypeScript 类型或模块缺失报错，安装完成后即可恢复。
-
-## 典型使用流程
-
-详见 [QUICKSTART.md](QUICKSTART.md)。
-
-## 目录结构
-
-```
-├─ src/
-│  ├─ ai/                     # AI 模块
-│  │  ├─ adapters/            # LLM Provider 适配器
-│  │  │  ├─ base.ts           # 基础适配器类
-│  │  │  ├─ openai.ts         # OpenAI 适配器
-│  │  │  ├─ claude.ts         # Claude 适配器
-│  │  │  └─ custom.ts         # 自定义端点适配器
-│  │  ├─ types.ts             # AI 类型定义
-│  │  ├─ constants.ts         # 常量和默认配置
-│  │  ├─ configService.ts     # 配置管理服务
-│  │  ├─ promptService.ts     # 提示词模板服务
-│  │  ├─ cacheService.ts      # 缓存服务
-│  │  ├─ usageService.ts      # 用量追踪服务
-│  │  ├─ aiService.ts         # 核心 AI 分析服务
-│  │  └─ index.ts             # 模块入口
-│  ├─ pages/
-│  │  ├─ UploadMerge.tsx      # 导入/合并/导出页面
-│  │  ├─ Dashboard.tsx        # 仪表盘 + 书签列表
-│  │  ├─ Search.tsx           # 全文搜索页面
-│  │  ├─ Duplicates.tsx       # 去重工作台
-│  │  └─ AI.tsx               # AI 智能分析页面
-│  ├─ store/
-│  │  ├─ useBookmarksStore.ts # 书签状态管理
-│  │  └─ useAIStore.ts        # AI 状态管理
-│  ├─ utils/
-│  │  ├─ bookmarkParser.ts    # Netscape Bookmark 解析
-│  │  ├─ folders.ts           # 目录归一与树构建
-│  │  ├─ url.ts               # URL 规范化与指纹
-│  │  ├─ exporter.ts          # 层级 Netscape 导出
-│  │  ├─ db.ts                # Dexie IndexedDB 封装
-│  │  └─ search.ts            # MiniSearch 索引与搜索
-│  ├─ ui/Chart.tsx            # ECharts 包装组件
-│  ├─ App.tsx / main.tsx      # 路由与应用入口
-│  └─ index.css               # Tailwind 样式入口
-├─ vite.config.ts             # Vite + PWA 配置
-├─ tailwind.config.js         # Tailwind 配置
-├─ CHANGELOG.md               # 版本更新日志
-└─ README.md
-```
-
-## 架构与隐私理念
-
-- **Local-first**：默认不依赖任何云端服务，所有数据仅在用户浏览器中处理。
-- **IndexedDB 存储**：使用 Dexie 管理本地数据库，支持离线访问和数据持久化。
-- **目录归一**：内置常见浏览器的根目录别名映射，实现"同目录合并"。
-- **BYOK（Bring Your Own Key）**：AI 功能采用自带密钥模式，支持 OpenAI、Claude 和自定义端点，API Key 安全存储在本地 IndexedDB。
-- **AI 分析缓存**：分析结果本地缓存，避免重复调用 API，节省成本。
-- **用量追踪**：本地追踪 Token 使用量和成本估算，支持设置限额。
-
-## 可用脚本
-
-| 命令 | 说明 |
-| --- | --- |
-| `npm run dev` | 启动开发服务器（支持 PWA 调试） |
-| `npm run build` | 生成生产构建产物到 `dist/` |
-| `npm run typecheck` | 运行 TypeScript 类型检查 |
-| `npm run preview` | 本地预览构建结果 |
-| `npm run lint` | 运行 ESLint 代码检查 |
-
-## 最新更新
-
-### v0.3.0 - AI 智能分析 (2024-12-31)
-
-- ✅ **AI 书签分类**：智能分析书签内容，推荐分类和标签
-- ✅ **AI 摘要生成**：为书签生成简洁摘要和关键词
-- ✅ **AI 重复分析**：智能分析重复书签组，推荐保留项
-- ✅ **AI 健康检查**：识别问题书签（无效链接、过时内容等）
-- ✅ **自然语言搜索**：用自然语言描述查找书签
-- ✅ **集合报告**：生成书签集合分析报告，支持 Markdown/HTML 导出
-- ✅ **多 Provider 支持**：OpenAI、Claude、自定义端点（BYOK）
-- ✅ **用量追踪**：Token 使用量统计、成本估算、限额控制
-- ✅ **提示词模板**：可自定义 AI 提示词模板
-- ✅ **结果缓存**：分析结果本地缓存，避免重复调用
-
-### v0.2.0 - 核心功能完善 (2024-10-27)
-
-- ✅ **Dexie 持久化**：自动保存合并结果到 IndexedDB，页面刷新后数据不丢失
-- ✅ **本地搜索**：基于 MiniSearch 的全文搜索，支持标题、URL、路径模糊查询
-- ✅ **去重工作台**：可视化展示重复书签簇，标注保留/重复项
-- ✅ **增强仪表盘**：新增书签列表视图，支持展开/折叠和分页加载
-- ✅ **改进 UI/UX**：拖拽上传、加载状态、成功/错误提示、图标美化
-- ✅ **API Key 管理**：使用 IndexedDB 安全存储 AI API Key
-
-详见 [CHANGELOG.md](CHANGELOG.md)
-
-## Roadmap
-
-- **P0**：已完成（拖拽导入、搜索高亮、高级过滤、导出增强、更细的加载状态）
-- **P1/P2**：详见 [docs/PRD.md](docs/PRD.md)
-
-## 贡献指南
-
-1. Fork 仓库并创建功能分支：`git checkout -b feat/awesome-feature`
-2. 安装依赖并确保 `npm run build` 通过
-3. 更新相关文档或注释，保持代码风格统一
-4. 提交 Pull Request，说明变更内容与测试情况
-
-欢迎通过 Issue 反馈 Bug、需求或使用体验。
-
-## 📄 License
-
-本项目采用 [MIT License](LICENSE)。
+<p align="center">
+  <a href="README.md">English</a> | 简体中文
+</p>
 
 ---
 
-如果这个项目对你有帮助，欢迎 Star ⭐️ 与分享，也期待你的反馈与贡献。
+## 🎯 这是什么？
+
+一个**隐私优先、纯浏览器端**的书签管理工具，帮助你：
+
+- 📥 **导入** 多个浏览器的书签（Chrome、Firefox、Edge、Safari）
+- 🔗 **合并** 成一个统一的收藏夹
+- 🧹 **智能去重** —— 精准识别重复书签
+- 🔍 **全文搜索** —— 毫秒级检索
+- 📊 **可视化分析** —— 深入了解你的收藏习惯
+- 🤖 **AI 智能分析** —— 分类、摘要、报告（需自备 API Key）
+
+**所有处理都在你的浏览器中完成，数据不会上传任何服务器。**
+
+---
+
+## 🚀 快速开始
+
+### 方式一：在线使用（推荐）
+
+👉 **[点击这里打开应用](https://lessup.github.io/bookmarks-manager/)**
+
+无需安装，首次加载后支持离线使用（PWA）。
+
+### 方式二：安装为桌面应用
+
+打开在线版后，按以下步骤安装：
+
+| 浏览器 | 操作步骤 |
+|---------|-------------|
+| Chrome/Edge | 点击地址栏 `⋮` → "安装书签管理器" |
+| Safari | 分享按钮 → "添加到主屏幕" |
+| Firefox | 当前 PWA 支持有限 |
+
+### 方式三：本地运行
+
+```bash
+git clone https://github.com/LessUp/bookmarks-manager.git
+cd bookmarks-manager
+npm install
+npm run dev
+# 打开 http://localhost:5173
+```
+
+---
+
+## 📖 使用指南
+
+### 第一步：导出浏览器书签
+
+**Chrome / Edge / Brave：**
+1. 按 `Ctrl+Shift+O`（Windows）或 `Cmd+Shift+O`（Mac）打开书签管理器
+2. 点击右上角 `⋮` 菜单 → "导出书签"
+3. 保存 HTML 文件
+
+**Firefox：**
+1. 按 `Ctrl+Shift+B`（Windows）或 `Cmd+Shift+B`（Mac）打开书签库
+2. 点击"导入和备份" → "导出书签到 HTML"
+
+**Safari：**
+1. 菜单栏选择"文件" → "导出书签"
+
+### 第二步：导入合并
+
+1. 打开 [在线应用](https://lessup.github.io/bookmarks-manager/)
+2. 拖拽书签文件到上传区域（支持多个文件同时导入）
+3. 点击"合并去重"按钮
+4. 等待处理完成 ✨
+
+### 第三步：管理你的书签
+
+- **仪表盘** —— 查看统计数据、图表和收藏趋势
+- **搜索** —— 使用全文搜索快速找到书签
+- **去重** —— 查看哪些书签被识别为重复项
+- **导出** —— 将清理后的书签导回浏览器
+
+---
+
+## ✨ 核心功能
+
+| 功能 | 说明 |
+|---------|-------------|
+| 🔒 **完全私密** | 纯浏览器端运行，无服务器、无上传、无追踪 |
+| 🔗 **智能去重** | URL 规范化算法精准去重（统一 http/https、去除追踪参数等） |
+| 📥 **多浏览器支持** | 一次导入 Chrome、Firefox、Edge、Safari 的书签 |
+| 🔍 **全文搜索** | 支持标题、URL、文件夹名的模糊搜索，结果高亮 |
+| 📊 **可视化洞察** | 图表展示域名分布、年度趋势、重复占比等 |
+| 💾 **数据持久化** | 自动保存到浏览器存储，刷新页面数据不丢失 |
+| 🤖 **AI 分析** | 可选 AI 功能（自带 API Key）：分类、摘要、健康检查、自然语言搜索 |
+| 📱 **PWA 支持** | 可安装为桌面/手机应用，离线可用 |
+
+---
+
+## 🔒 隐私与安全
+
+你的书签数据非常私密，我们高度重视隐私保护：
+
+- ✅ **零云端依赖** —— 没有后端服务器，没有数据库
+- ✅ **本地处理** —— 所有解析、合并、分析都在浏览器中完成
+- ✅ **零上传** —— 书签数据永远不会离开你的设备
+- ✅ **安全存储** —— 数据存储在浏览器的 IndexedDB 中（完全由你控制）
+- ✅ **开源透明** —— 代码完全公开，可自行验证
+
+**AI 功能（可选）：**
+- 使用你自己的 API Key（BYOK — Bring Your Own Key）
+- API Key 仅存储在本地浏览器
+- 可以完全离线使用，不使用 AI 功能
+
+---
+
+## 📸 界面预览
+
+### 仪表盘
+![仪表盘预览](screenshots/dashboard.svg)
+*可视化分析展示书签分布、年度趋势和重复统计。*
+
+### 搜索与去重
+![搜索预览](screenshots/search.svg)
+*毫秒级全文搜索，支持标题、URL 和文件夹搜索，智能识别重复书签。*
+
+### AI 智能分析
+![AI 预览](screenshots/ai-analysis.svg)
+*AI 驱动的分类、链接健康检查和自然语言书签搜索。*
+
+> 💡 **想要体验？** [点击试用在线版](https://lessup.github.io/bookmarks-manager/)
+
+---
+
+## 🛠️ 开发者相关
+
+想参与贡献或自行部署？请查看：
+
+- [QUICKSTART.md](QUICKSTART.md) —— 详细开发环境搭建
+- [FEATURES.md](FEATURES.md) —— 完整功能文档
+- [docs/](docs/) —— 架构设计文档
+
+```bash
+# 开发模式
+npm install
+npm run dev
+
+# 构建
+npm run build
+
+# 测试
+npm run test
+```
+
+**技术栈：** React 18 + TypeScript + Vite + Tailwind CSS + Dexie (IndexedDB) + ECharts
+
+---
+
+## 📄 开源协议
+
+[MIT License](LICENSE) —— 个人和商业使用均可免费。
+
+---
+
+<p align="center">
+  <sub>用 ❤️ 为书签收藏爱好者打造</sub>
+</p>

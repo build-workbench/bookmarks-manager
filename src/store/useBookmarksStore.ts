@@ -1,10 +1,15 @@
 import { create } from 'zustand'
 import { parseNetscapeBookmarks, type Bookmark } from '@/utils/bookmarkParser'
 import { normalizeUrl, getHostname } from '@/utils/url'
-import { exportAsNetscapeHTML } from '@/utils/exporter'
+import {
+  exportBookmarks,
+  type ExportFormat,
+  type ExportOptions,
+} from '@/utils/exporters'
 import { normalizePath } from '@/utils/folders'
 import { clearBookmarks, saveBookmarks, loadBookmarks, type StoredBookmark } from '@/utils/db'
 import { createSearchIndex, resetSearchIndex, search as searchBookmarks, type SearchResultItem } from '@/utils/search'
+import { getWorkerClient, terminateWorker } from '@/workers/bookmarkWorkerClient'
 
 type Stats = { total: number, duplicates: number, byDomain: Record<string, number>, byYear: Record<string, number> }
 
@@ -33,13 +38,16 @@ type State = {
   hasFullMergeData: boolean
   stage: string
   stats: Stats
+  useWorker: boolean  // Worker toggle
   importFiles: (files: FileList | File[]) => Promise<void>
   removeSourceFile: (sourceFile: string) => void
   mergeAndDedup: () => Promise<void>
   clear: () => Promise<void>
   exportHTML: () => string
+  exportAsFormat: (format: ExportFormat, options?: ExportOptions) => string
   loadFromDB: () => Promise<void>
   search: (query: string) => SearchResultItem[]
+  toggleWorker: () => void
 }
 
 const emptyStats: Stats = { total: 0, duplicates: 0, byDomain: {}, byYear: {} }
@@ -69,6 +77,7 @@ const useBookmarksStore = create<State>((set, get) => {
     hasFullMergeData: false,
     stage: '',
     stats: emptyStats,
+    useWorker: typeof Worker !== 'undefined', // Auto-enable if supported
     async importFiles(files) {
       set({ importing: true, stage: '正在导入与解析...' })
       try {
@@ -112,6 +121,44 @@ const useBookmarksStore = create<State>((set, get) => {
       set({ merging: true, stage: '正在合并去重...' })
       try {
         const raw = get().rawItems
+        const useWorker = get().useWorker && typeof Worker !== 'undefined' && raw.length > 500
+
+        if (useWorker) {
+          // Use Web Worker for large datasets
+          set({ stage: 'Worker 正在处理...' })
+          const worker = getWorkerClient()
+          try {
+            const result = await worker.mergeAndDedup(raw, (stageMsg) => {
+              set({ stage: stageMsg })
+            })
+
+            set({
+              restoredItems: [],
+              mergedItems: result.merged,
+              duplicates: result.duplicates,
+              stats: result.stats,
+              needsMerge: false,
+              hasFullMergeData: true
+            })
+
+            set({ stage: '正在保存到本地数据库...' })
+            const storedItems: StoredBookmark[] = result.merged.map(it => ({
+              ...it,
+              normalized: normalizeUrl(it.url)
+            }))
+            await saveBookmarks(storedItems)
+
+            set({ stage: '正在构建搜索索引...' })
+            createSearchIndex(result.merged)
+            return
+          } catch (workerError) {
+            console.error('Worker failed, falling back to main thread:', workerError)
+            set({ useWorker: false })
+            set({ stage: 'Worker 失败，切换到主线程处理...' })
+          }
+        }
+
+        // Traditional synchronous processing (fallback or small datasets)
         const groups = new Map<string, Bookmark[]>()
         for (const it of raw) {
           const key = normalizeUrl(it.url)
@@ -201,6 +248,7 @@ const useBookmarksStore = create<State>((set, get) => {
       })
       try {
         await clearBookmarks()
+        terminateWorker() // Clean up worker
       } catch (error) {
         console.error('Failed to clear bookmarks from DB:', error)
       } finally {
@@ -209,10 +257,18 @@ const useBookmarksStore = create<State>((set, get) => {
     },
     exportHTML() {
       const { mergedItems } = get()
-      return exportAsNetscapeHTML(mergedItems)
+      return exportBookmarks(mergedItems, 'html')
+    },
+    exportAsFormat(format: ExportFormat, options?: ExportOptions) {
+      const { mergedItems } = get()
+      return exportBookmarks(mergedItems, format, options)
     },
     search(query: string) {
       return searchBookmarks(query)
+    },
+    
+    toggleWorker() {
+      set({ useWorker: !get().useWorker })
     }
   }
 })

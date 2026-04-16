@@ -153,6 +153,7 @@ npm run dev
 
 想参与贡献或自行部署？请查看：
 
+- [CHANGELOG.md](CHANGELOG.md) —— 版本更新日志
 - [QUICKSTART.md](QUICKSTART.md) —— 详细开发环境搭建
 - [FEATURES.md](FEATURES.md) —— 完整功能文档
 - [docs/](docs/) —— 架构设计文档

@@ -135,6 +135,7 @@ Your bookmarks are precious. We take privacy seriously:
 
 Want to contribute or self-host? Check out:
 
+- [CHANGELOG.md](CHANGELOG.md) — Version history and release notes
 - [QUICKSTART.md](QUICKSTART.md) — Detailed development setup
 - [FEATURES.md](FEATURES.md) — Full feature documentation
 - [docs/](docs/) — Architecture and design docs

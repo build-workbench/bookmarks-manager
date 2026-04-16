@@ -11,14 +11,30 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/LessUp/bookmarks-manager/releases/latest"><img src="https://img.shields.io/github/v/release/LessUp/bookmarks-manager?label=版本" alt="版本"></a>
   <a href="https://github.com/LessUp/bookmarks-manager/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/LessUp/bookmarks-manager/ci.yml?label=CI" alt="CI"></a>
-  <a href="https://github.com/LessUp/bookmarks-manager/actions/workflows/pages.yml"><img src="https://img.shields.io/github/actions/workflow/status/LessUp/bookmarks-manager/pages.yml?label=Deploy" alt="Deploy"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="https://github.com/LessUp/bookmarks-manager/actions/workflows/pages.yml"><img src="https://img.shields.io/github/actions/workflow/status/LessUp/bookmarks-manager/pages.yml?label=部署" alt="部署"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/协议-MIT-blue.svg" alt="协议: MIT"></a>
 </p>
 
 <p align="center">
   <a href="README.md">English</a> | 简体中文
 </p>
+
+---
+
+## 📖 目录
+
+- [这是什么？](#这是什么)
+- [快速开始](#快速开始)
+- [使用指南](#使用指南)
+- [核心功能](#核心功能)
+- [隐私与安全](#隐私与安全)
+- [界面预览](#界面预览)
+- [开发者相关](#开发者相关)
+- [路线图](#路线图)
+- [更新日志](#更新日志)
+- [开源协议](#开源协议)
 
 ---
 
@@ -95,6 +111,7 @@ npm run dev
 - **仪表盘** —— 查看统计数据、图表和收藏趋势
 - **搜索** —— 使用全文搜索快速找到书签
 - **去重** —— 查看哪些书签被识别为重复项
+- **AI 分析** —— 使用 AI 功能（可选，自备密钥）
 - **导出** —— 将清理后的书签导回浏览器
 
 ---
@@ -111,6 +128,17 @@ npm run dev
 | 💾 **数据持久化** | 自动保存到浏览器存储，刷新页面数据不丢失 |
 | 🤖 **AI 分析** | 可选 AI 功能（自带 API Key）：分类、摘要、健康检查、自然语言搜索 |
 | 📱 **PWA 支持** | 可安装为桌面/手机应用，离线可用 |
+| 📤 **多格式导出** | 支持导出为 HTML、JSON、CSV、Markdown |
+| 💾 **备份与恢复** | 完整的应用数据备份和迁移 |
+
+### 性能基准
+
+| 指标 | 性能 |
+|--------|-------------|
+| 初始加载 | < 2秒 |
+| 搜索（1万条书签） | < 100毫秒 |
+| 导入 1000 条书签 | < 3秒 |
+| 内存占用 | < 200MB |
 
 ---
 
@@ -153,10 +181,13 @@ npm run dev
 
 想参与贡献或自行部署？请查看：
 
-- [CHANGELOG.md](CHANGELOG.md) —— 版本更新日志
+- [CHANGELOG.md](CHANGELOG.zh-CN.md) —— 版本更新日志
 - [QUICKSTART.md](QUICKSTART.md) —— 详细开发环境搭建
 - [FEATURES.md](FEATURES.md) —— 完整功能文档
-- [docs/](docs/) —— 架构设计文档
+- [docs/ARCHITECTURE.zh-CN.md](docs/ARCHITECTURE.zh-CN.md) —— 系统架构
+- [docs/API.zh-CN.md](docs/API.zh-CN.md) —— 模块接口
+- [docs/CONTRIBUTING.zh-CN.md](docs/CONTRIBUTING.zh-CN.md) —— 贡献指南
+- [docs/PRD.zh-CN.md](docs/PRD.zh-CN.md) —— 产品需求
 
 ```bash
 # 开发模式
@@ -174,6 +205,39 @@ npm run test
 
 ---
 
+## 🗺️ 路线图
+
+### ✅ 已完成 (v1.1.0)
+- 多格式导出（JSON、CSV、Markdown）
+- 备份与恢复功能
+- 大数据集 Web Worker 优化
+- 虚拟滚动
+- AI 模块（BYOK）
+- 文档国际化
+
+### 📋 计划中 (v1.2.0)
+- 批量编辑和标签系统
+- 高级过滤 UI 改进
+- 自定义导出器的插件系统
+
+### 🔮 未来 (v2.0)
+- 云同步（可选，端到端加密）
+- 移动应用（React Native）
+
+---
+
+## 📝 更新日志
+
+完整变更列表请参见 [CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)。
+
+**最新版本：v1.1.0**（2026-04-15）
+- 多格式导出（JSON、CSV、Markdown）
+- 备份与恢复
+- 性能优化
+- 文档重构，支持中英文双语
+
+---
+
 ## 📄 开源协议
 
 [MIT License](LICENSE) —— 个人和商业使用均可免费。
@@ -182,4 +246,10 @@ npm run test
 
 <p align="center">
   <sub>用 ❤️ 为书签收藏爱好者打造</sub>
+</p>
+
+<p align="center">
+  <a href="https://github.com/LessUp/bookmarks-manager">GitHub</a> •
+  <a href="https://lessup.github.io/bookmarks-manager/">在线演示</a> •
+  <a href="docs/">文档</a>
 </p>

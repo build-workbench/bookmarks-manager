@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://lessup.github.io/bookmarks-manager/sitemap.xml

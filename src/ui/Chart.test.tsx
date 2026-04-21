@@ -3,18 +3,25 @@ import { render, screen, waitFor } from '@testing-library/react'
 import Chart from './Chart'
 import type { EChartsOption } from 'echarts'
 
-// Mock echarts dynamic imports
-vi.mock('echarts/core', () => ({
-  default: {
-    init: vi.fn(() => ({
-      setOption: vi.fn(),
-      resize: vi.fn(),
-      dispose: vi.fn(),
-    })),
-    getInstanceByDom: vi.fn(() => null),
+// Mock echarts/core with named exports
+vi.mock('echarts/core', () => {
+  const mockInstance = {
+    setOption: vi.fn(),
+    resize: vi.fn(),
+    dispose: vi.fn(),
+  }
+  return {
+    default: {
+      init: vi.fn(() => mockInstance),
+      getInstanceByDom: vi.fn(() => null),
+      use: vi.fn(),
+    },
+    // Named exports used by Chart.tsx
+    init: vi.fn(() => mockInstance),
     use: vi.fn(),
-  },
-}))
+    ECharts: vi.fn(),
+  }
+})
 
 vi.mock('echarts/charts', () => ({
   PieChart: class PieChart {},

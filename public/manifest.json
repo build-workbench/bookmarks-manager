@@ -1,7 +1,7 @@
 {
   "name": "Bookmarks Manager",
   "short_name": "Bookmarks",
-  "description": "Local-first PWA for merging, deduplicating and analyzing browser bookmarks",
+  "description": "Privacy-first PWA for merging, deduplicating and analyzing browser bookmarks",
   "start_url": "/bookmarks-manager/",
   "display": "standalone",
   "orientation": "portrait",
@@ -17,5 +17,7 @@
   ],
   "categories": ["productivity", "utilities"],
   "lang": "en",
-  "dir": "ltr"
+  "dir": "ltr",
+  "scope": "/bookmarks-manager/",
+  "prefer_related_applications": false
 }

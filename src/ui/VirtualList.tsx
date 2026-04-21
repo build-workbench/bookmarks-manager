@@ -64,6 +64,8 @@ export function VirtualList<T>({
   }, [])
 
   // Use native scroll event for better performance
+  // Note: scrollTop dependency intentionally omitted - we use currentScrollTop
+  // variable inside onScroll to avoid re-binding on every scroll
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
@@ -72,9 +74,8 @@ export function VirtualList<T>({
     let currentScrollTop = 0
 
     const updateScrollTop = () => {
-      if (scrollTop !== currentScrollTop) {
-        setScrollTop(currentScrollTop)
-      }
+      // Always update state to current value to trigger re-render
+      setScrollTop(currentScrollTop)
       rafId = null
     }
 
@@ -92,7 +93,8 @@ export function VirtualList<T>({
         cancelAnimationFrame(rafId)
       }
     }
-  }, [scrollTop])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div

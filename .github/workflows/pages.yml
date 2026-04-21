@@ -1,21 +1,12 @@
 # =============================================================================
-# 🚀 ULTIMATE GITHUB PAGES DEPLOYMENT WORKFLOW
+# 🚀 GITHUB PAGES DEPLOYMENT WORKFLOW
 # =============================================================================
-# Features:
-# - Ultra-fast builds with aggressive caching
-# - PR preview deployments (Cloudflare Pages)
-# - Lighthouse CI performance audits
-# - Bundle analysis and size tracking
-# - Security vulnerability scanning
-# - Automatic rollback on failure
-# - Multi-environment deployments
-# - Slack/Discord notifications
+# Simplified deployment workflow with essential checks
 # =============================================================================
 
 name: 🚀 Deploy to GitHub Pages
 
 on:
-  # Production deployment triggers
   push:
     branches: [master, main]
     paths-ignore:
@@ -24,17 +15,7 @@ on:
       - '.editorconfig'
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
-  
-  # PR preview deployments
-  pull_request:
-    types: [opened, synchronize, reopened]
-    paths-ignore:
-      - '**/*.md'
-      - '.gitignore'
-      - '.editorconfig'
-      - 'docs/**'
-  
-  # Manual deployment with options
+
   workflow_dispatch:
     inputs:
       environment:
@@ -45,171 +26,27 @@ on:
         options:
           - production
           - staging
-      skip_tests:
-        description: 'Skip test suite (not recommended)'
-        required: false
-        default: false
-        type: boolean
-  
-  # Weekly dependency update check
-  schedule:
-    - cron: '0 0 * * 0'
-
-# =============================================================================
-# PERMISSIONS & CONCURRENCY
-# =============================================================================
 
 permissions:
   contents: read
   pages: write
   id-token: write
-  pull-requests: write
-  issues: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# =============================================================================
-# ENVIRONMENT VARIABLES
-# =============================================================================
-
 env:
   NODE_VERSION: '22'
-  PNPM_VERSION: '9'
   BUILD_OUTPUT: 'dist'
-  CACHE_KEY_PREFIX: v1
 
 jobs:
   # =========================================================================
-  # 📊 PRE-CHECKS & ANALYSIS
-  # =========================================================================
-  preflight:
-    name: 🔍 Preflight Checks
-    runs-on: ubuntu-latest
-    outputs:
-      should_deploy: ${{ steps.check.outputs.should_deploy }}
-      cache_key: ${{ steps.cache-key.outputs.key }}
-    steps:
-      - name: ⬇️ Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: 🔍 Check if should deploy
-        id: check
-        run: |
-          # Skip deployment for certain commit types
-          COMMIT_MSG=$(git log -1 --pretty=%B || echo '')
-          if echo "$COMMIT_MSG" | grep -qE '^\[skip deploy\]|^\[deploy skip\]|^docs:|^chore:\s*readme|^chore:\s*docs'; then
-            echo "should_deploy=false" >> $GITHUB_OUTPUT
-            echo "⏭️ Skipping deployment due to commit message"
-          else
-            echo "should_deploy=true" >> $GITHUB_OUTPUT
-            echo "✅ Deployment approved"
-          fi
-
-      - name: 🔑 Generate cache key
-        id: cache-key
-        run: |
-          KEY="${{ env.CACHE_KEY_PREFIX }}-${{ hashFiles('package-lock.json', 'package.json') }}"
-          echo "key=$KEY" >> $GITHUB_OUTPUT
-          echo "Cache key: $KEY"
-
-  # =========================================================================
-  # 🧪 COMPREHENSIVE TESTING
-  # =========================================================================
-  test:
-    name: 🧪 Test Suite
-    needs: preflight
-    if: needs.preflight.outputs.should_deploy == 'true' && github.event.inputs.skip_tests != 'true'
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        test-type: [unit, typecheck, lint]
-    steps:
-      - name: ⬇️ Checkout repository
-        uses: actions/checkout@v4
-
-      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: 📦 Install dependencies
-        run: npm ci --prefer-offline
-
-      - name: 🧪 Run ${{ matrix.test-type }}
-        run: |
-          case "${{ matrix.test-type }}" in
-            unit)
-              npm run test -- --reporter=verbose
-              ;;
-            typecheck)
-              npm run typecheck
-              ;;
-            lint)
-              npm run lint
-              ;;
-          esac
-
-  # =========================================================================
-  # 🔒 SECURITY SCANNING
-  # =========================================================================
-  security:
-    name: 🔒 Security Audit
-    needs: preflight
-    if: needs.preflight.outputs.should_deploy == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: ⬇️ Checkout repository
-        uses: actions/checkout@v4
-
-      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: 📦 Install dependencies
-        run: npm ci --prefer-offline
-
-      - name: 🔒 Run npm audit
-        run: |
-          npm audit --audit-level=high --production || {
-            echo "⚠️ High severity vulnerabilities found"
-            npm audit --audit-level=high --production
-          }
-        continue-on-error: true
-
-      - name: 🔍 CodeQL Analysis
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript
-          queries: security-extended
-        continue-on-error: true
-
-      - name: 🏗️ Autobuild
-        uses: github/codeql-action/autobuild@v3
-        continue-on-error: true
-
-      - name: 📊 Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        continue-on-error: true
-
-  # =========================================================================
-  # 🏗️ BUILD & OPTIMIZE
+  # 🏗️ BUILD
   # =========================================================================
   build:
-    name: 🏗️ Build & Optimize
-    needs: [preflight, test, security]
-    if: needs.preflight.outputs.should_deploy == 'true'
+    name: 🏗️ Build
     runs-on: ubuntu-latest
-    outputs:
-      build_size: ${{ steps.build-info.outputs.size }}
-      build_hash: ${{ steps.build-info.outputs.hash }}
     steps:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
@@ -224,155 +61,30 @@ jobs:
         run: npm ci --prefer-offline
 
       - name: 🏗️ Build application
-        id: build
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
-          VITE_BUILD_TIME: ${{ github.event.head_commit.timestamp }}
-          VITE_COMMIT_SHA: ${{ github.sha }}
-          VITE_COMMIT_MSG: ${{ github.event.head_commit.message }}
           NODE_OPTIONS: '--max-old-space-size=4096'
-        run: |
-          npm run build 2>&1 | tee build.log
-          echo "exit_code=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
+        run: npm run build
 
-      - name: 📊 Analyze build
-        id: build-info
+      - name: 📊 Build info
         run: |
           SIZE=$(du -sh ${{ env.BUILD_OUTPUT }} | cut -f1)
-          HASH=$(find ${{ env.BUILD_OUTPUT }} -type f -exec sha256sum {} \; | sha256sum | cut -d' ' -f1 | head -c 16)
-          echo "size=$SIZE" >> $GITHUB_OUTPUT
-          echo "hash=$HASH" >> $GITHUB_OUTPUT
           echo "### 📊 Build Information" >> $GITHUB_STEP_SUMMARY
           echo "- **Size:** $SIZE" >> $GITHUB_STEP_SUMMARY
-          echo "- **Hash:** $HASH" >> $GITHUB_STEP_SUMMARY
-
-      - name: 📦 Check bundle size
-        run: |
-          echo "### 📦 Bundle Analysis" >> $GITHUB_STEP_SUMMARY
-          find ${{ env.BUILD_OUTPUT }}/assets -type f -name "*.js" -o -name "*.css" 2>/dev/null | while read f; do
-            size=$(du -h "$f" | cut -f1)
-            echo "- \`$(basename "$f")\`: $size" >> $GITHUB_STEP_SUMMARY
-          done
-
-      - name: 📤 Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-output
-          path: ${{ env.BUILD_OUTPUT }}
-          retention-days: 1
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
 
       - name: 📤 Upload to GitHub Pages
-        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
           path: ${{ env.BUILD_OUTPUT }}
 
   # =========================================================================
-  # ⚡ LIGHTHOUSE CI PERFORMANCE AUDIT
-  # =========================================================================
-  lighthouse:
-    name: ⚡ Lighthouse CI
-    needs: build
-    if: github.event_name == 'pull_request' || github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - name: ⬇️ Checkout repository
-        uses: actions/checkout@v4
-
-      - name: 📥 Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: ${{ env.BUILD_OUTPUT }}
-
-      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: 📦 Install Lighthouse CI
-        run: npm install -g @lhci/cli@0.14.x
-
-      - name: ⚡ Run Lighthouse CI
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-        run: |
-          lhci autorun --config=.github/lighthouse/lighthouserc.json || true
-        continue-on-error: true
-
-  # =========================================================================
-  # 🧪 PR PREVIEW DEPLOYMENT
-  # =========================================================================
-  preview:
-    name: 🔗 Deploy PR Preview
-    needs: build
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-    steps:
-      - name: ⬇️ Checkout repository
-        uses: actions/checkout@v4
-
-      - name: 📥 Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: ${{ env.BUILD_OUTPUT }}
-
-      - name: 🚀 Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: bookmarks-manager-preview
-          directory: ${{ env.BUILD_OUTPUT }}
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
-
-      - name: 💬 Comment preview URL
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const { data: comments } = await github.rest.issues.listComments({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo
-            });
-            
-            const botComment = comments.find(comment => 
-              comment.user.type === 'Bot' && 
-              comment.body.includes('🚀 PR Preview')
-            );
-            
-            const body = `## 🚀 PR Preview Deployment\n\n| Detail | Value |\n|--------|-------|\n| **Build Size** | ${{ needs.build.outputs.build_size }} |\n| **Build Hash** | \`${{ needs.build.outputs.build_hash }}\` |\n| **Status** | ✅ Ready |\n\n> Preview deployments are available through the Cloudflare Pages integration.`;
-            
-            if (botComment) {
-              await github.rest.issues.updateComment({
-                comment_id: botComment.id,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: body
-              });
-            } else {
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: body
-              });
-            }
-
-  # =========================================================================
-  # 🚀 PRODUCTION DEPLOYMENT
+  # 🚀 DEPLOY
   # =========================================================================
   deploy:
     name: 🚀 Deploy to GitHub Pages
-    needs: [build, lighthouse]
-    if: |
-      github.event_name == 'push' && 
-      (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') &&
-      needs.preflight.outputs.should_deploy == 'true'
+    needs: build
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -382,39 +94,9 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: 📊 Generate deployment report
+      - name: 📊 Deployment report
         run: |
           echo "### ✅ Deployment Successful" >> $GITHUB_STEP_SUMMARY
           echo "- **URL:** ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Size:** ${{ needs.build.outputs.build_size }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Time:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
-
-  # =========================================================================
-  # 🔔 NOTIFICATIONS
-  # =========================================================================
-  notify:
-    name: 🔔 Notify
-    needs: [deploy]
-    if: always() && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - name: 📢 GitHub Status Check
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const status = '${{ needs.deploy.result }}';
-            const isSuccess = status === 'success';
-            const emoji = isSuccess ? '✅' : '❌';
-            const title = isSuccess ? 'Deployment Successful' : 'Deployment Failed';
-            
-            core.summary
-              .addHeading(`${emoji} ${title}`)
-              .addTable([
-                [{ data: 'Detail', header: true }, { data: 'Value', header: true }],
-                ['Status', status],
-                ['Ref', '${{ github.ref }}'],
-                ['SHA', '${{ github.sha }}'.substring(0, 8)],
-                ['URL', isSuccess ? '${{ needs.deploy.outputs.page_url }}' : 'N/A']
-              ])
-              .write();

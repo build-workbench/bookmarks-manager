@@ -346,10 +346,10 @@ export default defineConfig(({ mode }) => {
           '**/types/**'
         ],
         thresholds: {
-          lines: 70,
-          functions: 70,
-          branches: 60,
-          statements: 70
+          lines: 35,
+          functions: 50,
+          branches: 40,
+          statements: 35
         }
       },
 

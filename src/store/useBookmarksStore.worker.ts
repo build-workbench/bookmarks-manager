@@ -254,6 +254,7 @@ export const useBookmarksStoreWithWorker = create<State>((set, get) => {
         console.error('Merge failed:', error)
         // Fallback to traditional method on worker error
         if (get().useWorker) {
+          // eslint-disable-next-line no-console
           console.log('Falling back to traditional merge...')
           set({ useWorker: false })
           await get().mergeAndDedup()

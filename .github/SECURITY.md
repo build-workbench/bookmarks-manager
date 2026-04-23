@@ -1,45 +1,30 @@
 # Security Policy
 
-## Supported Versions
+## Supported Version
 
-| Version | Supported          |
-| ------- | ------------------ |
-| latest  | :white_check_mark: |
+Only the latest published version is supported.
 
 ## Reporting a Vulnerability
 
-We take the security of Bookmarks Manager seriously. If you believe you've found a security vulnerability, please follow these steps:
+If you discover a security issue:
 
-### Please DO NOT:
+1. Prefer GitHub private vulnerability reporting if it is available for this repository.
+2. If private reporting is unavailable, contact the maintainer through GitHub before opening a public issue.
+3. Only use a public issue when the report is low risk and does not expose users to harm.
 
-- Open a public issue describing the vulnerability
-- Submit a pull request with the fix before discussing with maintainers
-- Share the vulnerability details publicly
+Please include:
 
-### Please DO:
+- a short description of the issue
+- steps to reproduce
+- impact and affected surface
+- any mitigation ideas you already validated
 
-1. **Email the maintainers directly** at [security@example.com] (replace with actual contact)
-2. Include:
-   - Description of the vulnerability
-   - Steps to reproduce
-   - Potential impact
-   - Any suggested fixes (if you have them)
+## Security Notes
 
-### What to Expect
+Bookmarks Manager is a client-side application:
 
-- **Acknowledgment** within 48 hours
-- **Initial assessment** within 1 week
-- **Regular updates** on our progress
-- **Credit** when the issue is resolved (if you wish)
+- bookmark data stays in the browser unless the user explicitly sends data to an AI provider
+- API keys are stored locally in IndexedDB
+- there is no project backend, account system, or server-side storage
 
-## Security Considerations
-
-This project is a client-side only application. Your bookmarks:
-- Never leave your browser
-- Are stored in browser's IndexedDB
-- Are not uploaded to any server
-
-However, if you use AI features:
-- Your API key is stored locally
-- Bookmark data may be sent to AI providers (based on your settings)
-- Please review your AI provider's privacy policy
+When AI features are enabled, the selected provider may receive bookmark content according to the user’s configuration. Review the provider’s privacy policy before enabling AI features.

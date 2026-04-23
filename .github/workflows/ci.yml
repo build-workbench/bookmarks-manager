@@ -1,161 +1,41 @@
-# =============================================================================
-# 🔷 CI WORKFLOW
-# =============================================================================
-# Runs comprehensive checks on every push and PR
-# =============================================================================
-
-name: 🔷 CI
+name: CI
 
 on:
   push:
-    branches-ignore:
-      - 'dependabot/**'
-  pull_request:
-    types: [opened, synchronize, reopened]
-  merge_group:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}-${{ github.event_name }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  # =========================================================================
-  # 📋 CHANGE DETECTION
-  # =========================================================================
-  changes:
-    name: 📋 Detect Changes
+  validate:
     runs-on: ubuntu-latest
-    outputs:
-      src: ${{ steps.changes.outputs.src }}
-      docs: ${{ steps.changes.outputs.docs }}
     steps:
       - uses: actions/checkout@v4
-
-      - uses: dorny/paths-filter@v3
-        id: changes
-        with:
-          filters: |
-            src:
-              - 'src/**'
-              - 'package*.json'
-              - 'tsconfig*.json'
-              - 'vite.config.ts'
-              - 'tailwind.config.js'
-              - '.eslintrc*'
-              - '.prettierrc*'
-              - '.github/workflows/ci.yml'
-            docs:
-              - '**/*.md'
-              - 'docs/**'
-
-  # =========================================================================
-  # 🧪 CORE TESTS
-  # =========================================================================
-  test:
-    name: 🧪 Test (${{ matrix.test }})
-    needs: changes
-    if: needs.changes.outputs.src == 'true' || github.event_name == 'merge_group'
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        test: [unit, typecheck, lint]
-        include:
-          - test: unit
-            command: test --reporter=verbose
-          - test: typecheck
-            command: typecheck
-          - test: lint
-            command: lint
-    steps:
-      - name: ⬇️ Checkout
-        uses: actions/checkout@v4
-
-      - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
+      - run: npm ci
+      - run: npm run validate
 
-      - name: 📦 Install dependencies
-        run: npm ci --prefer-offline
-
-      - name: 🧪 Run ${{ matrix.test }}
-        run: npm run ${{ matrix.command }}
-
-  # =========================================================================
-  # 🏗️ BUILD VERIFICATION
-  # =========================================================================
   build:
-    name: 🏗️ Build
-    needs: changes
-    if: needs.changes.outputs.src == 'true' || github.event_name == 'merge_group'
+    needs: validate
     runs-on: ubuntu-latest
     steps:
-      - name: ⬇️ Checkout
-        uses: actions/checkout@v4
-
-      - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
-
-      - name: 📦 Install dependencies
-        run: npm ci --prefer-offline
-
-      - name: 🏗️ Build application
-        run: npm run build
+      - run: npm ci
+      - run: npm run build
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
-
-      - name: 📤 Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifact
-          path: dist/
-          retention-days: 1
-
-  # =========================================================================
-  # 🔒 SECURITY AUDIT
-  # =========================================================================
-  security:
-    name: 🔒 Security Audit
-    runs-on: ubuntu-latest
-    steps:
-      - name: ⬇️ Checkout
-        uses: actions/checkout@v4
-
-      - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: 📦 Install dependencies
-        run: npm ci --prefer-offline
-
-      - name: 🔒 Run npm audit
-        run: npm audit --audit-level=high --production || true
-
-  # =========================================================================
-  # ✅ FINAL STATUS
-  # =========================================================================
-  ci-success:
-    name: ✅ CI Success
-    needs: [test, build, security]
-    if: always() && !cancelled()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check status
-        run: |
-          if [ "${{ needs.test.result }}" == "failure" ] || \
-             [ "${{ needs.build.result }}" == "failure" ] || \
-             [ "${{ needs.security.result }}" == "failure" ]; then
-            echo "❌ CI failed"
-            exit 1
-          fi
-          echo "✅ CI passed"

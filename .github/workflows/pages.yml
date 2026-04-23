@@ -1,31 +1,11 @@
-# =============================================================================
-# 🚀 GITHUB PAGES DEPLOYMENT WORKFLOW
-# =============================================================================
-# Simplified deployment workflow with essential checks
-# =============================================================================
-
-name: 🚀 Deploy to GitHub Pages
+name: Deploy Pages
 
 on:
   push:
-    branches: [master, main]
-    paths-ignore:
-      - '**/*.md'
-      - '.gitignore'
-      - '.editorconfig'
-      - 'docs/**'
-      - '.github/ISSUE_TEMPLATE/**'
-
+    branches:
+      - master
+      - main
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Deployment environment'
-        required: true
-        default: 'production'
-        type: choice
-        options:
-          - production
-          - staging
 
 permissions:
   contents: read
@@ -33,70 +13,32 @@ permissions:
   id-token: write
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  NODE_VERSION: '22'
-  BUILD_OUTPUT: 'dist'
-
 jobs:
-  # =========================================================================
-  # 🏗️ BUILD
-  # =========================================================================
   build:
-    name: 🏗️ Build
     runs-on: ubuntu-latest
     steps:
-      - name: ⬇️ Checkout repository
-        uses: actions/checkout@v4
-
-      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '22'
           cache: 'npm'
-
-      - name: 📦 Install dependencies
-        run: npm ci --prefer-offline
-
-      - name: 🏗️ Build application
+      - run: npm ci
+      - run: npm run build
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
-          NODE_OPTIONS: '--max-old-space-size=4096'
-        run: npm run build
-
-      - name: 📊 Build info
-        run: |
-          SIZE=$(du -sh ${{ env.BUILD_OUTPUT }} | cut -f1)
-          echo "### 📊 Build Information" >> $GITHUB_STEP_SUMMARY
-          echo "- **Size:** $SIZE" >> $GITHUB_STEP_SUMMARY
-          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
-
-      - name: 📤 Upload to GitHub Pages
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ env.BUILD_OUTPUT }}
+          path: dist
 
-  # =========================================================================
-  # 🚀 DEPLOY
-  # =========================================================================
   deploy:
-    name: 🚀 Deploy to GitHub Pages
     needs: build
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: 🚀 Deploy to GitHub Pages
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4
-
-      - name: 📊 Deployment report
-        run: |
-          echo "### ✅ Deployment Successful" >> $GITHUB_STEP_SUMMARY
-          echo "- **URL:** ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Time:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY

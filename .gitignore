@@ -3,7 +3,9 @@ dist
 dev-dist
 
 # IDE
-.vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 .idea
 *.swp
 *.swo
@@ -34,3 +36,6 @@ npm-debug.log*
 
 # Windsurf
 .windsurf/
+
+# Claude local
+CLAUDE.local.md

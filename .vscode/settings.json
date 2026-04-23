@@ -1,0 +1,25 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "files.exclude": {
+    "**/coverage": true,
+    "**/dev-dist": true,
+    "**/dist": true,
+    "**/*.tsbuildinfo": true
+  },
+  "search.exclude": {
+    "**/coverage": true,
+    "**/dev-dist": true,
+    "**/dist": true,
+    "**/*.tsbuildinfo": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "tailwindCSS.experimental.classRegex": ["className=\"([^\"]*)\"", "className={`([^`]*)`}"]
+}

@@ -1,255 +1,63 @@
 # Bookmarks Manager
 
-<p align="center">
-  <b>Merge, deduplicate, and analyze your browser bookmarks — privately and locally.</b>
-</p>
+**Local-first bookmark cleanup for browsers.** Import exported bookmarks, deduplicate them locally, search or analyze them, then export a cleaner set back out.
 
-<p align="center">
-  <a href="https://lessup.github.io/bookmarks-manager/">
-    <img src="https://img.shields.io/badge/🚀_Try_Online_Now-2ea44f?style=for-the-badge&logoColor=white" alt="Try Online">
-  </a>
-</p>
+[Live demo](https://lessup.github.io/bookmarks-manager/) · [中文说明](README.zh-CN.md) · [Architecture](docs/ARCHITECTURE.md) · [Contributing](docs/CONTRIBUTING.md)
 
-<p align="center">
-  <a href="https://github.com/LessUp/bookmarks-manager/releases/latest"><img src="https://img.shields.io/github/v/release/LessUp/bookmarks-manager?label=Version" alt="Version"></a>
-  <a href="https://github.com/LessUp/bookmarks-manager/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/LessUp/bookmarks-manager/ci.yml?label=CI" alt="CI"></a>
-  <a href="https://github.com/LessUp/bookmarks-manager/actions/workflows/pages.yml"><img src="https://img.shields.io/github/actions/workflow/status/LessUp/bookmarks-manager/pages.yml?label=Deploy" alt="Deploy"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
-</p>
+## Why this project exists
 
-<p align="center">
-  English | <a href="README.zh-CN.md">简体中文</a>
-</p>
+Most bookmark tools either want your data in the cloud or stop at basic import/export. Bookmarks Manager focuses on a different trade-off:
 
----
+- **Local-first**: bookmark files stay in the browser
+- **Privacy-first**: no backend, no account system, no forced upload
+- **Practical cleanup**: merge, deduplicate, inspect, search, analyze, export
+- **Installable**: runs as a PWA on GitHub Pages
 
-## 📖 Table of Contents
+## Core workflow
 
-- [What is this?](#what-is-this)
-- [Quick Start](#quick-start)
-- [How to Use](#how-to-use)
-- [Key Features](#key-features)
-- [Privacy & Security](#privacy--security)
-- [Screenshots](#screenshots)
-- [For Developers](#for-developers)
-- [Roadmap](#roadmap)
-- [Changelog](#changelog)
-- [License](#license)
+| Step    | What you do                                                                     | What the app does                              |
+| ------- | ------------------------------------------------------------------------------- | ---------------------------------------------- |
+| Import  | Export bookmarks from Chrome, Firefox, Edge, Safari, Brave, or similar browsers | Parses Netscape bookmark HTML locally          |
+| Merge   | Load one or more files                                                          | Normalizes folders and URLs, groups duplicates |
+| Explore | Search, inspect duplicates, run cleanup/AI tools, create backups                | Keeps data in IndexedDB for later sessions     |
+| Export  | Download cleaned bookmarks                                                      | Exports HTML, JSON, CSV, or Markdown           |
 
----
+## Feature snapshot
 
-## 🎯 What is this?
+| Area             | Included                                                                          |
+| ---------------- | --------------------------------------------------------------------------------- |
+| Bookmark cleanup | Multi-file import, URL normalization, duplicate grouping, merge stats             |
+| Search           | Full-text search, highlight, advanced filtering, filtered export                  |
+| Insights         | Domain and year charts, duplicate overview, cleanup workflow                      |
+| AI               | BYOK provider settings, categorization, summaries, health-style analysis, reports |
+| Resilience       | IndexedDB persistence, backup/restore, Web Worker support for large datasets      |
 
-A **privacy-first, browser-based tool** that helps you:
-
-- 📥 **Import** bookmarks from multiple browsers (Chrome, Firefox, Edge, Safari)
-- 🔗 **Merge** them into one unified collection
-- 🧹 **Remove duplicates** intelligently 
-- 🔍 **Search** instantly with full-text search
-- 📊 **Visualize** your bookmark habits
-- 🤖 **Analyze** with AI (bring your own API key)
-
-**All processing happens in your browser.** No data ever leaves your device.
-
----
-
-## 🚀 Quick Start
-
-### Option 1: Use Online (Recommended)
-
-👉 **[Click here to open the app](https://lessup.github.io/bookmarks-manager/)**
-
-No installation required. Works offline after first load (PWA).
-
-### Option 2: Install as Desktop App
-
-After opening the online version:
-
-| Browser | Instructions |
-|---------|-------------|
-| Chrome/Edge | Click `⋮` → "Install Bookmarks Manager" |
-| Safari | Share → "Add to Home Screen" |
-| Firefox | Currently limited PWA support |
-
-### Option 3: Run Locally
+## Run locally
 
 ```bash
 git clone https://github.com/LessUp/bookmarks-manager.git
 cd bookmarks-manager
 npm install
 npm run dev
-# Open http://localhost:5173
 ```
 
----
-
-## 📖 How to Use
-
-### 1. Export Bookmarks from Your Browser
-
-**Chrome / Edge / Brave:**
-1. Press `Ctrl+Shift+O` (Windows) or `Cmd+Shift+O` (Mac)
-2. Click `⋮` menu → "Export bookmarks"
-3. Save the HTML file
-
-**Firefox:**
-1. Press `Ctrl+Shift+B` (Windows) or `Cmd+Shift+B` (Mac)
-2. Click "Import and Backup" → "Export Bookmarks to HTML"
-
-**Safari:**
-1. File → "Export Bookmarks"
-
-### 2. Import & Merge
-
-1. Open the [app](https://lessup.github.io/bookmarks-manager/)
-2. Drag and drop your bookmark file(s) into the upload area
-3. Click "Merge & Deduplicate"
-4. Watch the magic happen ✨
-
-### 3. Explore Your Bookmarks
-
-- **Dashboard** — View stats, charts, and trends
-- **Search** — Find bookmarks with instant full-text search
-- **Duplicates** — Review what was deduplicated
-- **AI** — Analyze with AI (optional, BYOK)
-- **Export** — Download clean bookmarks back to your browser
-
----
-
-## ✨ Key Features
-
-| Feature | Description |
-|---------|-------------|
-| 🔒 **100% Private** | Everything runs locally in your browser. No server, no uploads, no tracking. |
-| 🔗 **Smart Deduplication** | URL normalization removes true duplicates (handles http/https, trailing slashes, tracking params) |
-| 📥 **Multi-Browser** | Merge bookmarks from Chrome, Firefox, Edge, Safari in one go |
-| 🔍 **Full-Text Search** | Search across titles, URLs, and folder names with instant results |
-| 📊 **Visual Insights** | See your bookmark patterns: top domains, yearly trends, duplicates ratio |
-| 💾 **Auto-Save** | Data persists in browser storage — close the tab and come back later |
-| 🤖 **AI Analysis** | Optional AI features (BYOK) for categorization, summarization, and insights |
-| 📱 **PWA Support** | Install as a desktop/mobile app, works offline |
-| 📤 **Multi-Format Export** | Export as HTML, JSON, CSV, or Markdown |
-| 💾 **Backup & Restore** | Full application data backup and migration |
-
-### Performance Benchmarks
-
-| Metric | Performance |
-|--------|-------------|
-| Initial Load | < 2s |
-| Search (10k bookmarks) | < 100ms |
-| Import 1000 bookmarks | < 3s |
-| Memory Usage | < 200MB |
-
----
-
-## 🔒 Privacy & Security
-
-Your bookmarks are precious. We take privacy seriously:
-
-- ✅ **Zero Cloud** — No backend server, no database
-- ✅ **Local Processing** — All parsing, merging, and analysis happens in your browser
-- ✅ **No Uploads** — Your bookmarks never leave your device
-- ✅ **Secure Storage** — Data stored in browser's IndexedDB (your control)
-- ✅ **Open Source** — Full transparency. Inspect the code yourself.
-
-**AI Features (Optional):**
-- Uses your own API key (BYOK — Bring Your Own Key)
-- API keys stored locally in your browser
-- Can be used entirely offline without AI
-
----
-
-## 📸 Screenshots
-
-### Dashboard
-![Dashboard Preview](screenshots/dashboard.svg)
-*Visual analytics showing bookmark distribution, yearly trends, and duplicate statistics.*
-
-### Search & Deduplication
-![Search Preview](screenshots/search.svg)
-*Instant full-text search across titles, URLs, and folders with duplicate detection.*
-
-### AI Analysis
-![AI Preview](screenshots/ai-analysis.svg)
-*AI-powered categorization, link health checking, and natural language bookmark search.*
-
-> 💡 **Want to see it in action?** [Try the live demo](https://lessup.github.io/bookmarks-manager/)
-
----
-
-## 🛠️ For Developers
-
-Want to contribute or self-host? Check out:
-
-- [CHANGELOG.md](CHANGELOG.md) — Version history and release notes
-- [QUICKSTART.md](QUICKSTART.md) — Detailed development setup
-- [FEATURES.md](FEATURES.md) — Full feature documentation
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — System architecture
-- [docs/API.md](docs/API.md) — Module interfaces
-- [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) — Contribution guidelines
-- [docs/PRD.md](docs/PRD.md) — Product requirements
+For local verification:
 
 ```bash
-# Development
-npm install
-npm run dev
-
-# Build
+npm run validate
 npm run build
-
-# Test
-npm run test
 ```
 
-**Tech Stack:** React 18 + TypeScript + Vite + Tailwind CSS + Dexie (IndexedDB) + ECharts
+## Maintained docs
 
----
+| File                      | Purpose                              |
+| ------------------------- | ------------------------------------ |
+| `docs/ARCHITECTURE.md`    | High-signal architecture map         |
+| `docs/CONTRIBUTING.md`    | Actual repository workflow           |
+| `CHANGELOG.md`            | Curated release history              |
+| `openspec/`               | Change proposals, specs, and archive |
+| `AGENTS.md` / `CLAUDE.md` | AI assistant repo instructions       |
 
-## 🗺️ Roadmap
+## License
 
-### ✅ Completed (v1.1.0)
-- Multi-format export (JSON, CSV, Markdown)
-- Backup & restore functionality
-- Web Worker optimization for large datasets
-- Virtual scrolling
-- AI module (BYOK)
-- Documentation internationalization
-
-### 📋 Planned (v1.2.0)
-- Batch editing and tagging system
-- Advanced filtering UI improvements
-- Plugin system for custom exporters
-
-### 🔮 Future (v2.0)
-- Cloud sync (optional, end-to-end encrypted)
-- Mobile app (React Native)
-
----
-
-## 📝 Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for a complete list of changes.
-
-**Latest Release: v1.1.0** (2026-04-15)
-- Multi-format export (JSON, CSV, Markdown)
-- Backup & restore
-- Performance optimizations
-- Documentation restructuring with bilingual support
-
----
-
-## 📄 License
-
-[MIT License](LICENSE) — Free for personal and commercial use.
-
----
-
-<p align="center">
-  <sub>Built with ❤️ for bookmark hoarders everywhere</sub>
-</p>
-
-<p align="center">
-  <a href="https://github.com/LessUp/bookmarks-manager">GitHub</a> •
-  <a href="https://lessup.github.io/bookmarks-manager/">Live Demo</a> •
-  <a href="docs/">Documentation</a>
-</p>
+MIT

@@ -1,58 +1,63 @@
 # AGENTS.md
 
-Development guidance for Bookmarks Manager - a local-first PWA for merging and deduplicating browser bookmarks.
+Repository contract for AI coding assistants working on **Bookmarks Manager**.
 
-## Commands
+## Product and current goal
+
+Bookmarks Manager is a **local-first PWA** for importing, deduplicating, searching, analyzing, and exporting browser bookmarks. The current project goal is **closure hardening**: improve coherence, reduce maintenance noise, and keep the repo easy to maintain as a solo project.
+
+## Architecture snapshot
+
+- `src/pages/` — route-level UI, including the public landing page and the in-app workspace
+- `src/ui/` — shared UI primitives
+- `src/store/` — Zustand state
+- `src/utils/` — bookmark parsing, search, storage, export, backup helpers
+- `src/cleanup/` — cleanup workflow domain
+- `src/ai/` — BYOK AI adapters and services
+- `src/workers/` — Web Worker support for large bookmark datasets
+- `openspec/` — the source of truth for scoped product and repository changes
+
+## Commands that matter
 
 ```bash
-npm run dev          # Start dev server (port 5173)
-npm run validate     # Pre-commit: typecheck + lint + test
-npm run ci           # Full CI: clean, install, validate with coverage, build
-npm run test         # Run tests once
-npm run test:watch   # Watch mode
-npm run build        # Production build (tsc + vite)
+npm run dev
+npm run validate   # typecheck -> lint -> test
+npm run build
 ```
 
-## Verification Order
+Use `npm run validate` for all code changes. Also run `npm run build` when you touch routing, PWA, metadata, workflows, or deployment-facing files.
 
-`typecheck` → `lint` → `test` (enforced by `npm run validate`)
+## Workflow rules
 
-## Key Architecture
+1. Start with OpenSpec for meaningful product or repository changes.
+2. Keep only active, current work under `openspec/changes/`; move deferred work out of the active list.
+3. This repository is maintained as a **solo direct-push** project.
+4. Use `/review` or an equivalent focused review step for risky, cross-cutting, or hard-to-verify changes.
 
-- **Router**: `HashRouter` (required for GitHub Pages SPA)
-- **Storage**: IndexedDB via Dexie (`BookmarksDB`, schema version 3)
-- **State**: Zustand stores in `src/store/`
-- **Workers**: Web Workers for large datasets (>500 bookmarks) in `src/workers/`
-- **Path aliases**: `@/`, `@ai/`, `@components/`, `@pages/`, `@store/`, `@utils/`, `@workers/`
+## Documentation rules
 
-## Testing
+Prefer a **small maintained doc set** over many stale documents. Keep these accurate:
 
-- Framework: Vitest + jsdom
-- IndexedDB mock: `fake-indexeddb/auto` (in `src/test/setup.ts`)
-- Each test run resets the database via `beforeEach` hook
-- Coverage thresholds: lines 35%, functions 50%, branches 40%, statements 35%
+- `README.md` / `README.zh-CN.md`
+- `CHANGELOG.md` / `CHANGELOG.zh-CN.md`
+- `docs/README*.md`
+- `docs/ARCHITECTURE*.md`
+- `docs/CONTRIBUTING*.md`
+- `AGENTS.md`
+- `CLAUDE.md`
 
-## Code Style
+Do not add generic PRDs, API dumps, or community boilerplate unless they will be actively maintained.
 
-- **No semicolons** (Prettier `semi: false`)
-- Single quotes for TS/JS, double quotes for JSX
-- No trailing commas
-- Use `interface` for object shapes
+## Tooling policy
 
-## Build Quirks
+- Prefer `gh`, built-in assistant features, and OpenSpec skills over extra MCP/tooling sprawl.
+- Copilot guidance lives in `.github/copilot-instructions.md`.
+- Workspace editor and LSP defaults live in `.vscode/settings.json`.
+- Husky hooks should stay lightweight: staged formatting on commit, full validation on push.
 
-- Production builds use `VITE_BASE_PATH=/bookmarks-manager/` for GitHub Pages
-- Use `npm run build:staging` for root-path builds (local testing)
-- Bundle analysis: `ANALYZE=true npm run build`
+## Guardrails
 
-## Database Schema (Dexie v3)
-
-Tables: `bookmarks`, `settings`, `aiConfig`, `aiCache`, `aiUsage`, `aiPrompts`, `aiUsageLimits`, `cleanupSessions`
-
-See `src/utils/db.ts` for interfaces.
-
-## Constraints
-
-- Node.js >= 20.0.0
-- All data stays client-side (IndexedDB, no backend)
-- AI features are BYOK (user provides API key, stored in IndexedDB)
+- Preserve the local-first privacy model.
+- Do not introduce a backend or cloud dependency.
+- Do not hardcode API keys or secrets.
+- Keep changes surgical and remove drift when you find it, but do not resurrect deferred feature work unless a new OpenSpec change explicitly scopes it.

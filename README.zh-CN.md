@@ -1,255 +1,63 @@
-# 书签管理器 Bookmarks Manager
+# Bookmarks Manager
 
-<p align="center">
-  <b>私密、本地化的浏览器书签合并与智能分析工具</b>
-</p>
+**本地优先的浏览器书签整理工具。** 导入浏览器导出的书签文件，在本地完成合并、去重、搜索、分析和导出。
 
-<p align="center">
-  <a href="https://lessup.github.io/bookmarks-manager/">
-    <img src="https://img.shields.io/badge/🚀_立即在线使用-2ea44f?style=for-the-badge&logoColor=white" alt="立即使用">
-  </a>
-</p>
+[在线演示](https://lessup.github.io/bookmarks-manager/) · [English](README.md) · [架构说明](docs/ARCHITECTURE.zh-CN.md) · [贡献说明](docs/CONTRIBUTING.zh-CN.md)
 
-<p align="center">
-  <a href="https://github.com/LessUp/bookmarks-manager/releases/latest"><img src="https://img.shields.io/github/v/release/LessUp/bookmarks-manager?label=版本" alt="版本"></a>
-  <a href="https://github.com/LessUp/bookmarks-manager/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/LessUp/bookmarks-manager/ci.yml?label=CI" alt="CI"></a>
-  <a href="https://github.com/LessUp/bookmarks-manager/actions/workflows/pages.yml"><img src="https://img.shields.io/github/actions/workflow/status/LessUp/bookmarks-manager/pages.yml?label=部署" alt="部署"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/协议-MIT-blue.svg" alt="协议: MIT"></a>
-</p>
+## 这个项目解决什么问题
 
-<p align="center">
-  <a href="README.md">English</a> | 简体中文
-</p>
+很多书签工具不是把数据推到云端，就是只做最基础的导入导出。Bookmarks Manager 选择的是另一条路线：
 
----
+- **本地优先**：书签文件只在浏览器内处理
+- **隐私优先**：没有后端、没有账号体系、没有强制上传
+- **实用整理**：导入、合并、去重、搜索、分析、导出一条龙
+- **可安装使用**：基于 GitHub Pages 发布，可作为 PWA 安装
 
-## 📖 目录
+## 核心流程
 
-- [这是什么？](#这是什么)
-- [快速开始](#快速开始)
-- [使用指南](#使用指南)
-- [核心功能](#核心功能)
-- [隐私与安全](#隐私与安全)
-- [界面预览](#界面预览)
-- [开发者相关](#开发者相关)
-- [路线图](#路线图)
-- [更新日志](#更新日志)
-- [开源协议](#开源协议)
+| 步骤 | 你做什么                                                 | 应用会做什么                         |
+| ---- | -------------------------------------------------------- | ------------------------------------ |
+| 导入 | 从 Chrome、Firefox、Edge、Safari、Brave 等浏览器导出书签 | 在本地解析 Netscape Bookmark HTML    |
+| 合并 | 一次加载一个或多个文件                                   | 规范化目录与 URL，识别重复项         |
+| 整理 | 搜索、查看重复、运行清理或 AI 工具、备份                 | 把数据保存在 IndexedDB，方便下次继续 |
+| 导出 | 下载整理后的结果                                         | 支持导出 HTML、JSON、CSV、Markdown   |
 
----
+## 功能概览
 
-## 🎯 这是什么？
+| 模块     | 已包含能力                                       |
+| -------- | ------------------------------------------------ |
+| 书签清理 | 多文件导入、URL 规范化、重复分组、合并统计       |
+| 搜索     | 全文搜索、高亮、组合过滤、按筛选结果导出         |
+| 洞察     | 域名和年份图表、重复概览、清理工作流             |
+| AI       | 自备 Key 的模型配置、分类、摘要、健康分析、报告  |
+| 稳定性   | IndexedDB 持久化、备份恢复、大数据量 Worker 支持 |
 
-一个**隐私优先、纯浏览器端**的书签管理工具，帮助你：
-
-- 📥 **导入** 多个浏览器的书签（Chrome、Firefox、Edge、Safari）
-- 🔗 **合并** 成一个统一的收藏夹
-- 🧹 **智能去重** —— 精准识别重复书签
-- 🔍 **全文搜索** —— 毫秒级检索
-- 📊 **可视化分析** —— 深入了解你的收藏习惯
-- 🤖 **AI 智能分析** —— 分类、摘要、报告（需自备 API Key）
-
-**所有处理都在你的浏览器中完成，数据不会上传任何服务器。**
-
----
-
-## 🚀 快速开始
-
-### 方式一：在线使用（推荐）
-
-👉 **[点击这里打开应用](https://lessup.github.io/bookmarks-manager/)**
-
-无需安装，首次加载后支持离线使用（PWA）。
-
-### 方式二：安装为桌面应用
-
-打开在线版后，按以下步骤安装：
-
-| 浏览器 | 操作步骤 |
-|---------|-------------|
-| Chrome/Edge | 点击地址栏 `⋮` → "安装书签管理器" |
-| Safari | 分享按钮 → "添加到主屏幕" |
-| Firefox | 当前 PWA 支持有限 |
-
-### 方式三：本地运行
+## 本地运行
 
 ```bash
 git clone https://github.com/LessUp/bookmarks-manager.git
 cd bookmarks-manager
 npm install
 npm run dev
-# 打开 http://localhost:5173
 ```
 
----
-
-## 📖 使用指南
-
-### 第一步：导出浏览器书签
-
-**Chrome / Edge / Brave：**
-1. 按 `Ctrl+Shift+O`（Windows）或 `Cmd+Shift+O`（Mac）打开书签管理器
-2. 点击右上角 `⋮` 菜单 → "导出书签"
-3. 保存 HTML 文件
-
-**Firefox：**
-1. 按 `Ctrl+Shift+B`（Windows）或 `Cmd+Shift+B`（Mac）打开书签库
-2. 点击"导入和备份" → "导出书签到 HTML"
-
-**Safari：**
-1. 菜单栏选择"文件" → "导出书签"
-
-### 第二步：导入合并
-
-1. 打开 [在线应用](https://lessup.github.io/bookmarks-manager/)
-2. 拖拽书签文件到上传区域（支持多个文件同时导入）
-3. 点击"合并去重"按钮
-4. 等待处理完成 ✨
-
-### 第三步：管理你的书签
-
-- **仪表盘** —— 查看统计数据、图表和收藏趋势
-- **搜索** —— 使用全文搜索快速找到书签
-- **去重** —— 查看哪些书签被识别为重复项
-- **AI 分析** —— 使用 AI 功能（可选，自备密钥）
-- **导出** —— 将清理后的书签导回浏览器
-
----
-
-## ✨ 核心功能
-
-| 功能 | 说明 |
-|---------|-------------|
-| 🔒 **完全私密** | 纯浏览器端运行，无服务器、无上传、无追踪 |
-| 🔗 **智能去重** | URL 规范化算法精准去重（统一 http/https、去除追踪参数等） |
-| 📥 **多浏览器支持** | 一次导入 Chrome、Firefox、Edge、Safari 的书签 |
-| 🔍 **全文搜索** | 支持标题、URL、文件夹名的模糊搜索，结果高亮 |
-| 📊 **可视化洞察** | 图表展示域名分布、年度趋势、重复占比等 |
-| 💾 **数据持久化** | 自动保存到浏览器存储，刷新页面数据不丢失 |
-| 🤖 **AI 分析** | 可选 AI 功能（自带 API Key）：分类、摘要、健康检查、自然语言搜索 |
-| 📱 **PWA 支持** | 可安装为桌面/手机应用，离线可用 |
-| 📤 **多格式导出** | 支持导出为 HTML、JSON、CSV、Markdown |
-| 💾 **备份与恢复** | 完整的应用数据备份和迁移 |
-
-### 性能基准
-
-| 指标 | 性能 |
-|--------|-------------|
-| 初始加载 | < 2秒 |
-| 搜索（1万条书签） | < 100毫秒 |
-| 导入 1000 条书签 | < 3秒 |
-| 内存占用 | < 200MB |
-
----
-
-## 🔒 隐私与安全
-
-你的书签数据非常私密，我们高度重视隐私保护：
-
-- ✅ **零云端依赖** —— 没有后端服务器，没有数据库
-- ✅ **本地处理** —— 所有解析、合并、分析都在浏览器中完成
-- ✅ **零上传** —— 书签数据永远不会离开你的设备
-- ✅ **安全存储** —— 数据存储在浏览器的 IndexedDB 中（完全由你控制）
-- ✅ **开源透明** —— 代码完全公开，可自行验证
-
-**AI 功能（可选）：**
-- 使用你自己的 API Key（BYOK — Bring Your Own Key）
-- API Key 仅存储在本地浏览器
-- 可以完全离线使用，不使用 AI 功能
-
----
-
-## 📸 界面预览
-
-### 仪表盘
-![仪表盘预览](screenshots/dashboard.svg)
-*可视化分析展示书签分布、年度趋势和重复统计。*
-
-### 搜索与去重
-![搜索预览](screenshots/search.svg)
-*毫秒级全文搜索，支持标题、URL 和文件夹搜索，智能识别重复书签。*
-
-### AI 智能分析
-![AI 预览](screenshots/ai-analysis.svg)
-*AI 驱动的分类、链接健康检查和自然语言书签搜索。*
-
-> 💡 **想要体验？** [点击试用在线版](https://lessup.github.io/bookmarks-manager/)
-
----
-
-## 🛠️ 开发者相关
-
-想参与贡献或自行部署？请查看：
-
-- [CHANGELOG.md](CHANGELOG.zh-CN.md) —— 版本更新日志
-- [QUICKSTART.md](QUICKSTART.md) —— 详细开发环境搭建
-- [FEATURES.md](FEATURES.md) —— 完整功能文档
-- [docs/ARCHITECTURE.zh-CN.md](docs/ARCHITECTURE.zh-CN.md) —— 系统架构
-- [docs/API.zh-CN.md](docs/API.zh-CN.md) —— 模块接口
-- [docs/CONTRIBUTING.zh-CN.md](docs/CONTRIBUTING.zh-CN.md) —— 贡献指南
-- [docs/PRD.zh-CN.md](docs/PRD.zh-CN.md) —— 产品需求
+本地验证命令：
 
 ```bash
-# 开发模式
-npm install
-npm run dev
-
-# 构建
+npm run validate
 npm run build
-
-# 测试
-npm run test
 ```
 
-**技术栈：** React 18 + TypeScript + Vite + Tailwind CSS + Dexie (IndexedDB) + ECharts
+## 当前维护的文档
 
----
+| 文件                         | 用途                   |
+| ---------------------------- | ---------------------- |
+| `docs/ARCHITECTURE.zh-CN.md` | 精简且准确的架构说明   |
+| `docs/CONTRIBUTING.zh-CN.md` | 当前仓库的真实开发流程 |
+| `CHANGELOG.zh-CN.md`         | 精简后的版本记录       |
+| `openspec/`                  | 变更提案、规格与归档   |
+| `AGENTS.md` / `CLAUDE.md`    | AI 助手仓库指令        |
 
-## 🗺️ 路线图
+## License
 
-### ✅ 已完成 (v1.1.0)
-- 多格式导出（JSON、CSV、Markdown）
-- 备份与恢复功能
-- 大数据集 Web Worker 优化
-- 虚拟滚动
-- AI 模块（BYOK）
-- 文档国际化
-
-### 📋 计划中 (v1.2.0)
-- 批量编辑和标签系统
-- 高级过滤 UI 改进
-- 自定义导出器的插件系统
-
-### 🔮 未来 (v2.0)
-- 云同步（可选，端到端加密）
-- 移动应用（React Native）
-
----
-
-## 📝 更新日志
-
-完整变更列表请参见 [CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)。
-
-**最新版本：v1.1.0**（2026-04-15）
-- 多格式导出（JSON、CSV、Markdown）
-- 备份与恢复
-- 性能优化
-- 文档重构，支持中英文双语
-
----
-
-## 📄 开源协议
-
-[MIT License](LICENSE) —— 个人和商业使用均可免费。
-
----
-
-<p align="center">
-  <sub>用 ❤️ 为书签收藏爱好者打造</sub>
-</p>
-
-<p align="center">
-  <a href="https://github.com/LessUp/bookmarks-manager">GitHub</a> •
-  <a href="https://lessup.github.io/bookmarks-manager/">在线演示</a> •
-  <a href="docs/">文档</a>
-</p>
+MIT

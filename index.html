@@ -4,33 +4,78 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0ea5e9" />
-    <meta name="description" content="Privacy-first PWA for merging, deduplicating & analyzing browser bookmarks. 100% local processing, no server required." />
-    <meta name="keywords" content="bookmark manager, deduplication, privacy, PWA, local-first, browser bookmarks, merge bookmarks" />
+    
+    <title>Bookmarks Manager - Local-first bookmark cleanup for browsers</title>
+    <meta name="title" content="Bookmarks Manager - Local-first bookmark cleanup for browsers" />
+    <meta name="description" content="Import, deduplicate, search, analyze, and export browser bookmarks in a local-first PWA. No upload required. Live demo: https://lessup.github.io/bookmarks-manager/" />
+    <meta name="keywords" content="bookmark manager, bookmark cleanup, deduplication, local-first, privacy-first, pwa, indexeddb, browser bookmarks" />
+    <meta name="author" content="LessUp" />
+    <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://lessup.github.io/bookmarks-manager/" />
 
-    <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Bookmarks Manager - Privacy-first Bookmark Tool" />
-    <meta property="og:description" content="Privacy-first PWA for merging, deduplicating & analyzing browser bookmarks. 100% local processing." />
     <meta property="og:url" content="https://lessup.github.io/bookmarks-manager/" />
+    <meta property="og:title" content="Bookmarks Manager - Local-first bookmark cleanup for browsers" />
+    <meta property="og:description" content="Import, deduplicate, search, analyze, and export bookmarks locally in your browser." />
     <meta property="og:site_name" content="Bookmarks Manager" />
+    <meta property="og:locale" content="en_US" />
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Bookmarks Manager - Privacy-first Bookmark Tool" />
-    <meta name="twitter:description" content="Privacy-first PWA for merging, deduplicating & analyzing browser bookmarks. 100% local processing." />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://lessup.github.io/bookmarks-manager/" />
+    <meta property="twitter:title" content="Bookmarks Manager - Local-first bookmark cleanup for browsers" />
+    <meta property="twitter:description" content="Import, deduplicate, search, analyze, and export bookmarks locally in your browser." />
 
-    <!-- PWA -->
     <meta name="color-scheme" content="dark" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Bookmarks" />
+    <meta name="apple-mobile-web-app-title" content="Bookmarks Manager" />
+    <meta name="application-name" content="Bookmarks Manager" />
+    <meta name="mobile-web-app-capable" content="yes" />
 
-    <!-- Icons -->
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="apple-touch-icon" href="./favicon.svg" />
+    <link rel="mask-icon" href="./favicon.svg" color="#0ea5e9" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Bookmarks Manager",
+      "description": "Local-first web app for importing, deduplicating, searching, analyzing, and exporting browser bookmarks.",
+      "url": "https://lessup.github.io/bookmarks-manager/",
+      "applicationCategory": "Productivity",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "LessUp"
+      },
+      "license": "https://github.com/LessUp/bookmarks-manager/blob/master/LICENSE",
+      "sourceOrganization": {
+        "@type": "Organization",
+        "name": "LessUp"
+      }
+    }
+    </script>
 
-    <title>Bookmarks Manager - Privacy-first Bookmark Tool</title>
+    <script>
+      (function() {
+        var pathSegmentsToKeep = 1
+        var l = window.location;
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('/').map(function(s) {
+            return s.replace(/~and~/g, '&')
+          }).join('/');
+          window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + decoded +
+            l.hash
+          );
+        }
+      })();
+    </script>
   </head>
   <body class="bg-slate-950 text-slate-100 antialiased">
     <div id="root"></div>

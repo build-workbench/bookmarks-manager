@@ -22,10 +22,16 @@
     /* Path Aliases */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@ai/*": ["src/ai/*"],
+      "@components/*": ["src/ui/*"],
+      "@pages/*": ["src/pages/*"],
+      "@store/*": ["src/store/*"],
+      "@utils/*": ["src/utils/*"],
+      "@workers/*": ["src/workers/*"]
     },
 
-    "types": []
+    "types": ["vite/client"]
   },
   "include": ["src", "types"],
   "references": [{ "path": "./tsconfig.node.json" }]

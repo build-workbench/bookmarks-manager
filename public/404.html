@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookmarks Manager - 页面跳转中</title>
+  <meta name="description" content="Bookmarks Manager - 隐私优先的书签管理工具">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0f172a;
+      color: #f1f5f9;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .container {
+      text-align: center;
+      max-width: 500px;
+    }
+    
+    .logo {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 40px rgba(14, 165, 233, 0.3);
+    }
+    
+    .logo svg {
+      width: 32px;
+      height: 32px;
+      color: white;
+    }
+    
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+    
+    p {
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    
+    .loader {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto;
+      border: 3px solid #1e293b;
+      border-top-color: #0ea5e9;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .manual-link {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #1e293b;
+    }
+    
+    .manual-link a {
+      color: #0ea5e9;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    
+    .manual-link a:hover {
+      color: #38bdf8;
+    }
+    
+    .error-code {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 12px;
+      color: #475569;
+    }
+  </style>
+  
+  <script>
+    // Single Page Apps for GitHub Pages
+    // MIT License
+    // https://github.com/rafgraph/spa-github-pages
+    // This script takes the current URL and converts the path and query
+    // string into just a query string, and then redirects the browser
+    // to the new URL with only a query string and hash fragment.
+    // 
+    // For bookmarks-manager, we keep 1 path segment (the repo name)
+    
+    (function() {
+      var pathSegmentsToKeep = 1;
+      var l = window.location;
+      
+      // Build the redirect URL
+      var redirectUrl = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash;
+      
+      // Perform the redirect
+      l.replace(redirectUrl);
+    })();
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+        <line x1="15" x2="15" y1="8" y2="8"/>
+        <line x1="15" x2="15" y1="11" y2="11"/>
+      </svg>
+    </div>
+    <h1>正在跳转到 Bookmarks Manager</h1>
+    <p>页面加载中，请稍候...</p>
+    <div class="loader"></div>
+    
+    <div class="manual-link">
+      <p>如果长时间未跳转，请 <a href="./">点击这里</a> 返回首页</p>
+    </div>
+  </div>
+  
+  <div class="error-code">404 — Page Redirect</div>
+</body>
+</html>

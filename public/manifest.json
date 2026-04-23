@@ -1,23 +1,51 @@
 {
   "name": "Bookmarks Manager",
   "short_name": "Bookmarks",
-  "description": "Privacy-first PWA for merging, deduplicating and analyzing browser bookmarks",
-  "start_url": "/bookmarks-manager/",
+  "description": "Local-first bookmark cleanup, search, analysis, and export",
+  "start_url": "./#/app/upload",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0b1220",
   "theme_color": "#0ea5e9",
+  "scope": "./",
   "icons": [
     {
       "src": "favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "categories": ["productivity", "utilities"],
   "lang": "en",
   "dir": "ltr",
-  "scope": "/bookmarks-manager/",
+  "shortcuts": [
+    {
+      "name": "Open workspace",
+      "short_name": "Workspace",
+      "description": "Jump into the bookmark workspace",
+      "url": "./#/app/upload",
+      "icons": [{ "src": "favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Search bookmarks",
+      "short_name": "Search",
+      "description": "Search imported bookmarks",
+      "url": "./#/app/search",
+      "icons": [{ "src": "favicon.svg", "sizes": "any" }]
+    }
+  ],
   "prefer_related_applications": false
 }

@@ -1,17 +1,8 @@
-# Requirements Document
+# Capability: Cleanup Workflow
 
-## Introduction
+## Overview
 
 AI辅助书签整理工作流是一个帮助用户高效清理和整理浏览器书签的功能。用户可以在AI的辅助下，快速识别并删除不需要的书签，同时对需要保留的书签进行智能分类整理，最终导出为标准HTML格式导入浏览器，实现书签的全面更新。
-
-## Glossary
-
-- **Cleanup_Workflow**: 书签清理整理工作流，包含筛选、删除、分类、导出的完整流程
-- **Bookmark_Selector**: 书签选择器，用于批量选择书签进行操作
-- **AI_Cleanup_Advisor**: AI清理顾问，分析书签并提供删除/保留建议
-- **Category_Manager**: 分类管理器，管理书签的文件夹分类
-- **Batch_Editor**: 批量编辑器，支持对多个书签同时进行操作
-- **Export_Preview**: 导出预览，在导出前预览最终的书签结构
 
 ## Requirements
 
@@ -107,4 +98,3 @@ AI辅助书签整理工作流是一个帮助用户高效清理和整理浏览器
 4. THE Cleanup_Workflow SHALL support multiple levels of undo (at least 10 operations)
 5. WHEN user undoes an operation, THE Cleanup_Workflow SHALL restore the affected bookmarks to their previous state
 6. IF user closes the workflow without exporting, THEN THE Cleanup_Workflow SHALL warn about unsaved changes
-

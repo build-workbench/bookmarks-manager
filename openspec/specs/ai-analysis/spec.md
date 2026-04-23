@@ -1,18 +1,8 @@
-# Requirements Document
+# Capability: AI Analysis
 
-## Introduction
+## Overview
 
-本需求文档定义了浏览器书签管理系统的 AI 智能分析功能。系统将集成大模型 API，帮助用户智能分析、分类、整理和管理书签，同时保持 Local-first 的隐私优先原则。
-
-## Glossary
-
-- **Bookmark_Manager**: 书签管理系统的核心应用
-- **AI_Analyzer**: AI 分析模块，负责调用大模型 API 进行书签分析
-- **LLM_API**: 大语言模型 API 接口（如 OpenAI、Claude、本地模型等）
-- **Bookmark**: 单个书签条目，包含标题、URL、路径、时间戳等信息
-- **Category**: 书签分类/标签
-- **Analysis_Report**: AI 生成的分析报告
-- **Prompt_Template**: 预设的提示词模板
+AI 智能分析功能集成大模型 API，帮助用户智能分析、分类、整理和管理书签。遵循 Local-first 隐私优先原则，所有数据和配置存储在本地 IndexedDB 中。
 
 ## Requirements
 

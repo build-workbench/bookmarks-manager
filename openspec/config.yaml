@@ -1,0 +1,42 @@
+schema: spec-driven
+
+# Project context - shown to AI when creating artifacts
+context: |
+  Tech stack: TypeScript, React, Vite, Tailwind CSS, Zustand
+  Storage: IndexedDB via Dexie (local-first PWA)
+  Testing: Vitest + jsdom + fake-indexeddb + fast-check
+  Style: No semicolons (Prettier), single quotes for TS/JS
+  Path aliases: @/, @ai/, @components/, @pages/, @store/, @utils/, @workers/
+  Router: HashRouter (required for GitHub Pages SPA)
+  AI: BYOK mode (user provides API key, stored in IndexedDB)
+  Workflow: OpenSpec-first, solo direct-push after local validation
+  Maintained docs: README, CHANGELOG, docs/README, docs/ARCHITECTURE, docs/CONTRIBUTING, AGENTS, CLAUDE
+  Public entry: landing page at #/ and workspace under #/app/*
+
+  Key principles:
+  - Local-first: All data stays client-side
+  - Keep only current work active in openspec/changes/
+  - Prefer smaller maintained docs over comprehensive stale docs
+  - Use /review for risky or cross-cutting diffs
+  - Property-based tests for core logic (fast-check)
+  - Test coverage thresholds: lines 35%, functions 50%, branches 40%
+
+  Database tables:
+  - bookmarks, settings, aiConfig, aiCache, aiUsage, aiPrompts, aiUsageLimits, cleanupSessions
+
+# Per-artifact rules
+rules:
+  proposal:
+    - Keep proposals concise, focus on "what" and "why"
+    - Reference existing capabilities in openspec/specs/ if related
+    - Match change scope to the current maintenance goal; do not revive deferred work implicitly
+  design:
+    - Include TypeScript interfaces for new types
+    - Show file structure and data flow diagrams
+    - Define correctness properties for test planning
+    - Explain simplification and migration decisions when replacing stale workflow or docs
+  tasks:
+    - Break tasks into chunks of max 2-4 hours
+    - Mark tasks with requirement references
+    - Include checkpoints for incremental validation
+    - Include npm run validate and npm run build when routes, PWA, or deployment behavior change

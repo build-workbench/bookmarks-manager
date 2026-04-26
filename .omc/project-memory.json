@@ -1,0 +1,266 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1777213143207,
+  "projectRoot": "/home/shane/dev/bookmarks-manager",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": ">=20.0.0",
+        "confidence": "high",
+        "markers": ["package.json"]
+      },
+      {
+        "name": "TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": ["tsconfig.json"]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "react",
+        "version": "18.3.1",
+        "category": "frontend"
+      },
+      {
+        "name": "react-dom",
+        "version": "18.3.1",
+        "category": "frontend"
+      },
+      {
+        "name": "vite",
+        "version": "5.4.8",
+        "category": "build"
+      },
+      {
+        "name": "vitest",
+        "version": "2.1.8",
+        "category": "testing"
+      }
+    ],
+    "packageManager": "npm",
+    "runtime": "Node.js 20.0.0"
+  },
+  "build": {
+    "buildCommand": "npm run build",
+    "testCommand": "npm test",
+    "lintCommand": "npm run lint",
+    "devCommand": "npm run dev",
+    "scripts": {
+      "dev": "vite",
+      "build": "tsc -b && vite build",
+      "build:analyze": "tsc -b && ANALYZE=true vite build",
+      "build:staging": "tsc -b && VITE_BASE_PATH=/ vite build",
+      "typecheck": "tsc -b",
+      "preview": "vite preview",
+      "lint": "eslint src --ext .ts,.tsx --max-warnings=0",
+      "lint:fix": "eslint src --ext .ts,.tsx --fix",
+      "format": "prettier . --check",
+      "format:fix": "prettier . --write",
+      "format:staged": "lint-staged",
+      "test": "vitest run",
+      "test:watch": "vitest",
+      "test:coverage": "vitest run --coverage",
+      "clean": "rimraf dist dev-dist tsconfig.tsbuildinfo tsconfig.node.tsbuildinfo coverage eslint-report.json .nyc_output",
+      "validate": "npm run typecheck && npm run lint && npm run test",
+      "ci": "npm run clean && npm ci && npm run validate && npm run build",
+      "prepare": "husky install || true"
+    }
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": ["docs", "public", "src"],
+    "gitBranches": {
+      "defaultBranch": "master",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "coverage": {
+      "path": "coverage",
+      "purpose": null,
+      "fileCount": 10,
+      "lastAccessed": 1777213143151,
+      "keyFiles": [
+        "base.css",
+        "block-navigation.js",
+        "coverage-final.json",
+        "favicon.png",
+        "index.html"
+      ]
+    },
+    "dev-dist": {
+      "path": "dev-dist",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1777213143153,
+      "keyFiles": []
+    },
+    "dist": {
+      "path": "dist",
+      "purpose": "Distribution/build output",
+      "fileCount": 10,
+      "lastAccessed": 1777213143185,
+      "keyFiles": [
+        "404.html",
+        "index.html",
+        "manifest.json",
+        "manifest.webmanifest",
+        "registerSW.js"
+      ]
+    },
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 6,
+      "lastAccessed": 1777213143193,
+      "keyFiles": [
+        "ARCHITECTURE.md",
+        "ARCHITECTURE.zh-CN.md",
+        "CONTRIBUTING.md",
+        "CONTRIBUTING.zh-CN.md",
+        "README.md"
+      ]
+    },
+    "openspec": {
+      "path": "openspec",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1777213143194,
+      "keyFiles": ["config.yaml"]
+    },
+    "public": {
+      "path": "public",
+      "purpose": "Public files",
+      "fileCount": 5,
+      "lastAccessed": 1777213143195,
+      "keyFiles": ["404.html", "manifest.json", "robots.txt", "sitemap.xml"]
+    },
+    "screenshots": {
+      "path": "screenshots",
+      "purpose": null,
+      "fileCount": 4,
+      "lastAccessed": 1777213143196,
+      "keyFiles": ["README.md", "ai-analysis.svg", "dashboard.svg", "search.svg"]
+    },
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 5,
+      "lastAccessed": 1777213143197,
+      "keyFiles": ["App.test.tsx", "App.tsx", "index.css", "main.tsx", "vite-env.d.ts"]
+    },
+    "types": {
+      "path": "types",
+      "purpose": "Type definitions",
+      "fileCount": 1,
+      "lastAccessed": 1777213143198,
+      "keyFiles": ["vite-pwa-assets-generator-api.d.ts"]
+    },
+    "dist/assets": {
+      "path": "dist/assets",
+      "purpose": "Static assets",
+      "fileCount": 32,
+      "lastAccessed": 1777213143201,
+      "keyFiles": ["AI-DR8r6SeR.js", "Axis-Bod6RUEp.js", "Backup-DM4UH9QC.js"]
+    },
+    "src/pages": {
+      "path": "src/pages",
+      "purpose": "Page components",
+      "fileCount": 7,
+      "lastAccessed": 1777213143204,
+      "keyFiles": ["AI.test.tsx", "AI.tsx", "Backup.tsx"]
+    },
+    "src/test": {
+      "path": "src/test",
+      "purpose": "Test files",
+      "fileCount": 2,
+      "lastAccessed": 1777213143205,
+      "keyFiles": ["generators.ts", "setup.ts"]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "openspec/specs/core-bookmarks/spec.md",
+      "accessCount": 4,
+      "lastAccessed": 1777213434088,
+      "type": "file"
+    },
+    {
+      "path": "openspec/specs/ai-analysis/spec.md",
+      "accessCount": 3,
+      "lastAccessed": 1777213444695,
+      "type": "file"
+    },
+    {
+      "path": "openspec/specs/project-presentation/spec.md",
+      "accessCount": 3,
+      "lastAccessed": 1777213488763,
+      "type": "file"
+    },
+    {
+      "path": "openspec/specs/project-governance/spec.md",
+      "accessCount": 3,
+      "lastAccessed": 1777213490193,
+      "type": "file"
+    },
+    {
+      "path": "openspec/changes/final-closure-hardening/specs/project-governance/spec.md",
+      "accessCount": 2,
+      "lastAccessed": 1777213414477,
+      "type": "file"
+    },
+    {
+      "path": "openspec/changes/final-closure-hardening/specs/core-bookmarks/spec.md",
+      "accessCount": 2,
+      "lastAccessed": 1777213414577,
+      "type": "file"
+    },
+    {
+      "path": "openspec/changes/final-closure-hardening/specs/project-presentation/spec.md",
+      "accessCount": 2,
+      "lastAccessed": 1777213414819,
+      "type": "file"
+    },
+    {
+      "path": "openspec/changes/final-closure-hardening/specs/ai-analysis/spec.md",
+      "accessCount": 2,
+      "lastAccessed": 1777213414861,
+      "type": "file"
+    },
+    {
+      "path": "openspec/specs/cleanup-workflow/spec.md",
+      "accessCount": 2,
+      "lastAccessed": 1777213414921,
+      "type": "file"
+    },
+    {
+      "path": "openspec/changes/final-closure-hardening/specs/cleanup-workflow/spec.md",
+      "accessCount": 2,
+      "lastAccessed": 1777213415035,
+      "type": "file"
+    },
+    {
+      "path": "openspec/changes/final-closure-hardening/.openspec.yaml",
+      "accessCount": 1,
+      "lastAccessed": 1777213173024,
+      "type": "file"
+    },
+    {
+      "path": "openspec/changes/final-closure-hardening/tasks.md",
+      "accessCount": 1,
+      "lastAccessed": 1777213173096,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

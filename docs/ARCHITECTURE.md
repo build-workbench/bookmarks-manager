@@ -4,12 +4,12 @@ Bookmarks Manager is a **client-only React + TypeScript PWA**. All bookmark proc
 
 ## Runtime surfaces
 
-| Surface        | Responsibility                                               |
-| -------------- | ------------------------------------------------------------ |
-| `#/`           | Public landing page for GitHub Pages visitors                |
-| `#/app/*`      | Application workspace                                        |
-| Service worker | Offline assets and installability                            |
-| IndexedDB      | Bookmarks, settings, AI config/cache/usage, cleanup sessions |
+| Surface        | Responsibility                                                 |
+| -------------- | -------------------------------------------------------------- |
+| `#/`           | Public landing page for GitHub Pages visitors                  |
+| `#/app/*`      | Application workspace                                          |
+| Service worker | Offline assets and installability                              |
+| IndexedDB      | Bookmarks, settings, backup data, and optional local AI config |
 
 ## Code map
 
@@ -19,8 +19,7 @@ src/
 ├── ui/           Shared UI components
 ├── store/        Zustand stores
 ├── utils/        Parsing, search, storage, export, backup helpers
-├── cleanup/      Cleanup workflow domain
-├── ai/           BYOK AI adapters and services
+├── ai/           Optional BYOK AI config and adapters
 └── workers/      Worker support for large imports
 ```
 
@@ -40,10 +39,10 @@ src/
 2. Search and filter pages query the in-memory index plus stored bookmark data
 3. Export helpers generate HTML, JSON, CSV, or Markdown on demand
 
-### AI and cleanup
+### Optional AI config
 
-- AI features are BYOK and optional
-- Cleanup workflows operate on the local bookmark dataset and persist recovery/session state in IndexedDB
+- AI support is optional and reduced to local BYOK configuration plus connection testing
+- The core bookmark workflow does not depend on AI
 
 ## Operational rules
 

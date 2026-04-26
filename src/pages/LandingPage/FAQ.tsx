@@ -15,7 +15,7 @@ const faqs = [
   {
     question: 'AI 功能如何使用？是否需要付费？',
     answer:
-      'AI 功能需要你自己提供 API Key（OpenAI 或 Claude）。工具本身完全免费，你只需要支付大模型 API 的调用费用。API Key 会安全存储在你的浏览器本地，我们不会收集或传输你的 Key。'
+      '当前只保留可选的 AI 配置与连接测试能力。你可以自行提供 OpenAI 或 Claude API Key，配置仅保存在浏览器本地。工具本身不会代管密钥，也不会把你的书签上传到任何仓库控制的服务。'
   },
   {
     question: '去重算法是如何工作的？',

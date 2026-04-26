@@ -9,6 +9,7 @@ This repository is in a **closure hardening** phase. Prefer cleanup, consistency
 - Local-first only: no backend, no cloud sync
 - Privacy-first: do not introduce uploads or telemetry
 - BYOK AI only: never hardcode keys or secrets
+- AI surface is optional and minimal: keep only local BYOK config unless an active OpenSpec change expands it
 - GitHub Pages deployment with `HashRouter`
 
 ## Working style

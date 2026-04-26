@@ -6,6 +6,23 @@ Define a low-noise, OpenSpec-driven maintenance model for this solo repository, 
 
 ## Requirements
 
+### Requirement: The repository SHALL prefer lightweight AI-assisted workflows over orchestration-heavy defaults
+
+The repository SHALL prefer the smallest effective AI workflow that preserves clarity and reduces maintenance overhead.
+
+**User Story:** As the maintainer, I want AI workflows to stay minimal, so that I can focus on cleanup work without managing orchestration complexity.
+
+#### Scenario: Fleet-style orchestration is not the default
+
+- **WHEN** the maintainer plans or executes broad repository cleanup
+- **THEN** the default workflow uses one active OpenSpec change, a long-running session, and focused review steps
+- **AND** it SHALL NOT require `/fleet` as the default execution mode
+
+#### Scenario: Extra tools need explicit value
+
+- **WHEN** new MCP servers, plugins, or automation layers are proposed
+- **THEN** they SHALL only be adopted if they materially reduce long-term repository maintenance cost
+
 ### Requirement: The repository SHALL keep OpenSpec active changes aligned with current work
 
 The repository SHALL keep OpenSpec active changes aligned with current work.
@@ -26,7 +43,7 @@ The repository SHALL keep OpenSpec active changes aligned with current work.
 
 ### Requirement: The repository SHALL use direct-push verification gates for solo maintenance
 
-The repository SHALL use direct-push verification gates for solo maintenance.
+The repository SHALL use direct-push verification gates for solo maintenance and keep the flow optimized for fast but reviewable closure work.
 
 **User Story:** As the maintainer, I want a workflow optimized for a one-person project, so that I can ship fixes quickly without unnecessary ceremony.
 
@@ -37,55 +54,60 @@ The repository SHALL use direct-push verification gates for solo maintenance.
 
 #### Scenario: Routing and deployment changes require a build check
 
-- **WHEN** changes affect routing, PWA behavior, metadata, or deployment files
+- **WHEN** changes affect routing, PWA behavior, metadata, workflows, or deployment files
 - **THEN** the maintainer also runs `npm run build`
-
-#### Scenario: Direct push is the default delivery model
-
-- **WHEN** repository workflow guidance is updated
-- **THEN** it documents solo direct-push maintenance as the default path
-
-### Requirement: The repository SHALL keep assistant instructions aligned across tools
-
-The repository SHALL keep assistant instructions aligned across tools.
-
-**User Story:** As the maintainer, I want Claude, Copilot, and similar tools to follow the same repository contract, so that generated changes stay consistent.
-
-#### Scenario: Core instruction files are present
-
-- **WHEN** an assistant reads project guidance
-- **THEN** it can use `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md`
-
-#### Scenario: Instructions reflect the real repository
-
-- **WHEN** workflow or architecture changes
-- **THEN** the maintained instruction files are updated to match the new reality
 
 #### Scenario: Risky changes get a focused review step
 
-- **WHEN** a change is broad, risky, or hard to verify by inspection
-- **THEN** the guidance recommends a targeted review pass such as `/review`
+- **WHEN** a change is broad, risky, deletion-heavy, or hard to verify by inspection
+- **THEN** the workflow uses a focused review pass such as `/review` before the work is finalized
+
+#### Scenario: Direct push remains the default delivery model
+
+- **WHEN** repository workflow guidance is updated
+- **THEN** it documents solo direct-push maintenance as the default path
+- **AND** it avoids branch or PR ceremony that does not improve this repository's closure-hardening goal
+
+### Requirement: The repository SHALL keep assistant instructions aligned across tools
+
+The repository SHALL keep assistant instructions aligned across tools and scoped to the final supported product surface.
+
+**User Story:** As the maintainer, I want Claude, Copilot, and similar tools to follow the same repository contract, so that generated changes stay consistent.
+
+#### Scenario: Core instruction files remain authoritative
+
+- **WHEN** an assistant reads project guidance
+- **THEN** it can rely on `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md`
+
+#### Scenario: Instructions reflect real retained scope
+
+- **WHEN** the repository removes or downgrades a feature
+- **THEN** the maintained instruction files are updated in the same change so assistants do not continue generating drift
+
+#### Scenario: Instructions discourage unnecessary workflow complexity
+
+- **WHEN** tooling and workflow guidance is written
+- **THEN** it prefers OpenSpec, `gh`, lightweight editor settings, and focused review flows over orchestration-heavy defaults
 
 ### Requirement: The repository SHALL keep automation minimal and enforceable
 
-The repository SHALL keep automation minimal and enforceable.
+The repository SHALL keep automation minimal and enforceable, focusing on meaningful checks instead of workflow noise.
 
 **User Story:** As the maintainer, I want lightweight automation that protects quality without creating noise.
 
 #### Scenario: Local hooks stay lightweight
 
 - **WHEN** code is committed or pushed
-- **THEN** hooks format staged files on commit
-- **AND** run full validation on push
+- **THEN** hooks stay limited to staged formatting on commit and full validation on push
 
 #### Scenario: CI focuses on meaningful checks
 
 - **WHEN** GitHub Actions run
-- **THEN** CI validates the repository and confirms the build
-- **AND** avoids redundant matrix and status-noise jobs
+- **THEN** CI validates the repository and confirms the build where appropriate
+- **AND** it avoids redundant matrices, low-value status jobs, and overdesigned workflow choreography
 
-#### Scenario: Dependency automation avoids workflow churn
+#### Scenario: Dependency automation avoids churn
 
 - **WHEN** automated dependency updates are configured
 - **THEN** they focus on meaningful package maintenance
-- **AND** avoid low-value GitHub Actions update churn
+- **AND** avoid low-value workflow churn and maintenance noise

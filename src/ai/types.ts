@@ -1,6 +1,6 @@
 /**
  * AI Module Type Definitions
- * Core interfaces for LLM integration and AI analysis features
+ * Core interfaces for the retained optional BYOK configuration surface
  */
 
 // LLM Provider Types
@@ -47,93 +47,6 @@ export interface LLMAdapter {
   estimateCost(tokens: number): number
 }
 
-// AI Analysis Types
-export interface CategorySuggestion {
-  bookmarkId: string
-  suggestedCategory: string
-  confidence: number
-  reasoning: string
-}
-
-export interface BookmarkSummary {
-  bookmarkId: string
-  summary: string
-  keywords: string[]
-  generatedAt: number
-}
-
-export interface DuplicateRecommendation {
-  groupId: string
-  keepBookmarkId: string
-  reasoning: string
-  factors: string[]
-}
-
-export interface HealthIssue {
-  bookmarkId: string
-  issueType: 'outdated' | 'low_value' | 'broken_pattern' | 'redundant'
-  description: string
-  suggestion: string
-  dismissed: boolean
-}
-
-export interface CollectionReport {
-  generatedAt: number
-  totalBookmarks: number
-  categoryDistribution: Record<string, number>
-  domainPatterns: Array<{ domain: string; count: number }>
-  timelineTrends: Array<{ period: string; count: number }>
-  recommendations: string[]
-  insights: string[]
-}
-
-// Prompt Template Types
-export interface PromptTemplate {
-  id: string
-  name: string
-  description: string
-  template: string
-  variables: string[]
-  isDefault: boolean
-  createdAt: number
-  updatedAt: number
-}
-
-// Cache Types
-export interface CacheEntry<T> {
-  key: string
-  value: T
-  createdAt: number
-  expiresAt: number
-  bookmarkHash: string
-}
-
-// Usage Types
-export interface UsageRecord {
-  id?: string
-  timestamp: number
-  operation: string
-  promptTokens: number
-  completionTokens: number
-  totalTokens: number
-  estimatedCost: number
-  model: string
-}
-
-export interface UsageStats {
-  totalTokens: number
-  totalCost: number
-  operationBreakdown: Record<string, { tokens: number; cost: number }>
-  dailyUsage: Array<{ date: string; tokens: number; cost: number }>
-}
-
-export interface UsageLimits {
-  dailyTokenLimit?: number
-  monthlyTokenLimit?: number
-  dailyCostLimit?: number
-  monthlyCostLimit?: number
-}
-
 // Error Types
 export enum AIErrorCode {
   INVALID_API_KEY = 'INVALID_API_KEY',
@@ -164,11 +77,4 @@ export class AIServiceError extends Error {
     this.retryable = error.retryable
     this.retryAfterMs = error.retryAfterMs
   }
-}
-
-// Natural Language Search Types
-export interface QueryInterpretation {
-  matchedIds: string[]
-  interpretation: string
-  suggestions?: string[]
 }

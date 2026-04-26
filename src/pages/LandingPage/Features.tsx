@@ -31,9 +31,9 @@ const features = [
   },
   {
     icon: Brain,
-    title: 'AI 分析',
+    title: 'AI 可选配置',
     description:
-      '按需接入 OpenAI、Claude 等模型，生成分类、摘要和搜索结果。使用自备 API Key，默认不上传任何数据。',
+      '按需接入 OpenAI、Claude 等模型，仅保留自备 Key 的本地配置与连接测试。默认不上传任何数据。',
     color: 'from-violet-500 to-purple-500',
     bgColor: 'bg-violet-500/10',
     borderColor: 'border-violet-500/20'
@@ -41,7 +41,8 @@ const features = [
   {
     icon: BarChart3,
     title: '可视化统计',
-    description: 'ECharts 驱动的数据可视化，展示域名分布、时间趋势、重复占比等多维度书签分析报告。',
+    description:
+      'ECharts 驱动的本地统计视图，展示域名分布、时间趋势和重复占比，帮助你快速判断整理结果。',
     color: 'from-rose-500 to-pink-500',
     bgColor: 'bg-rose-500/10',
     borderColor: 'border-rose-500/20'
@@ -96,7 +97,7 @@ export default function Features() {
             一站式书签清理与管理
           </h2>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-            从导入、去重到搜索、分析与导出，覆盖完整的本地书签整理流程
+            从导入、去重到搜索、备份与导出，覆盖完整的本地书签整理流程
           </p>
         </div>
 

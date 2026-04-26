@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => {
         manifest: {
           name: 'Bookmarks Manager',
           short_name: 'Bookmarks',
-          description: 'Local-first bookmark cleanup, search, analysis, and export',
+          description: 'Local-first bookmark cleanup, search, backup, and export',
           theme_color: '#0ea5e9',
           background_color: '#0b1220',
           display: 'standalone',

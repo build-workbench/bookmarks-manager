@@ -27,7 +27,7 @@ npm run build
 - Router: `HashRouter`
 - Data storage: Dexie / IndexedDB only
 - State: Zustand
-- AI: BYOK only, stored locally
+- AI: optional BYOK config only, stored locally
 - Deployment: GitHub Pages under `/bookmarks-manager/`
 
 ## Editing bias

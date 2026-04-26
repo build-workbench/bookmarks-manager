@@ -10,7 +10,6 @@ const Dashboard = lazy(() => import('@/pages/Dashboard'))
 const Search = lazy(() => import('@/pages/Search'))
 const Duplicates = lazy(() => import('@/pages/Duplicates'))
 const AI = lazy(() => import('@/pages/AI'))
-const Cleanup = lazy(() => import('@/pages/Cleanup'))
 const Backup = lazy(() => import('@/pages/Backup'))
 
 const appLinks = [
@@ -18,7 +17,6 @@ const appLinks = [
   { to: '/app/dashboard', label: '仪表盘' },
   { to: '/app/search', label: '搜索' },
   { to: '/app/duplicates', label: '去重' },
-  { to: '/app/cleanup', label: '整理' },
   { to: '/app/ai', label: 'AI' },
   { to: '/app/backup', label: '备份' }
 ]
@@ -109,9 +107,9 @@ function AppContent() {
               <Route path="/app/dashboard" element={<Dashboard />} />
               <Route path="/app/search" element={<Search />} />
               <Route path="/app/duplicates" element={<Duplicates />} />
-              <Route path="/app/cleanup" element={<Cleanup />} />
               <Route path="/app/ai" element={<AI />} />
               <Route path="/app/backup" element={<Backup />} />
+              <Route path="*" element={<Navigate to="/app/upload" replace />} />
             </Routes>
           </Suspense>
         </LazyErrorBoundary>

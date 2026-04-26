@@ -1,23 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
-import {
-  Download,
-  Upload,
-  Database,
-  Settings,
-  Brain,
-  History,
-  AlertCircle,
-  CheckCircle,
-  FileJson,
-  Trash2,
-} from 'lucide-react'
+import { Download, Upload, Database, Settings, Brain, AlertCircle, CheckCircle } from 'lucide-react'
 import {
   exportBackupAsJSON,
   parseBackup,
   restoreFromBackup,
   estimateBackupSize,
   formatBytes,
-  type BackupOptions,
+  type BackupOptions
 } from '@/utils/backup'
 import useBookmarksStore from '@/store/useBookmarksStore'
 
@@ -32,11 +21,7 @@ export default function Backup() {
 
   const [options, setOptions] = useState<BackupOptions>({
     includeBookmarks: true,
-    includeAIConfig: true,
-    includeAIUsage: true,
-    includeAIPrompts: true,
-    includeAICache: false,
-    includeCleanupSessions: true,
+    includeAIConfig: true
   })
 
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -97,10 +82,8 @@ export default function Backup() {
           '',
           `书签: ${backup.bookmarks?.length || 0} 条`,
           `AI配置: ${backup.aiConfig ? '有' : '无'}`,
-          `用量记录: ${backup.aiUsage?.length || 0} 条`,
-          `提示词模板: ${backup.aiPrompts?.length || 0} 个`,
           '',
-          '⚠️ 这将替换当前所有数据！',
+          '⚠️ 这将替换当前所有数据！'
         ].join('\n')
 
         if (!confirm(confirmMessage)) {
@@ -114,7 +97,7 @@ export default function Backup() {
           const stats = restoreResult.stats
           setMessage({
             type: 'success',
-            text: `恢复成功！书签: ${stats.bookmarksRestored}条, 用量记录: ${stats.aiUsageRestored}条`,
+            text: `恢复成功！书签: ${stats.bookmarksRestored} 条${stats.aiConfigRestored ? '，AI 配置已恢复' : ''}`
           })
           // Reload bookmarks
           await loadFromDB()
@@ -143,7 +126,7 @@ export default function Backup() {
         </div>
 
         <p className="text-slate-400 text-sm mb-6">
-          备份功能可以将您所有的书签数据、AI配置和设置导出为一个JSON文件。
+          备份功能可以将您的书签数据与可选 AI 配置导出为一个 JSON 文件。
           您可以使用该文件在另一台设备上恢复数据，或作为数据归档。
           <br />
           <span className="text-amber-400">注意：所有数据都在本地处理，不会上传到任何服务器。</span>
@@ -195,50 +178,6 @@ export default function Backup() {
               <Brain className="w-4 h-4 text-slate-400" />
               AI 配置（API密钥等）
             </label>
-
-            <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={options.includeAIUsage}
-                onChange={(e) => setOptions((o) => ({ ...o, includeAIUsage: e.target.checked }))}
-                className="rounded border-slate-600"
-              />
-              <History className="w-4 h-4 text-slate-400" />
-              用量记录
-            </label>
-
-            <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={options.includeAIPrompts}
-                onChange={(e) => setOptions((o) => ({ ...o, includeAIPrompts: e.target.checked }))}
-                className="rounded border-slate-600"
-              />
-              <FileJson className="w-4 h-4 text-slate-400" />
-              提示词模板
-            </label>
-
-            <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={options.includeCleanupSessions}
-                onChange={(e) => setOptions((o) => ({ ...o, includeCleanupSessions: e.target.checked }))}
-                className="rounded border-slate-600"
-              />
-              <Trash2 className="w-4 h-4 text-slate-400" />
-              清理工作流状态
-            </label>
-
-            <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={options.includeAICache}
-                onChange={(e) => setOptions((o) => ({ ...o, includeAICache: e.target.checked }))}
-                className="rounded border-slate-600"
-              />
-              <Brain className="w-4 h-4 text-slate-400" />
-              AI 分析缓存（文件较大）
-            </label>
           </div>
 
           <div className="mt-4 pt-3 border-t border-slate-800 text-xs text-slate-500">
@@ -279,17 +218,26 @@ export default function Backup() {
         <div className="space-y-4 text-sm text-slate-400">
           <div>
             <div className="text-slate-200 font-medium mb-1">备份文件包含什么？</div>
-            <p>备份文件是一个 JSON 格式的文本文件，包含您选择的所有数据：书签、AI配置、用量记录、提示词模板等。您可以用文本编辑器查看其内容。</p>
+            <p>
+              备份文件是一个 JSON 格式的文本文件，包含您选择的书签数据，以及可选的 AI
+              配置。您可以用文本编辑器查看其内容。
+            </p>
           </div>
 
           <div>
             <div className="text-slate-200 font-medium mb-1">如何迁移到另一台设备？</div>
-            <p>在旧设备上创建备份并下载 JSON 文件，然后在新设备上打开此应用，进入备份页面选择"从备份恢复"即可。</p>
+            <p>
+              在旧设备上创建备份并下载 JSON
+              文件，然后在新设备上打开此应用，进入备份页面选择"从备份恢复"即可。
+            </p>
           </div>
 
           <div>
             <div className="text-slate-200 font-medium mb-1">API密钥安全吗？</div>
-            <p>是的。备份文件存储在您的本地设备上，不会上传到任何服务器。建议您妥善保管备份文件，因为其中可能包含敏感的 API 密钥。</p>
+            <p>
+              是的。备份文件存储在您的本地设备上，不会上传到任何服务器。建议您妥善保管备份文件，因为其中可能包含敏感的
+              API 密钥。
+            </p>
           </div>
         </div>
       </div>

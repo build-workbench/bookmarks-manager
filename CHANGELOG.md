@@ -6,6 +6,7 @@ This file keeps a **curated** release history. It records meaningful product and
 
 ### Changed
 
+- Retired the dedicated cleanup workflow and reduced AI to local BYOK configuration plus connection testing
 - Rebuilt repository governance around a smaller OpenSpec-driven, solo-maintained workflow
 - Simplified CI, Pages deployment, dependency automation, and local hooks
 - Refreshed the GitHub Pages landing flow, metadata, and public docs set

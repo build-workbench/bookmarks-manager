@@ -8,20 +8,19 @@ Define how Bookmarks Manager presents itself through GitHub Pages, curated docs,
 
 ### Requirement: The GitHub Pages root SHALL act as a product landing page
 
-The GitHub Pages root SHALL act as a product landing page.
+The GitHub Pages root SHALL act as a product landing page for the final reduced product scope.
 
 **User Story:** As a prospective user, I want the root Pages experience to explain the product quickly, so that I can decide whether to try it.
 
-#### Scenario: Root route shows the landing page
+#### Scenario: Landing page leads with the core value
 
 - **WHEN** a visitor opens `#/`
-- **THEN** the application shows a landing page instead of dropping directly into the workspace
+- **THEN** the page highlights local-first bookmark cleanup, privacy-first behavior, and the core import/merge/search/export workflow
 
-#### Scenario: Landing page communicates the core value
+#### Scenario: Landing page avoids over-claiming retired surfaces
 
 - **WHEN** a visitor scans the landing page
-- **THEN** it highlights local-first bookmark cleanup
-- **AND** explains that the workflow happens without forced uploads
+- **THEN** the page SHALL NOT present retired or downgraded AI/cleanup features as flagship capabilities
 
 #### Scenario: Landing page provides clear actions
 
@@ -58,35 +57,36 @@ Public entry points SHALL stay aligned with each other.
 
 ### Requirement: Public docs SHALL stay curated and accurate
 
-Public docs SHALL stay curated and accurate.
+Public docs SHALL stay curated and accurate for the final maintained surface only.
 
 **User Story:** As a user or maintainer, I want the visible docs surface to match the actual product, so that the repository stays trustworthy.
 
-#### Scenario: README matches the product
+#### Scenario: README matches the retained product
 
 - **WHEN** a visitor reads the README
-- **THEN** it describes the real product workflow and maintained docs only
+- **THEN** it describes the real supported product workflow and maintained docs only
+- **AND** it avoids promising broad AI or cleanup capabilities that the repository no longer supports
 
-#### Scenario: Docs index links only maintained docs
+#### Scenario: Maintained docs stay intentionally small
 
-- **WHEN** the docs index is opened
-- **THEN** it links only to docs that are still maintained
+- **WHEN** docs are reviewed
+- **THEN** the repository keeps a small maintained doc set instead of preserving stale reference material
 
-#### Scenario: Stale reference sets are removed
+#### Scenario: Stale claims are removed instead of preserved
 
-- **WHEN** outdated API dumps, PRDs, or placeholder docs are no longer maintained
-- **THEN** they are removed instead of left to drift
+- **WHEN** a doc section no longer matches the final product surface
+- **THEN** that section is removed or rewritten in the same change
 
 ### Requirement: Repository metadata SHALL match the product
 
-Repository metadata SHALL match the product.
+Repository metadata SHALL match the reduced product and public landing surface.
 
 **User Story:** As a GitHub visitor, I want the repository About section to accurately describe the project, so that search results and first impressions are useful.
 
-#### Scenario: Description matches product scope
+#### Scenario: Description matches the final product scope
 
 - **WHEN** the repository description is shown on GitHub
-- **THEN** it describes Bookmarks Manager as a local-first bookmark cleanup and export app
+- **THEN** it describes Bookmarks Manager as a local-first bookmark cleanup and export application
 
 #### Scenario: Homepage points to the live site
 
@@ -96,5 +96,5 @@ Repository metadata SHALL match the product.
 #### Scenario: Topics focus on the real domain
 
 - **WHEN** repository topics are configured
-- **THEN** they emphasize bookmarks, cleanup, local-first behavior, and the actual frontend stack
-- **AND** avoid unrelated labels
+- **THEN** they emphasize bookmarks, cleanup, local-first behavior, privacy-first behavior, PWA delivery, and the actual frontend stack
+- **AND** avoid unrelated or inflated labels

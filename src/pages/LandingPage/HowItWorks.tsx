@@ -14,10 +14,10 @@ const steps = [
   {
     icon: Cpu,
     number: '02',
-    title: '智能分析',
+    title: '合并去重',
     description:
-      '系统自动合并重复文件夹、去除重复书签，生成可视化统计报告。可选 AI 深度分析，智能分类整理。',
-    features: ['自动去重', '可视化报告', 'AI 分析'],
+      '系统自动合并重复文件夹、去除重复书签，并提供稳定的统计视图、搜索和重复项浏览能力。',
+    features: ['自动去重', '重复概览', '本地搜索'],
     color: 'from-violet-500 to-purple-500'
   },
   {
@@ -72,7 +72,7 @@ export default function HowItWorks() {
             轻松整理你的书签
           </h2>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-            无需复杂配置，上传、分析、导出，三步搞定书签整理
+            无需复杂配置，上传、合并、导出，三步搞定书签整理
           </p>
         </div>
 

@@ -8,6 +8,7 @@ Bookmarks Manager is maintained as a **small, solo-first repository**. The proce
 2. Keep changes focused. If a proposal grows into multiple concerns, split it.
 3. Direct pushes are the default maintainer workflow after local verification.
 4. Use a focused review step such as `/review` before pushing cross-cutting changes.
+5. Do not default to `/fleet` or orchestration-heavy workflows; prefer one active change, native tools, `gh`, and a long-running session.
 
 External contributors are welcome, but the repository workflow is optimized around low-friction maintenance rather than a PR-heavy process.
 

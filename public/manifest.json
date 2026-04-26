@@ -1,7 +1,7 @@
 {
   "name": "Bookmarks Manager",
   "short_name": "Bookmarks",
-  "description": "Local-first bookmark cleanup, search, analysis, and export",
+  "description": "Local-first bookmark cleanup, search, backup, and export",
   "start_url": "./#/app/upload",
   "display": "standalone",
   "orientation": "portrait",

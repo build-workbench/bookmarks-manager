@@ -145,7 +145,7 @@ export default function Hero() {
                     上传合并
                   </div>
                   <div className="flex-1 bg-slate-800/50 rounded-lg py-2 text-center text-sm text-slate-400">
-                    AI 分析
+                    本地备份
                   </div>
                 </div>
               </div>
@@ -162,7 +162,7 @@ export default function Hero() {
             <div className="absolute -bottom-4 -left-4 bg-indigo-500/10 backdrop-blur border border-indigo-500/20 rounded-lg px-3 py-2 text-xs text-indigo-400">
               <div className="flex items-center gap-1.5">
                 <Sparkles className="w-3 h-3" />
-                AI 智能分类
+                本地备份恢复
               </div>
             </div>
           </div>

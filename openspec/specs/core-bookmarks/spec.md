@@ -52,11 +52,9 @@
 1. THE Dashboard SHALL display total bookmark count after deduplication
 2. THE Dashboard SHALL display duplicate count detected
 3. THE Dashboard SHALL display unique domain count
-4. THE Dashboard SHALL display a pie chart showing duplicate ratio
-5. THE Dashboard SHALL display a bar chart showing top 10 domains
-6. THE Dashboard SHALL display a line chart showing bookmarks added by year
-7. THE Dashboard SHALL provide expandable/collapsible bookmark list with pagination (20 per page)
-8. WHEN clicking a bookmark, THE Dashboard SHALL open the link in a new tab
+4. THE Dashboard MAY provide visual insights (charts or lists) but SHALL NOT require any specific chart type or highly interactive visualization
+5. THE Dashboard SHALL provide expandable/collapsible bookmark list with pagination (20 per page)
+6. WHEN clicking a bookmark, THE Dashboard SHALL open the link in a new tab
 
 ### Requirement 5: 全文搜索
 
@@ -106,9 +104,10 @@
 
 1. THE Storage_Service SHALL automatically save bookmarks to IndexedDB after merge
 2. THE Storage_Service SHALL automatically load bookmarks on page refresh
-3. THE Storage_Service SHALL store bookmarks, settings, AI config, AI cache, AI usage, AI prompts, and usage limits
+3. THE Storage_Service SHALL store bookmarks and required retained settings in IndexedDB only
 4. THE Storage_Service SHALL use batch writes for performance optimization
 5. THE Storage_Service SHALL use indexed queries for fast retrieval
+6. WHEN the application loads after feature reduction, obsolete AI or cleanup data SHALL NOT block startup
 
 ### Requirement 9: PWA特性
 

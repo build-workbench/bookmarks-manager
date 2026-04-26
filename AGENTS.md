@@ -4,7 +4,7 @@ Repository contract for AI coding assistants working on **Bookmarks Manager**.
 
 ## Product and current goal
 
-Bookmarks Manager is a **local-first PWA** for importing, deduplicating, searching, analyzing, and exporting browser bookmarks. The current project goal is **closure hardening**: improve coherence, reduce maintenance noise, and keep the repo easy to maintain as a solo project.
+Bookmarks Manager is a **local-first PWA** for importing, deduplicating, searching, backing up, and exporting browser bookmarks. The current project goal is **closure hardening**: improve coherence, reduce maintenance noise, and keep the repo easy to maintain as a solo project.
 
 ## Architecture snapshot
 
@@ -12,8 +12,7 @@ Bookmarks Manager is a **local-first PWA** for importing, deduplicating, searchi
 - `src/ui/` — shared UI primitives
 - `src/store/` — Zustand state
 - `src/utils/` — bookmark parsing, search, storage, export, backup helpers
-- `src/cleanup/` — cleanup workflow domain
-- `src/ai/` — BYOK AI adapters and services
+- `src/ai/` — optional BYOK AI config and adapters
 - `src/workers/` — Web Worker support for large bookmark datasets
 - `openspec/` — the source of truth for scoped product and repository changes
 

@@ -6,6 +6,7 @@
 
 ### Changed
 
+- 移除独立 cleanup 工作流，并将 AI 收缩为仅保留本地 BYOK 配置与连接测试
 - 以更小、更清晰的 OpenSpec 单人维护流程重建仓库治理
 - 精简 CI、Pages 部署、依赖自动化和本地 hooks
 - 重做 GitHub Pages 落地页、元数据和公开文档体系

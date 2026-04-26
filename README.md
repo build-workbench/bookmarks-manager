@@ -1,6 +1,6 @@
 # Bookmarks Manager
 
-**Local-first bookmark cleanup for browsers.** Import exported bookmarks, deduplicate them locally, search or analyze them, then export a cleaner set back out.
+**Local-first bookmark cleanup for browsers.** Import exported bookmarks, deduplicate them locally, search them, back them up, and export a cleaner set back out.
 
 [Live demo](https://lessup.github.io/bookmarks-manager/) · [中文说明](README.zh-CN.md) · [Architecture](docs/ARCHITECTURE.md) · [Contributing](docs/CONTRIBUTING.md)
 
@@ -10,7 +10,7 @@ Most bookmark tools either want your data in the cloud or stop at basic import/e
 
 - **Local-first**: bookmark files stay in the browser
 - **Privacy-first**: no backend, no account system, no forced upload
-- **Practical cleanup**: merge, deduplicate, inspect, search, analyze, export
+- **Practical cleanup**: merge, deduplicate, inspect, search, back up, export
 - **Installable**: runs as a PWA on GitHub Pages
 
 ## Core workflow
@@ -19,18 +19,18 @@ Most bookmark tools either want your data in the cloud or stop at basic import/e
 | ------- | ------------------------------------------------------------------------------- | ---------------------------------------------- |
 | Import  | Export bookmarks from Chrome, Firefox, Edge, Safari, Brave, or similar browsers | Parses Netscape bookmark HTML locally          |
 | Merge   | Load one or more files                                                          | Normalizes folders and URLs, groups duplicates |
-| Explore | Search, inspect duplicates, run cleanup/AI tools, create backups                | Keeps data in IndexedDB for later sessions     |
+| Explore | Search, inspect duplicates, create backups                                      | Keeps data in IndexedDB for later sessions     |
 | Export  | Download cleaned bookmarks                                                      | Exports HTML, JSON, CSV, or Markdown           |
 
 ## Feature snapshot
 
-| Area             | Included                                                                          |
-| ---------------- | --------------------------------------------------------------------------------- |
-| Bookmark cleanup | Multi-file import, URL normalization, duplicate grouping, merge stats             |
-| Search           | Full-text search, highlight, advanced filtering, filtered export                  |
-| Insights         | Domain and year charts, duplicate overview, cleanup workflow                      |
-| AI               | BYOK provider settings, categorization, summaries, health-style analysis, reports |
-| Resilience       | IndexedDB persistence, backup/restore, Web Worker support for large datasets      |
+| Area             | Included                                                                     |
+| ---------------- | ---------------------------------------------------------------------------- |
+| Bookmark cleanup | Multi-file import, URL normalization, duplicate grouping, merge stats        |
+| Search           | Full-text search, highlight, advanced filtering, filtered export             |
+| Insights         | Domain and year charts, duplicate overview                                   |
+| AI               | Optional BYOK provider configuration and connection testing                  |
+| Resilience       | IndexedDB persistence, backup/restore, Web Worker support for large datasets |
 
 ## Run locally
 

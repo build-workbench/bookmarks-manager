@@ -51,7 +51,7 @@ export default function Footer() {
 
         <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
-            准备好整理你的书签了吗？
+            准备好清理你的书签了吗？
           </h2>
           <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
             完全免费，无需注册，即刻开始使用。你的书签，你完全掌控。
@@ -79,7 +79,7 @@ export default function Footer() {
                 <span className="font-bold text-white">Bookmarks Manager</span>
               </div>
               <p className="text-sm text-slate-500 mb-4">
-                本地优先的书签整理工具。导入、去重、搜索、分析与导出都在浏览器里完成。
+                本地优先的书签整理工具。导入、去重、搜索、备份与导出都在浏览器里完成。
               </p>
               <div className="flex items-center gap-4">
                 <a

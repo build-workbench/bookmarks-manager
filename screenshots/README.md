@@ -4,11 +4,11 @@ This directory contains the app screenshots displayed in README files.
 
 ## Files
 
-| File | Description |
-|------|-------------|
-| `dashboard.svg` | Dashboard interface preview showing bookmark statistics and charts |
-| `search.svg` | Search interface with full-text search results |
-| `ai-analysis.svg` | AI features including categorization and link health check |
+| File              | Description                                                          |
+| ----------------- | -------------------------------------------------------------------- |
+| `dashboard.svg`   | Dashboard interface preview showing bookmark statistics and charts   |
+| `search.svg`      | Search interface with full-text search results                       |
+| `ai-analysis.svg` | Optional AI settings interface for local BYOK provider configuration |
 
 ## Technical Notes
 
@@ -22,13 +22,14 @@ This directory contains the app screenshots displayed in README files.
 To generate actual app screenshots:
 
 1. Run the app locally:
+
    ```bash
    npm run dev
    ```
 
 2. Import sample bookmarks via the upload page
 
-3. Navigate to Dashboard, Search, and AI pages
+3. Navigate to Dashboard, Search, and the AI settings page
 
 4. Take screenshots using browser dev tools or system tools:
    - Chrome DevTools: `Ctrl+Shift+P` → "Capture screenshot"

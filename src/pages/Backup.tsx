@@ -28,7 +28,9 @@ export default function Backup() {
   const { loadFromDB } = useBookmarksStore()
 
   useEffect(() => {
-    estimateBackupSize(options).then(setBackupSize)
+    estimateBackupSize(options)
+      .then(setBackupSize)
+      .catch(() => setBackupSize(0))
   }, [options])
 
   async function handleCreateBackup() {

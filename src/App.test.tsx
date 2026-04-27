@@ -55,7 +55,10 @@ function LocationDisplay() {
 describe('App routing after closure hardening', () => {
   it('does not expose cleanup in the main navigation', async () => {
     render(
-      <MemoryRouter initialEntries={['/app/upload']}>
+      <MemoryRouter
+        initialEntries={['/app/upload']}
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      >
         <App />
       </MemoryRouter>
     )
@@ -67,7 +70,10 @@ describe('App routing after closure hardening', () => {
 
   it('redirects the retired cleanup route back to upload', async () => {
     render(
-      <MemoryRouter initialEntries={['/app/cleanup']}>
+      <MemoryRouter
+        initialEntries={['/app/cleanup']}
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      >
         <App />
         <LocationDisplay />
       </MemoryRouter>

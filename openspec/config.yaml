@@ -22,7 +22,7 @@ context: |
   - Test coverage thresholds: lines 35%, functions 50%, branches 40%
 
   Database tables:
-  - bookmarks, settings, aiConfig, aiCache, aiUsage, aiPrompts, aiUsageLimits, cleanupSessions
+  - bookmarks, settings, aiConfig
 
 # Per-artifact rules
 rules:

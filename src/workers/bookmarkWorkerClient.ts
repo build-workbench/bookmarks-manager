@@ -23,26 +23,23 @@ export interface MergeDedupResult {
   }
 }
 
+interface PendingResolver {
+  resolve: (value: unknown) => void
+  reject: (reason: Error) => void
+  onProgress?: (progress: unknown) => void
+}
+
 export class BookmarkWorkerClient {
   private worker: Worker | null = null
   private messageId = 0
-  private pendingResolvers = new Map<number, {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolve: (value: any) => void
-    reject: (reason: Error) => void
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onProgress?: (progress: any) => void
-  }>()
+  private pendingResolvers = new Map<number, PendingResolver>()
 
   constructor() {
     this.initWorker()
   }
 
   private initWorker() {
-    this.worker = new Worker(
-      new URL('./bookmarkWorker.ts', import.meta.url),
-      { type: 'module' }
-    )
+    this.worker = new Worker(new URL('./bookmarkWorker.ts', import.meta.url), { type: 'module' })
 
     this.worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
       const data = event.data
@@ -59,8 +56,7 @@ export class BookmarkWorkerClient {
       if (data.type === 'ERROR') {
         resolver.reject(new Error(data.payload.message))
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        resolver.resolve(data.payload as any)
+        resolver.resolve(data.payload)
       }
 
       this.pendingResolvers.delete(this.messageId)
@@ -87,7 +83,11 @@ export class BookmarkWorkerClient {
       }
 
       this.messageId++
-      this.pendingResolvers.set(this.messageId, { resolve, reject, onProgress })
+      this.pendingResolvers.set(this.messageId, {
+        resolve: resolve as (value: unknown) => void,
+        reject,
+        onProgress
+      })
 
       try {
         this.worker.postMessage(message)
@@ -204,8 +204,7 @@ export class BookmarkWorkerClient {
         }
 
         // Send the message
-        this.postMessage({ type: 'MERGE_DEDUP', payload: { bookmarks } })
-          .catch(reject)
+        this.postMessage({ type: 'MERGE_DEDUP', payload: { bookmarks } }).catch(reject)
 
         // Timeout after 60 seconds
         setTimeout(() => {

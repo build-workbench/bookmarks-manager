@@ -3,48 +3,49 @@ import { render, screen, waitFor } from '@testing-library/react'
 import Chart from './Chart'
 import type { EChartsOption } from 'echarts'
 
-// Mock echarts/core with named exports
+// Mock echarts/core with all required exports
 vi.mock('echarts/core', () => {
   const mockInstance = {
     setOption: vi.fn(),
     resize: vi.fn(),
-    dispose: vi.fn(),
+    dispose: vi.fn()
   }
   return {
     default: {
       init: vi.fn(() => mockInstance),
       getInstanceByDom: vi.fn(() => null),
-      use: vi.fn(),
+      use: vi.fn()
     },
     // Named exports used by Chart.tsx
     init: vi.fn(() => mockInstance),
+    getInstanceByDom: vi.fn(() => null),
     use: vi.fn(),
-    ECharts: vi.fn(),
+    ECharts: vi.fn()
   }
 })
 
 vi.mock('echarts/charts', () => ({
   PieChart: class PieChart {},
   BarChart: class BarChart {},
-  LineChart: class LineChart {},
+  LineChart: class LineChart {}
 }))
 
 vi.mock('echarts/components', () => ({
   TitleComponent: class TitleComponent {},
   TooltipComponent: class TooltipComponent {},
   GridComponent: class GridComponent {},
-  LegendComponent: class LegendComponent {},
+  LegendComponent: class LegendComponent {}
 }))
 
 vi.mock('echarts/renderers', () => ({
-  CanvasRenderer: class CanvasRenderer {},
+  CanvasRenderer: class CanvasRenderer {}
 }))
 
 describe('Chart', () => {
   const mockOption: EChartsOption = {
     xAxis: { type: 'category' as const, data: ['A', 'B'] },
     yAxis: { type: 'value' as const },
-    series: [{ type: 'bar' as const, data: [10, 20] }],
+    series: [{ type: 'bar' as const, data: [10, 20] }]
   }
 
   beforeEach(() => {

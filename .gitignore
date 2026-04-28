@@ -37,5 +37,12 @@ npm-debug.log*
 # Windsurf
 .windsurf/
 
-# Claude local
+# Claude
 CLAUDE.local.md
+.claude/*
+!.claude/commands/
+!.claude/skills/
+!.claude/settings.json
+
+# OMC (agent tool)
+.omc/

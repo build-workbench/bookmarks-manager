@@ -4,8 +4,8 @@ updates:
   - package-ecosystem: npm
     directory: /
     schedule:
-      interval: monthly
-    open-pull-requests-limit: 3
+      interval: quarterly
+    open-pull-requests-limit: 1
     commit-message:
       prefix: chore
       include: scope
@@ -18,3 +18,17 @@ updates:
           - patch
         patterns:
           - '*'
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: quarterly
+    open-pull-requests-limit: 1
+    commit-message:
+      prefix: chore
+      include: scope
+    labels:
+      - dependencies

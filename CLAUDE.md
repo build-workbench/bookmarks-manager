@@ -1,37 +1,37 @@
 # CLAUDE.md
 
-Project instructions for Claude-style coding tools.
+Claude 专用项目指令 —— **Bookmarks Manager**
 
-## Focus
+## 核心关注
 
-Optimize for **accurate repository cleanup and low-noise maintenance**, not feature expansion. This is a solo-maintained project; direct pushes after local verification are the default workflow.
+本地优先的书签管理 PWA。当前处于 **收尾固化** 阶段：优化一致性、降低维护噪音、保持 solo 维护的可持续性。
 
-## Before editing
+## 编辑前必读
 
-1. Check `openspec/changes/` and work from the active change.
-2. Read `AGENTS.md` and the relevant OpenSpec artifacts before making cross-cutting changes.
-3. Prefer removing drift over layering more docs or tooling on top of it.
+1. 检查 `openspec/specs/` 了解当前能力边界
+2. 阅读 `AGENTS.md` 获取完整架构约定
+3. 优先清理代码漂移，而非添加新抽象层
 
-## Commands
+## 命令
 
 ```bash
 npm run validate
 npm run build
 ```
 
-- Always run `npm run validate` for code changes.
-- Also run `npm run build` when touching routing, PWA metadata, GitHub Pages behavior, or workflows.
+- 代码变更必须通过 `validate`
+- 路由、PWA、部署相关变更需额外运行 `build`
 
-## Repository specifics
+## 仓库特性
 
-- Router: `HashRouter`
-- Data storage: Dexie / IndexedDB only
-- State: Zustand
-- AI: optional BYOK config only, stored locally
-- Deployment: GitHub Pages under `/bookmarks-manager/`
+- 路由：`HashRouter`（GitHub Pages SPA 兼容）
+- 存储：Dexie / IndexedDB（纯本地）
+- 状态：Zustand
+- AI：可选 BYOK 配置，存储在本地 IndexedDB
+- 部署：GitHub Pages `/bookmarks-manager/`
 
-## Editing bias
+## 编辑偏好
 
-- Prefer concise, project-specific docs over generic templates.
-- Keep CI, hooks, and repo automation minimal.
-- Use `/review` for risky diffs or broad cleanup passes.
+- 文档精简，避免通用模板
+- CI、hooks、自动化保持最小化
+- 风险 diff 使用 `/review` 进行审查

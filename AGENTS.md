@@ -1,62 +1,99 @@
 # AGENTS.md
 
-Repository contract for AI coding assistants working on **Bookmarks Manager**.
+AI coding assistant 的项目约定 —— **Bookmarks Manager**
 
-## Product and current goal
+## 产品定位
 
-Bookmarks Manager is a **local-first PWA** for importing, deduplicating, searching, backing up, and exporting browser bookmarks. The current project goal is **closure hardening**: improve coherence, reduce maintenance noise, and keep the repo easy to maintain as a solo project.
+**本地优先的书签管理工具**。核心价值：导入浏览器书签文件 → 智能合并去重 → 全文搜索 → 可视化统计 → 备份恢复 → 多格式导出。
 
-## Architecture snapshot
+技术约束：
 
-- `src/pages/` — route-level UI, including the public landing page and the in-app workspace
-- `src/ui/` — shared UI primitives
-- `src/store/` — Zustand state
-- `src/utils/` — bookmark parsing, search, storage, export, backup helpers
-- `src/ai/` — optional BYOK AI config and adapters
-- `src/workers/` — Web Worker support for large bookmark datasets
-- `openspec/` — the source of truth for scoped product and repository changes
+- **本地优先**：所有数据处理在浏览器完成，IndexedDB 存储
+- **隐私优先**：无后端、无云同步、无强制上传
+- **AI BYOK**：仅保留本地配置与连接测试，不硬编码密钥
+- **PWA 部署**：GitHub Pages + HashRouter
 
-## Commands that matter
+## 当前阶段：收尾固化
+
+项目进入 **Closure Hardening** 阶段。核心目标：
+
+- 提升一致性与稳定性，降低维护噪音
+- 精简文档和自动化，保持 solo 维护的可持续性
+- 不主动扩展新功能，除非有明确的 OpenSpec 提案
+
+## 架构快照
+
+```
+src/
+├── pages/        路由级 UI（LandingPage + 工作区页面）
+├── ui/           通用 UI 组件（Chart, VirtualList 等）
+├── store/        Zustand 状态（bookmarks, ai, cleanup）
+├── utils/        书签解析、搜索、存储、导出、备份
+├── ai/           可选 BYOK 配置与适配器
+└── workers/      大数据集的 Web Worker 支持
+
+openspec/         变更提案、能力规格（source of truth）
+```
+
+## 关键命令
 
 ```bash
 npm run dev
-npm run validate   # typecheck -> lint -> test
+npm run validate   # typecheck → lint → test
 npm run build
 ```
 
-Use `npm run validate` for all code changes. Also run `npm run build` when you touch routing, PWA, metadata, workflows, or deployment-facing files.
+- 代码变更：运行 `npm run validate`
+- 路由/PWA/部署相关变更：额外运行 `npm run build`
 
-## Workflow rules
+## 工作规则
 
-1. Start with OpenSpec for meaningful product or repository changes.
-2. Keep only active, current work under `openspec/changes/`; move deferred work out of the active list.
-3. This repository is maintained as a **solo direct-push** project.
-4. Use `/review` or an equivalent focused review step for risky, cross-cutting, or hard-to-verify changes.
+1. **OpenSpec 驱动**：实质性变更先写提案，保持 `openspec/specs/` 准确
+2. **Solo 直推**：本地验证通过后直接推送，无需 PR 流程
+3. **使用 `/review`**：跨模块变更、风险操作前执行代码审查
+4. **文档精简**：维护小而准的文档集，删除过时内容
 
-## Documentation rules
+## 数据模型
 
-Prefer a **small maintained doc set** over many stale documents. Keep these accurate:
+IndexedDB 表（Dexie）：
 
-- `README.md` / `README.zh-CN.md`
-- `CHANGELOG.md` / `CHANGELOG.zh-CN.md`
-- `docs/README*.md`
-- `docs/ARCHITECTURE*.md`
-- `docs/CONTRIBUTING*.md`
-- `AGENTS.md`
-- `CLAUDE.md`
+- `bookmarks`：书签数据（含去重后的合并结果）
+- `settings`：用户设置
+- `aiConfig`：可选的 AI 提供商配置（BYOK）
 
-Do not add generic PRDs, API dumps, or community boilerplate unless they will be actively maintained.
+## 路由结构
 
-## Tooling policy
+- `#/` — 公开 Landing Page
+- `#/app/upload` — 上传合并
+- `#/app/search` — 全文搜索
+- `#/app/duplicates` — 重复检测
+- `#/app/insights` — 统计视图
+- `#/app/backup` — 备份恢复
+- `#/app/ai` — AI 配置（可选）
 
-- Prefer `gh`, built-in assistant features, and OpenSpec skills over extra MCP/tooling sprawl.
-- Copilot guidance lives in `.github/copilot-instructions.md`.
-- Workspace editor and LSP defaults live in `.vscode/settings.json`.
-- Husky hooks should stay lightweight: staged formatting on commit, full validation on push.
+## 代码风格
 
-## Guardrails
+- 无分号（Prettier 配置）
+- 单引号（TS/JS）
+- 路径别名：`@/`, `@ai/`, `@components/`, `@pages/`, `@store/`, `@utils/`, `@workers/`
+- 测试：Vitest + jsdom + fake-indexeddb + fast-check（属性测试）
+- 覆盖率阈值：行 35%、函数 50%、分支 40%
 
-- Preserve the local-first privacy model.
-- Do not introduce a backend or cloud dependency.
-- Do not hardcode API keys or secrets.
-- Keep changes surgical and remove drift when you find it, but do not resurrect deferred feature work unless a new OpenSpec change explicitly scopes it.
+## 维护文档
+
+| 文件                     | 用途               |
+| ------------------------ | ------------------ |
+| `README.md` / `zh-CN`    | 产品概述与本地运行 |
+| `docs/ARCHITECTURE.md`   | 架构地图           |
+| `docs/CONTRIBUTING.md`   | 实际工作流程       |
+| `CHANGELOG.md`           | 精选发布历史       |
+| `AGENTS.md` / `CLAUDE.md | AI 助手约定        |
+
+## 边界与禁忌
+
+- ✅ 本地处理、IndexedDB 持久化
+- ✅ 可选 AI BYOK 配置
+- ❌ 不引入后端或云依赖
+- ❌ 不硬编码 API 密钥
+- ❌ 不添加未维护的文档或模板
+- ❌ 不隐式复活已延期的功能提案

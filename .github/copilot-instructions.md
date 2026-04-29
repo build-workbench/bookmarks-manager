@@ -1,35 +1,40 @@
 # Copilot Instructions
 
-## Project intent
+## 项目阶段
 
-This repository is in a **closure hardening** phase. Prefer cleanup, consistency, and reliability over new feature expansion.
+**Closure Hardening**：收尾固化阶段。优先清理、一致性和稳定性，而非功能扩展。
 
-## Product constraints
+## 产品约束
 
-- Local-first only: no backend, no cloud sync
-- Privacy-first: do not introduce uploads or telemetry
-- BYOK AI only: never hardcode keys or secrets
-- AI surface is optional and minimal: keep only local BYOK config unless an active OpenSpec change expands it
-- GitHub Pages deployment with `HashRouter`
+- 本地优先：无后端、无云同步
+- 隐私优先：不引入上传或遥测
+- AI BYOK：从不硬编码密钥或 secrets
+- AI 表面可选且最小：仅保留本地 BYOK 配置
+- GitHub Pages 部署，使用 `HashRouter`
 
-## Working style
+## 工作风格
 
-- Start with the active OpenSpec change before broad edits
-- Keep changes scoped and remove drift when it is tightly related
-- This is a solo-maintained repo: direct pushes after local verification are normal
+- 实质性变更从 OpenSpec 提案开始
+- 保持变更聚焦，清理紧密相关的代码漂移
+- Solo 维护仓库：本地验证后直接推送
+- 风险变更前执行 `/review`
 
-## Commands
+## 命令
 
 ```bash
-npm run validate
-npm run build
+npm run validate  # 代码变更必须通过
+npm run build     # 路由、PWA、部署相关变更需额外运行
 ```
 
-- Use `npm run validate` for code changes
-- Also use `npm run build` when touching routes, PWA metadata, workflows, or deployment behavior
+## 文档与工具
 
-## Docs and tooling
+- 文档保持精简且持续维护
+- 不添加通用 PRD、API 文档或模板
+- 优先使用原生工具、`gh`、OpenSpec，而非额外的 MCP/插件
 
-- Keep docs concise and maintained
-- Do not add generic PRDs, API dumps, or template-heavy community files unless they will stay current
-- Prefer native tooling, `gh`, OpenSpec, and focused review flows such as `/review` over extra MCP/plugin complexity
+## 核心技术栈
+
+- React + TypeScript + Vite
+- Zustand（状态）、Dexie/IndexedDB（存储）
+- Tailwind CSS、ECharts
+- Vitest + fast-check（测试）

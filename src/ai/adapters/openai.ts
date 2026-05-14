@@ -41,7 +41,7 @@ interface OpenAIChatResponse {
 }
 
 export class OpenAIAdapter extends BaseLLMAdapter {
-  private baseUrl: string
+  protected baseUrl: string
 
   constructor(config: LLMConfig) {
     super(config)
@@ -52,7 +52,7 @@ export class OpenAIAdapter extends BaseLLMAdapter {
     return this.withRetry(async () => {
       const openaiRequest: OpenAIChatRequest = {
         model: this.config.model,
-        messages: request.messages.map(m => ({
+        messages: request.messages.map((m) => ({
           role: m.role,
           content: m.content
         })),
@@ -64,7 +64,7 @@ export class OpenAIAdapter extends BaseLLMAdapter {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.config.apiKey}`
+          Authorization: `Bearer ${this.config.apiKey}`
         },
         body: JSON.stringify(openaiRequest)
       })
@@ -94,12 +94,19 @@ export class OpenAIAdapter extends BaseLLMAdapter {
         })
       }
 
+      // Handle cases where usage might not be provided
+      const usage = data.usage || {
+        prompt_tokens: 0,
+        completion_tokens: 0,
+        total_tokens: 0
+      }
+
       return {
         content: data.choices[0].message.content,
         usage: {
-          promptTokens: data.usage.prompt_tokens,
-          completionTokens: data.usage.completion_tokens,
-          totalTokens: data.usage.total_tokens
+          promptTokens: usage.prompt_tokens,
+          completionTokens: usage.completion_tokens,
+          totalTokens: usage.total_tokens
         },
         model: data.model
       }
@@ -112,7 +119,7 @@ export class OpenAIAdapter extends BaseLLMAdapter {
       const response = await fetch(`${this.baseUrl}/models`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`
+          Authorization: `Bearer ${this.config.apiKey}`
         }
       })
 

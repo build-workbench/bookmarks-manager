@@ -17,7 +17,7 @@ vi.mock('@/ai/adapters', () => ({
 
 describe('useAIStore', () => {
   beforeEach(() => {
-    useAIStore.getState().reset()
+    useAIStore.setState({ config: null, connectionStatus: 'idle', connectionError: null })
     vi.clearAllMocks()
   })
 
@@ -34,24 +34,6 @@ describe('useAIStore', () => {
 
     const state = useAIStore.getState()
     expect(state.config).toEqual(mockConfig)
-    expect(state.isConfigured).toBe(true)
-  })
-
-  it('saves config and updates state', async () => {
-    const mockConfig: LLMConfig = {
-      provider: 'claude',
-      apiKey: 'new-key',
-      model: 'claude-3-5-sonnet-20241022'
-    }
-
-    vi.mocked(configService.saveConfig).mockResolvedValue({ success: true })
-
-    await useAIStore.getState().saveConfig(mockConfig)
-
-    const state = useAIStore.getState()
-    expect(state.config).toEqual(mockConfig)
-    expect(state.isConfigured).toBe(true)
-    expect(state.connectionStatus).toBe('idle')
   })
 
   it('tests connection with the configured adapter', async () => {
@@ -64,28 +46,58 @@ describe('useAIStore', () => {
     const chat = vi.fn()
     const estimateCost = vi.fn().mockReturnValue(0)
 
-    useAIStore.setState({
-      config: mockConfig,
-      isConfigured: true
-    })
     vi.mocked(createAdapter).mockReturnValue({
       chat,
       validateApiKey,
       estimateCost
     })
 
-    await expect(useAIStore.getState().testConnection()).resolves.toBe(true)
+    await expect(useAIStore.getState().testConnection(mockConfig)).resolves.toBe(true)
 
     expect(validateApiKey).toHaveBeenCalledOnce()
     expect(useAIStore.getState().connectionStatus).toBe('connected')
+    expect(useAIStore.getState().config).toEqual(mockConfig)
   })
 
-  it('sets an error when testing connection without config', async () => {
-    await expect(useAIStore.getState().testConnection()).resolves.toBe(false)
+  it('sets an error when connection test fails', async () => {
+    const mockConfig: LLMConfig = {
+      provider: 'openai',
+      apiKey: 'invalid-key',
+      model: 'gpt-4o-mini'
+    }
+    const validateApiKey = vi.fn().mockResolvedValue(false)
+    const chat = vi.fn()
+    const estimateCost = vi.fn().mockReturnValue(0)
+
+    vi.mocked(createAdapter).mockReturnValue({
+      chat,
+      validateApiKey,
+      estimateCost
+    })
+
+    await expect(useAIStore.getState().testConnection(mockConfig)).resolves.toBe(false)
 
     const state = useAIStore.getState()
     expect(state.connectionStatus).toBe('error')
-    expect(state.connectionError).toBe('未配置 API')
+    expect(state.connectionError).toBe('API Key 无效')
+  })
+
+  it('handles connection test exceptions', async () => {
+    const mockConfig: LLMConfig = {
+      provider: 'openai',
+      apiKey: 'test-key',
+      model: 'gpt-4o-mini'
+    }
+
+    vi.mocked(createAdapter).mockImplementation(() => {
+      throw new Error('Network error')
+    })
+
+    await expect(useAIStore.getState().testConnection(mockConfig)).resolves.toBe(false)
+
+    const state = useAIStore.getState()
+    expect(state.connectionStatus).toBe('error')
+    expect(state.connectionError).toBe('Network error')
   })
 
   it('does not expose retired AI analysis operations', () => {
@@ -102,22 +114,5 @@ describe('useAIStore', () => {
     expect('clearCache' in state).toBe(false)
     expect('usageStats' in state).toBe(false)
     expect('usageLimits' in state).toBe(false)
-  })
-
-  it('resets the configuration surface to initial values', () => {
-    useAIStore.setState({
-      config: { provider: 'openai', apiKey: 'test', model: 'gpt-4o-mini' },
-      isConfigured: true,
-      connectionStatus: 'connected',
-      connectionError: 'error'
-    })
-
-    useAIStore.getState().reset()
-
-    const state = useAIStore.getState()
-    expect(state.config).toBeNull()
-    expect(state.isConfigured).toBe(false)
-    expect(state.connectionStatus).toBe('idle')
-    expect(state.connectionError).toBeNull()
   })
 })

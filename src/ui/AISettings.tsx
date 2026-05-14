@@ -22,8 +22,7 @@ interface AISettingsProps {
 }
 
 export function AISettings({ onConfigSaved }: AISettingsProps) {
-  const { config, saveConfig, testConnection, connectionStatus, connectionError, loadConfig } =
-    useAIStore()
+  const { config, testConnection, connectionStatus, connectionError, loadConfig } = useAIStore()
   const [provider, setProvider] = useState<Provider>('openai')
   const [apiKey, setApiKey] = useState('')
   const [model, setModel] = useState('')
@@ -70,8 +69,9 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
   const handleTestConnection = async () => {
     setIsTesting(true)
     try {
-      await saveConfig(getConfig())
-      await testConnection()
+      const cfg = getConfig()
+      await configService.saveConfig(cfg)
+      await testConnection(cfg)
     } finally {
       setIsTesting(false)
     }
@@ -81,14 +81,15 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
     setIsSaving(true)
     setSaveResult(null)
     try {
-      await saveConfig(getConfig())
-      setSaveResult({ success: true, message: t('ai.configSaved') })
-      onConfigSaved?.()
-    } catch (error) {
-      setSaveResult({
-        success: false,
-        message: t('ai.saveFailed')
-      })
+      const result = await configService.saveConfig(getConfig())
+      if (result.success) {
+        setSaveResult({ success: true, message: t('ai.configSaved') })
+        onConfigSaved?.()
+      } else {
+        setSaveResult({ success: false, message: result.error || t('ai.saveFailed') })
+      }
+    } catch {
+      setSaveResult({ success: false, message: t('ai.saveFailed') })
     } finally {
       setIsSaving(false)
     }

@@ -15,28 +15,11 @@ vi.mock('@/store/useBookmarksStore', () => ({
 
 vi.mock('@/store/useAIStore', () => ({
   useAIStore: () => ({
-    isConfigured: false,
+    config: null,
     connectionStatus: 'idle',
     connectionError: null,
-    isProcessing: false,
-    currentOperation: null,
-    progress: null,
-    categorySuggestions: new Map(),
-    summaries: new Map(),
-    healthIssues: [],
-    latestReport: null,
-    lastSearchResult: null,
-    usageStats: null,
     loadConfig: vi.fn(),
-    testConnection: vi.fn(),
-    categorizeBookmarks: vi.fn(),
-    summarizeBookmarks: vi.fn(),
-    analyzeHealth: vi.fn(),
-    searchWithAI: vi.fn(),
-    generateReport: vi.fn(),
-    dismissHealthIssue: vi.fn(),
-    refreshUsageStats: vi.fn(),
-    clearCache: vi.fn()
+    testConnection: vi.fn()
   })
 }))
 

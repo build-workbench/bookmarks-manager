@@ -1,6 +1,11 @@
 /**
  * Base LLM Adapter
- * Abstract base class for all LLM provider adapters
+ * Abstract base class providing shared utilities for LLM provider adapters.
+ *
+ * NOTE: Retry logic is intentionally NOT implemented at the adapter level.
+ * Retries are owned by the caller (callLLM) to avoid nested retry loops.
+ * The withRetry method name is kept for backward compatibility but simply
+ * delegates to execute().
  */
 
 import type { LLMAdapter, LLMConfig, LLMRequest, LLMResponse } from '@/ai/types'
@@ -25,7 +30,7 @@ export abstract class BaseLLMAdapter implements LLMAdapter {
     const costs = TOKEN_COSTS[this.config.model]
     if (!costs) {
       // Default cost estimate for unknown models
-      return tokens * 0.001 / 1000
+      return (tokens * 0.001) / 1000
     }
     // Assume roughly equal input/output for estimation
     const avgCost = (costs.input + costs.output) / 2
@@ -38,7 +43,7 @@ export abstract class BaseLLMAdapter implements LLMAdapter {
   calculateCost(promptTokens: number, completionTokens: number): number {
     const costs = TOKEN_COSTS[this.config.model]
     if (!costs) {
-      return (promptTokens + completionTokens) * 0.001 / 1000
+      return ((promptTokens + completionTokens) * 0.001) / 1000
     }
     return (promptTokens * costs.input + completionTokens * costs.output) / 1000
   }
@@ -67,7 +72,7 @@ export abstract class BaseLLMAdapter implements LLMAdapter {
   }
 
   protected sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms))
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
   /**

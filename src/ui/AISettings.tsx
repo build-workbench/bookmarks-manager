@@ -100,28 +100,28 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
     return (
       <div className="flex items-center justify-center p-8">
         <Loader2 className="w-6 h-6 animate-spin text-sky-400" />
-        <span className="ml-2 text-gray-400">{t('ai.loadingConfig')}</span>
+        <span className="ml-2 text-muted-foreground">{t('ai.loadingConfig')}</span>
       </div>
     )
   }
 
   return (
-    <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
+    <div className="bg-card rounded-xl p-6 border border-border">
       <div className="flex items-center gap-3 mb-6">
         <Settings className="w-6 h-6 text-sky-400" />
-        <h2 className="text-xl font-semibold text-white">{t('ai.configTitle')}</h2>
+        <h2 className="text-xl font-semibold text-foreground">{t('ai.configTitle')}</h2>
       </div>
 
       <div className="space-y-6">
         <div>
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
+          <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
             <Server className="w-4 h-4" />
             {t('ai.provider')}
           </label>
           <select
             value={provider}
             onChange={(e) => setProvider(e.target.value as Provider)}
-            className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+            className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground focus:ring-2 focus:ring-sky-500 focus:border-transparent"
           >
             <option value="openai">OpenAI</option>
             <option value="claude">Claude (Anthropic)</option>
@@ -130,7 +130,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
         </div>
 
         <div>
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
+          <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
             <Key className="w-4 h-4" />
             API Key
           </label>
@@ -140,22 +140,22 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
               placeholder={t('ai.apiKeyPlaceholder')}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 pr-10 text-white placeholder-gray-500 focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 pr-10 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-sky-500 focus:border-transparent"
             />
             <button
               type="button"
               onClick={() => setShowApiKey(!showApiKey)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
-          <p className="mt-1 text-xs text-gray-500">{t('ai.apiKeyHint')}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{t('ai.apiKeyHint')}</p>
         </div>
 
         {provider === 'custom' && (
           <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
+            <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
               <Server className="w-4 h-4" />
               {t('ai.endpointUrl')}
             </label>
@@ -164,13 +164,13 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
               value={baseUrl}
               onChange={(e) => setBaseUrl(e.target.value)}
               placeholder="https://your-api.com/v1"
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-sky-500 focus:border-transparent"
             />
           </div>
         )}
 
         <div>
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
+          <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
             <Cpu className="w-4 h-4" />
             {t('ai.model')}
           </label>
@@ -180,13 +180,13 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
               value={model}
               onChange={(e) => setModel(e.target.value)}
               placeholder={t('ai.modelPlaceholder')}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-sky-500 focus:border-transparent"
             />
           ) : (
             <select
               value={model}
               onChange={(e) => setModel(e.target.value)}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground focus:ring-2 focus:ring-sky-500 focus:border-transparent"
             >
               {models.map((m) => (
                 <option key={m} value={m}>
@@ -199,17 +199,17 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <label>
-            <div className="text-sm font-medium text-gray-300 mb-2">{t('ai.maxTokens')}</div>
+            <div className="text-sm font-medium text-foreground mb-2">{t('ai.maxTokens')}</div>
             <input
               type="number"
               min={1}
               value={maxTokens}
               onChange={(e) => setMaxTokens(Number(e.target.value) || 1)}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground focus:ring-2 focus:ring-sky-500 focus:border-transparent"
             />
           </label>
           <label>
-            <div className="text-sm font-medium text-gray-300 mb-2">Temperature</div>
+            <div className="text-sm font-medium text-foreground mb-2">Temperature</div>
             <input
               type="number"
               min={0}
@@ -217,7 +217,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
               step={0.1}
               value={temperature}
               onChange={(e) => setTemperature(Number(e.target.value))}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground focus:ring-2 focus:ring-sky-500 focus:border-transparent"
             />
           </label>
         </div>
@@ -266,7 +266,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
           <button
             onClick={handleTestConnection}
             disabled={!apiKey || isTesting || (provider === 'custom' && !baseUrl)}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500 text-white rounded-lg transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-muted hover:bg-card-hover disabled:bg-muted disabled:text-muted-foreground text-foreground rounded-lg transition-colors"
           >
             {isTesting ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -278,7 +278,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
           <button
             onClick={handleSave}
             disabled={!apiKey || !model || isSaving || (provider === 'custom' && !baseUrl)}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-500 disabled:bg-gray-800 disabled:text-gray-500 text-white rounded-lg transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-500 disabled:bg-muted disabled:text-muted-foreground text-white rounded-lg transition-colors"
           >
             {isSaving ? (
               <Loader2 className="w-4 h-4 animate-spin" />

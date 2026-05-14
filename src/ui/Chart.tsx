@@ -127,14 +127,7 @@ export default function Chart({
     <div style={{ width: '100%', height, position: 'relative' }}>
       {isLoading && (
         <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'rgba(15, 23, 42, 0.5)'
-          }}
+          className="absolute inset-0 flex items-center justify-center bg-card/50"
           role="status"
           aria-label="图表加载中"
         >

@@ -134,7 +134,10 @@ export default function Search() {
     const parts = text.split(re)
     return parts.map((part, i) =>
       i % 2 === 1 ? (
-        <mark key={`${part}-${i}`} className="rounded bg-sky-500/20 px-1 text-sky-200">
+        <mark
+          key={`${part}-${i}`}
+          className="rounded bg-sky-500/20 px-1 text-sky-600 dark:text-sky-200"
+        >
           {part}
         </mark>
       ) : (

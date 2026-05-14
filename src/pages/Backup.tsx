@@ -83,7 +83,7 @@ export default function Backup() {
         const confirmMessage = [
           t('backup.confirmRestore'),
           '',
-          `书签: ${backup.bookmarks?.length || 0} 条`,
+          t('backup.bookmarkCount', { count: backup.bookmarks?.length || 0 }),
           `${t('backup.aiConfigLabel')}: ${backup.aiConfig ? t('common.yes') : t('common.no')}`,
           '',
           t('backup.warning')
@@ -131,14 +131,13 @@ export default function Backup() {
       <div className="rounded-lg border border-border bg-card/50 p-6">
         <div className="flex items-center gap-3 mb-4">
           <Database className="w-6 h-6 text-sky-400" />
-          <h2 className="text-xl font-semibold">数据备份与恢复</h2>
+          <h2 className="text-xl font-semibold">{t('backup.pageTitle')}</h2>
         </div>
 
         <p className="text-muted text-sm mb-6">
-          备份功能可以将您的书签数据与可选 AI 配置导出为一个 JSON 文件。
-          您可以使用该文件在另一台设备上恢复数据，或作为数据归档。
+          {t('backup.description')}
           <br />
-          <span className="text-amber-400">注意：所有数据都在本地处理，不会上传到任何服务器。</span>
+          <span className="text-amber-400">{t('backup.localNote')}</span>
         </p>
 
         {message && (
@@ -162,7 +161,7 @@ export default function Backup() {
         <div className="rounded-lg border border-border bg-card/30 p-4 mb-6">
           <div className="flex items-center gap-2 mb-3 text-sm font-medium text-foreground">
             <Settings className="w-4 h-4" />
-            备份选项
+            {t('backup.options')}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -174,7 +173,7 @@ export default function Backup() {
                 className="rounded border-border"
               />
               <Database className="w-4 h-4 text-muted" />
-              书签数据
+              {t('backup.bookmarkData')}
             </label>
 
             <label className="flex items-center gap-2 text-sm text-muted cursor-pointer">
@@ -185,12 +184,13 @@ export default function Backup() {
                 className="rounded border-border"
               />
               <Brain className="w-4 h-4 text-muted" />
-              AI 配置（API密钥等）
+              {t('backup.aiConfigData')}
             </label>
           </div>
 
           <div className="mt-4 pt-3 border-t border-border text-xs text-muted">
-            预计备份大小: <span className="text-muted">{formatBytes(backupSize)}</span>
+            {t('backup.estimatedSize')}:{' '}
+            <span className="text-muted">{formatBytes(backupSize)}</span>
           </div>
         </div>
 
@@ -222,31 +222,22 @@ export default function Backup() {
 
       {/* FAQ */}
       <div className="rounded-lg border border-border bg-card/30 p-6">
-        <h3 className="font-medium mb-4">常见问题</h3>
+        <h3 className="font-medium mb-4">{t('backup.faq.title')}</h3>
 
         <div className="space-y-4 text-sm text-muted">
           <div>
-            <div className="text-foreground font-medium mb-1">备份文件包含什么？</div>
-            <p>
-              备份文件是一个 JSON 格式的文本文件，包含您选择的书签数据，以及可选的 AI
-              配置。您可以用文本编辑器查看其内容。
-            </p>
+            <div className="text-foreground font-medium mb-1">{t('backup.faq.q1')}</div>
+            <p>{t('backup.faq.a1')}</p>
           </div>
 
           <div>
-            <div className="text-foreground font-medium mb-1">如何迁移到另一台设备？</div>
-            <p>
-              在旧设备上创建备份并下载 JSON
-              文件，然后在新设备上打开此应用，进入备份页面选择"从备份恢复"即可。
-            </p>
+            <div className="text-foreground font-medium mb-1">{t('backup.faq.q2')}</div>
+            <p>{t('backup.faq.a2')}</p>
           </div>
 
           <div>
-            <div className="text-foreground font-medium mb-1">API密钥安全吗？</div>
-            <p>
-              是的。备份文件存储在您的本地设备上，不会上传到任何服务器。建议您妥善保管备份文件，因为其中可能包含敏感的
-              API 密钥。
-            </p>
+            <div className="text-foreground font-medium mb-1">{t('backup.faq.q3')}</div>
+            <p>{t('backup.faq.a3')}</p>
           </div>
         </div>
       </div>

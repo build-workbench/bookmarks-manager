@@ -66,10 +66,14 @@ export default function UploadMerge() {
         .slice(0, 3)
         .map((f) => f.name)
         .join(', ')
-      const moreCount = rejected.length > 3 ? `等 ${rejected.length} 个` : ''
+      const moreCount = rejected.length > 3 ? `... +${rejected.length - 3}` : ''
       setMessage({
         type: 'error',
-        text: `未检测到有效的 HTML 书签文件。请确保文件扩展名为 .html 或 .htm${rejectedNames ? `\n（${rejectedNames}${moreCount} 格式不支持）` : ''}`
+        text:
+          t('upload.invalidFiles') +
+          (rejectedNames
+            ? `\n${t('upload.rejectedFiles', { names: rejectedNames, more: moreCount })}`
+            : '')
       })
       return
     }
@@ -79,8 +83,11 @@ export default function UploadMerge() {
       await importFiles(accepted)
       const successMsg =
         rejected.length > 0
-          ? `成功导入 ${accepted.length} 个文件（跳过 ${rejected.length} 个非 HTML 文件）`
-          : `成功导入 ${accepted.length} 个文件`
+          ? t('upload.importPartialSuccess', {
+              accepted: accepted.length,
+              rejected: rejected.length
+            })
+          : t('upload.importSuccess', { count: accepted.length })
       setMessage({ type: 'success', text: successMsg })
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : t('common.unknownError')
@@ -133,7 +140,7 @@ export default function UploadMerge() {
       <div className="rounded-lg border border-border p-6 bg-card/50">
         <div className="flex items-center gap-2 mb-3">
           <Upload className="w-5 h-5 text-sky-400" />
-          <h3 className="font-medium">选择导出的书签 HTML 文件，支持多选</h3>
+          <h3 className="font-medium">{t('upload.selectFiles')}</h3>
         </div>
         <label className="block cursor-pointer">
           <div
@@ -169,7 +176,7 @@ export default function UploadMerge() {
             } ${busy ? 'opacity-60 pointer-events-none' : ''}`}
           >
             <FileText className="w-12 h-12 mx-auto mb-3 text-muted" />
-            <div className="text-sm text-muted mb-1">点击选择文件或拖拽到此处</div>
+            <div className="text-sm text-muted mb-1">{t('upload.dragOrClick')}</div>
             <div className="text-xs text-muted">{t('upload.supportedFormats')}</div>
           </div>
           <input
@@ -185,7 +192,7 @@ export default function UploadMerge() {
 
       {importedFiles.length > 0 && (
         <div className="rounded-lg border border-border p-6 bg-card/30">
-          <div className="text-sm font-medium mb-3">当前导入会话中的文件</div>
+          <div className="text-sm font-medium mb-3">{t('upload.importSessionFiles')}</div>
           <div className="space-y-2">
             {importedFiles.map(([name, count]) => (
               <div
@@ -194,7 +201,9 @@ export default function UploadMerge() {
               >
                 <div className="min-w-0">
                   <div className="text-sm text-foreground truncate">{name}</div>
-                  <div className="text-xs text-muted">{count} 条书签</div>
+                  <div className="text-xs text-muted">
+                    {t('upload.bookmarkCountShort', { count })}
+                  </div>
                 </div>
                 <button
                   onClick={() => {
@@ -207,7 +216,7 @@ export default function UploadMerge() {
                   disabled={busy}
                   className="px-3 py-1.5 rounded bg-card-hover hover:bg-card-hover text-foreground text-sm transition"
                 >
-                  移除
+                  {t('upload.remove')}
                 </button>
               </div>
             ))}
@@ -217,17 +226,14 @@ export default function UploadMerge() {
 
       {hasRestoredSnapshot && (
         <div className="rounded-lg border border-border p-4 bg-card/30 text-sm text-muted">
-          已从本地数据库恢复上一次的合并结果，共 {restoredItems.length}{' '}
-          条书签。当前未保留原始导入文件和重复簇信息；如需重新整理，请重新导入书签文件并执行合并去重。
+          {t('upload.restoredHint', { count: restoredItems.length })}
         </div>
       )}
 
       {needsMerge && rawItems.length > 0 && (
         <div className="rounded-lg border p-4 flex items-start gap-3 bg-amber-500/10 border-amber-500/50 text-amber-400">
           <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-          <div className="text-sm">
-            当前导入会话已发生变更，旧的合并结果、搜索索引和重复簇已失效。请点击"合并去重"重新生成最新结果。
-          </div>
+          <div className="text-sm">{t('upload.needsMergeWarning')}</div>
         </div>
       )}
 
@@ -250,21 +256,21 @@ export default function UploadMerge() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="rounded-lg border border-border p-5 bg-card/30">
-          <div className="text-muted text-sm mb-1">原始条目</div>
+          <div className="text-muted text-sm mb-1">{t('upload.rawItems')}</div>
           <div className="text-3xl font-bold text-sky-400">{rawItems.length}</div>
           <div className="text-xs text-muted mt-2">
             {rawItems.length > 0 ? t('upload.rawItemsLabel') : t('upload.noRawItems')}
           </div>
         </div>
         <div className="rounded-lg border border-border p-5 bg-card/30">
-          <div className="text-muted text-sm mb-1">合并后</div>
+          <div className="text-muted text-sm mb-1">{t('upload.mergedItems')}</div>
           <div className="text-3xl font-bold text-emerald-400">{mergedItems.length}</div>
           <div className="text-xs text-muted mt-2">
             {hasRestoredSnapshot ? t('upload.restoredLabel') : t('upload.mergedItemsLabel')}
           </div>
         </div>
         <div className="rounded-lg border border-border p-5 bg-card/30">
-          <div className="text-muted text-sm mb-1">重复总数</div>
+          <div className="text-muted text-sm mb-1">{t('upload.duplicateItems')}</div>
           <div className="text-3xl font-bold text-orange-400">{Object.keys(duplicates).length}</div>
           <div className="text-xs text-muted mt-2">
             {hasFullMergeData ? t('upload.duplicatesLabel') : t('upload.duplicatesUnavailable')}
@@ -279,7 +285,7 @@ export default function UploadMerge() {
           className="px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
         >
           <CheckCircle className="w-4 h-4" />
-          合并去重
+          {t('upload.mergeButton')}
         </button>
         <div className="flex flex-col sm:flex-row gap-2">
           <div className="flex rounded-lg overflow-hidden border border-border bg-card-hover">
@@ -303,7 +309,9 @@ export default function UploadMerge() {
             className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
           >
             <Download className="w-4 h-4" />
-            导出 {EXPORT_FORMAT_OPTIONS.find((o) => o.format === selectedFormat)?.label}
+            {t('upload.exportButton', {
+              format: EXPORT_FORMAT_OPTIONS.find((o) => o.format === selectedFormat)?.label
+            })}
           </button>
         </div>
         <button
@@ -315,7 +323,7 @@ export default function UploadMerge() {
           className="px-5 py-2.5 rounded-lg bg-card-hover hover:bg-card-hover disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
         >
           <Trash2 className="w-4 h-4" />
-          清空
+          {t('upload.clearButton')}
         </button>
       </div>
 

@@ -267,5 +267,157 @@ export default {
   // Alert messages
   'alert.needsMerge':
     '当前导入会话已变更，旧的统计、搜索结果和导出内容已失效。请前往"上传合并"重新合并去重。',
-  'alert.goMerge': '去合并'
+  'alert.goMerge': '去合并',
+
+  // Search Page - Extended
+  'search.needsMerge': '当前导入会话已变更，搜索索引已失效',
+  'search.needsMergeHint': '请先回到"上传合并"重新执行合并去重',
+  'search.placeholderFull': '搜索书签标题、URL或目录...',
+  'search.advancedFilter': '高级过滤（可与搜索组合）',
+  'search.reset': '重置',
+  'search.domain': '域名',
+  'search.allDomains': '全部域名',
+  'search.rootFolder': '目录（一级）',
+  'search.allFolders': '全部目录',
+  'search.folderKeyword': '目录关键字（包含匹配）',
+  'search.folderKeywordPlaceholder': '例如：开发 / AI / 阅读',
+  'search.dateStart': '开始日期',
+  'search.dateEnd': '结束日期',
+  'search.export': '导出',
+  'search.currentResults': '当前结果',
+  'search.all': '全量',
+  'search.preserveFolder': '保留目录结构',
+  'search.exportButton': '导出 {format}',
+  'search.importFirst': '请先在"上传合并"页面导入书签',
+  'search.noMatch': '未找到匹配的书签',
+  'search.found': '找到 {count} 条结果',
+  'search.searchHits': '（搜索命中 {count}）',
+  'search.loadMore': '加载更多（{count} 条）',
+  'search.exportedAs': '已导出为 {format} 格式',
+
+  // Backup Page - Extended
+  'backup.pageTitle': '数据备份与恢复',
+  'backup.description':
+    '备份功能可以将您的书签数据与可选 AI 配置导出为一个 JSON 文件。您可以使用该文件在另一台设备上恢复数据，或作为数据归档。',
+  'backup.localNote': '注意：所有数据都在本地处理，不会上传到任何服务器。',
+  'backup.options': '备份选项',
+  'backup.bookmarkData': '书签数据',
+  'backup.aiConfigData': 'AI 配置（API密钥等）',
+  'backup.estimatedSize': '预计备份大小',
+  'backup.bookmarkCount': '书签: {count} 条',
+  'backup.faq.title': '常见问题',
+  'backup.faq.q1': '备份文件包含什么？',
+  'backup.faq.a1':
+    '备份文件是一个 JSON 格式的文本文件，包含您选择的书签数据，以及可选的 AI 配置。您可以用文本编辑器查看其内容。',
+  'backup.faq.q2': '如何迁移到另一台设备？',
+  'backup.faq.a2':
+    '在旧设备上创建备份并下载 JSON 文件，然后在新设备上打开此应用，进入备份页面选择"从备份恢复"即可。',
+  'backup.faq.q3': 'API密钥安全吗？',
+  'backup.faq.a3':
+    '是的。备份文件存储在您的本地设备上，不会上传到任何服务器。建议您妥善保管备份文件，因为其中可能包含敏感的 API 密钥。',
+
+  // Duplicates Page - Extended
+  'duplicates.needsMerge': '当前导入会话已变更，重复簇结果已失效',
+  'duplicates.needsMergeHint': '请先回到"上传合并"重新执行合并去重',
+  'duplicates.noFullMergeData': '当前只恢复了上次合并快照，未保留重复簇明细',
+  'duplicates.noFullMergeDataHint': '如需查看重复簇，请重新导入原始书签并执行合并去重',
+  'duplicates.clusterTitle': '重复书签簇',
+  'duplicates.groupCount': '{count} 组重复',
+  'duplicates.noDuplicatesHint': '请先在"上传合并"页面进行合并去重',
+  'duplicates.cluster': '重复组 #{index} ({count} 个副本)',
+  'duplicates.keep': '保留',
+
+  // Upload & Merge Page - Extended
+  'upload.selectFiles': '选择导出的书签 HTML 文件，支持多选',
+  'upload.dragOrClick': '点击选择文件或拖拽到此处',
+  'upload.importSessionFiles': '当前导入会话中的文件',
+  'upload.bookmarkCountShort': '{count} 条书签',
+  'upload.remove': '移除',
+  'upload.restoredHint':
+    '已从本地数据库恢复上一次的合并结果，共 {count} 条书签。当前未保留原始导入文件和重复簇信息；如需重新整理，请重新导入书签文件并执行合并去重。',
+  'upload.needsMergeWarning':
+    '当前导入会话已发生变更，旧的合并结果、搜索索引和重复簇已失效。请点击"合并去重"重新生成最新结果。',
+  'upload.rawItems': '原始条目',
+  'upload.mergedItems': '合并后',
+  'upload.duplicateItems': '重复总数',
+  'upload.mergeButton': '合并去重',
+  'upload.exportButton': '导出 {format}',
+  'upload.clearButton': '清空',
+  'upload.invalidFiles': '未检测到有效的 HTML 书签文件。请确保文件扩展名为 .html 或 .htm',
+  'upload.rejectedFiles': '（{names}{more} 格式不支持）',
+  'upload.importSuccess': '成功导入 {count} 个文件',
+  'upload.importPartialSuccess': '成功导入 {accepted} 个文件（跳过 {rejected} 个非 HTML 文件）',
+
+  // AI Page - Extended
+  'ai.pageTitle': 'AI 可选配置',
+  'ai.description':
+    'Bookmarks Manager 的核心工作流不依赖 AI。这里仅保留本地 BYOK 配置与连接测试，所有密钥和设置都只存储在当前浏览器中。',
+
+  // Error Boundary - Extended
+  'error.pageLoadFailed': '页面加载失败',
+  'error.componentLoadFailed': '组件加载失败',
+  'error.checkNetwork': '请检查网络连接后刷新页面重试',
+  'error.refreshPage': '刷新页面',
+
+  // Dashboard - Extended
+  'dashboard.chart.pieDescription': '去重后 {total} 条，重复 {duplicates} 条',
+  'dashboard.chart.barDescription': 'Top 10 域名: {domains}',
+  'dashboard.chart.lineDescription': '按年份新增: {years}',
+  'dashboard.folderLabel': '目录: {path}',
+
+  // AI Settings - Extended
+  'ai.loadingConfig': '加载配置中...',
+  'ai.configTitle': 'AI 配置',
+  'ai.provider': '服务提供商',
+  'ai.customEndpoint': '自定义端点',
+  'ai.apiKeyPlaceholder': '输入你的 API Key',
+  'ai.apiKeyHint': 'API Key 安全存储在本地 IndexedDB 中，不会上传到任何服务器',
+  'ai.endpointUrl': 'API 端点 URL',
+  'ai.model': '模型',
+  'ai.modelPlaceholder': '输入模型名称',
+  'ai.maxTokens': '最大输出 Tokens',
+  'ai.testConnection': '测试连接',
+  'ai.saveConfig': '保存配置',
+
+  // Virtual List
+  'virtualList.noData': '暂无数据',
+
+  // Worker
+  'worker.parseFailed': '解析 {file} 失败: {error}',
+  'worker.normalizing': '正在归一化 URL...',
+  'worker.computingDuplicates': '正在计算重复簇...',
+
+  // AI Store
+  'ai.notConfigured': '未配置 API',
+  'ai.invalidApiKey': 'API Key 无效',
+  'ai.connectionFailed': '连接测试失败',
+
+  // Backup util
+  'backup.invalidFormat': '备份数据格式无效',
+
+  // Stage messages
+  'stage.importing': '正在导入与解析...',
+  'stage.parsing': '正在解析 {file} ({current}/{total})...',
+  'stage.merging': '正在合并去重...',
+  'stage.workerProcessing': 'Worker 正在处理...',
+  'stage.normalizing': '正在归一化 URL...',
+  'stage.computingDuplicates': '正在计算重复簇...',
+  'stage.saving': '正在保存到本地数据库...',
+  'stage.buildingIndex': '正在构建搜索索引...',
+  'stage.workerFallback': 'Worker 失败，切换到主线程处理...',
+  'stage.computingClusters': '正在计算重复簇与保留项...',
+  'stage.generatingStats': '正在生成统计数据...',
+  'stage.restoring': '正在从本地数据库恢复数据...',
+  'stage.clearing': '正在清空本地数据...',
+
+  // Backup validation
+  'backup.validation.invalidFormat': '备份数据格式无效',
+  'backup.validation.unsupportedVersion': '不支持的备份版本: {version}',
+  'backup.validation.invalidBookmarks': '书签数据格式无效',
+  'backup.validation.incompleteBookmark': '书签数据不完整',
+  'backup.jsonParseFailed': 'JSON 解析失败，文件可能已损坏',
+
+  // Worker stage
+  'stage.parsingWorker': '正在解析 {file} ({current}/{total})... (Worker)',
+  'stage.buildingIndexWorker': 'Worker 正在构建搜索索引...'
 } as const

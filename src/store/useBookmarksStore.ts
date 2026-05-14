@@ -1,17 +1,24 @@
 import { create } from 'zustand'
 import { parseNetscapeBookmarks, type Bookmark } from '@/utils/bookmarkParser'
 import { normalizeUrl, getHostname } from '@/utils/url'
-import {
-  exportBookmarks,
-  type ExportFormat,
-  type ExportOptions,
-} from '@/utils/exporters'
+import { exportBookmarks, type ExportFormat, type ExportOptions } from '@/utils/exporters'
 import { normalizePath } from '@/utils/folders'
 import { clearBookmarks, saveBookmarks, loadBookmarks, type StoredBookmark } from '@/utils/db'
-import { createSearchIndex, resetSearchIndex, search as searchBookmarks, type SearchResultItem } from '@/utils/search'
+import {
+  createSearchIndex,
+  resetSearchIndex,
+  search as searchBookmarks,
+  type SearchResultItem
+} from '@/utils/search'
 import { getWorkerClient, terminateWorker } from '@/workers/bookmarkWorkerClient'
+import { t } from '@/locales'
 
-type Stats = { total: number, duplicates: number, byDomain: Record<string, number>, byYear: Record<string, number> }
+type Stats = {
+  total: number
+  duplicates: number
+  byDomain: Record<string, number>
+  byYear: Record<string, number>
+}
 
 function computeStats(merged: Bookmark[], duplicates: number): Stats {
   const byDomain: Record<string, number> = {}
@@ -38,7 +45,7 @@ type State = {
   hasFullMergeData: boolean
   stage: string
   stats: Stats
-  useWorker: boolean  // Worker toggle
+  useWorker: boolean // Worker toggle
   importFiles: (files: FileList | File[]) => Promise<void>
   removeSourceFile: (sourceFile: string) => void
   mergeAndDedup: () => Promise<void>
@@ -79,20 +86,24 @@ const useBookmarksStore = create<State>((set, get) => {
     stats: emptyStats,
     useWorker: typeof Worker !== 'undefined', // Auto-enable if supported
     async importFiles(files) {
-      set({ importing: true, stage: '正在导入与解析...' })
+      set({ importing: true, stage: t('stage.importing') })
       try {
         const list = Array.isArray(files) ? files : Array.from(files)
         const all: Bookmark[] = []
         for (let i = 0; i < list.length; i++) {
           const f = list[i]
-          set({ stage: `正在解析 ${f.name} (${i + 1}/${list.length})...` })
+          set({ stage: t('stage.parsing', { file: f.name, current: i + 1, total: list.length }) })
           const text = await f.text()
-          const items = parseNetscapeBookmarks(text, f.name).map(it => ({ ...it, path: normalizePath(it.path) }))
+          const items = parseNetscapeBookmarks(text, f.name).map((it) => ({
+            ...it,
+            path: normalizePath(it.path)
+          }))
           all.push(...items)
         }
         if (all.length === 0) return
 
-        const hadDerivedData = get().mergedItems.length > 0 || get().restoredItems.length > 0 || get().hasFullMergeData
+        const hadDerivedData =
+          get().mergedItems.length > 0 || get().restoredItems.length > 0 || get().hasFullMergeData
         set((state) => ({ rawItems: state.rawItems.concat(all) }))
 
         if (hadDerivedData) {
@@ -118,18 +129,25 @@ const useBookmarksStore = create<State>((set, get) => {
       invalidateDerivedData()
     },
     async mergeAndDedup() {
-      set({ merging: true, stage: '正在合并去重...' })
+      set({ merging: true, stage: t('stage.merging') })
       try {
         const raw = get().rawItems
         const useWorker = get().useWorker && typeof Worker !== 'undefined' && raw.length > 500
 
         if (useWorker) {
           // Use Web Worker for large datasets
-          set({ stage: 'Worker 正在处理...' })
+          set({ stage: t('stage.workerProcessing') })
           const worker = getWorkerClient()
           try {
             const result = await worker.mergeAndDedup(raw, (stageMsg) => {
-              set({ stage: stageMsg })
+              // Translate worker stage messages
+              const translated =
+                stageMsg === 'normalizing'
+                  ? t('stage.normalizing')
+                  : stageMsg === 'computing'
+                    ? t('stage.computingDuplicates')
+                    : stageMsg
+              set({ stage: translated })
             })
 
             set({
@@ -141,20 +159,20 @@ const useBookmarksStore = create<State>((set, get) => {
               hasFullMergeData: true
             })
 
-            set({ stage: '正在保存到本地数据库...' })
-            const storedItems: StoredBookmark[] = result.merged.map(it => ({
+            set({ stage: t('stage.saving') })
+            const storedItems: StoredBookmark[] = result.merged.map((it) => ({
               ...it,
               normalized: normalizeUrl(it.url)
             }))
             await saveBookmarks(storedItems)
 
-            set({ stage: '正在构建搜索索引...' })
+            set({ stage: t('stage.buildingIndex') })
             createSearchIndex(result.merged)
             return
           } catch (workerError) {
             console.error('Worker failed, falling back to main thread:', workerError)
             set({ useWorker: false })
-            set({ stage: 'Worker 失败，切换到主线程处理...' })
+            set({ stage: t('stage.workerFallback') })
           }
         }
 
@@ -174,7 +192,7 @@ const useBookmarksStore = create<State>((set, get) => {
           return typeof ts === 'number' && ts > 0 ? ts : Number.POSITIVE_INFINITY
         }
 
-        set({ stage: '正在计算重复簇与保留项...' })
+        set({ stage: t('stage.computingClusters') })
         for (const [k, arr] of groups) {
           let best = arr[0]
           for (const it of arr) {
@@ -186,7 +204,7 @@ const useBookmarksStore = create<State>((set, get) => {
           merged.push(best)
         }
 
-        set({ stage: '正在生成统计数据...' })
+        set({ stage: t('stage.generatingStats') })
         const stats = computeStats(merged, raw.length - merged.length)
         set({
           restoredItems: [],
@@ -197,21 +215,21 @@ const useBookmarksStore = create<State>((set, get) => {
           hasFullMergeData: true
         })
 
-        set({ stage: '正在保存到本地数据库...' })
-        const storedItems: StoredBookmark[] = merged.map(it => ({
+        set({ stage: t('stage.saving') })
+        const storedItems: StoredBookmark[] = merged.map((it) => ({
           ...it,
           normalized: normalizeUrl(it.url)
         }))
         await saveBookmarks(storedItems)
 
-        set({ stage: '正在构建搜索索引...' })
+        set({ stage: t('stage.buildingIndex') })
         createSearchIndex(merged)
       } finally {
         set({ merging: false, stage: '' })
       }
     },
     async loadFromDB() {
-      set({ loading: true, stage: '正在从本地数据库恢复数据...' })
+      set({ loading: true, stage: t('stage.restoring') })
       try {
         const stored = await loadBookmarks()
         if (stored.length > 0) {
@@ -236,7 +254,7 @@ const useBookmarksStore = create<State>((set, get) => {
     },
     async clear() {
       resetSearchIndex()
-      set({ stage: '正在清空本地数据...' })
+      set({ stage: t('stage.clearing') })
       set({
         rawItems: [],
         restoredItems: [],
@@ -266,7 +284,7 @@ const useBookmarksStore = create<State>((set, get) => {
     search(query: string) {
       return searchBookmarks(query)
     },
-    
+
     toggleWorker() {
       set({ useWorker: !get().useWorker })
     }

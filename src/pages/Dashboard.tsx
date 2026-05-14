@@ -117,7 +117,10 @@ export default function Dashboard() {
             option={pieOption}
             height={300}
             aria-label={t('dashboard.chart.pieAria')}
-            description={`去重后 ${stats.total} 条，重复 ${stats.duplicates} 条`}
+            description={t('dashboard.chart.pieDescription', {
+              total: stats.total,
+              duplicates: stats.duplicates
+            })}
           />
         </div>
         <div className="rounded border border-border p-4">
@@ -126,7 +129,9 @@ export default function Dashboard() {
             option={barOption}
             height={300}
             aria-label={t('dashboard.chart.barAria')}
-            description={`Top 10 域名: ${domains.map(([d, c]) => `${d}(${c})`).join(', ')}`}
+            description={t('dashboard.chart.barDescription', {
+              domains: domains.map(([d, c]) => `${d}(${c})`).join(', ')
+            })}
           />
         </div>
       </div>
@@ -137,7 +142,9 @@ export default function Dashboard() {
           option={lineOption}
           height={320}
           aria-label={t('dashboard.chart.lineAria')}
-          description={`按年份新增: ${years.map(([y, c]) => `${y}年${c}条`).join(', ')}`}
+          description={t('dashboard.chart.lineDescription', {
+            years: years.map(([y, c]) => `${y}:${c}`).join(', ')
+          })}
         />
       </div>
 
@@ -189,7 +196,7 @@ export default function Dashboard() {
                       {item.path && item.path.length > 0 && (
                         <div
                           className="text-xs text-muted mt-1"
-                          aria-label={`目录: ${item.path.join(' / ')}`}
+                          aria-label={t('dashboard.folderLabel', { path: item.path.join(' / ') })}
                         >
                           📁 {item.path.join(' / ')}
                         </div>

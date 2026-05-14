@@ -4,6 +4,7 @@
  */
 
 import { db, type StoredBookmark, type AIConfig } from './db'
+import { t } from '@/locales'
 
 export interface BackupData {
   version: number
@@ -42,22 +43,25 @@ export async function exportBackupAsJSON(options?: BackupOptions): Promise<strin
 
 export function validateBackup(data: unknown): { valid: boolean; error?: string } {
   if (typeof data !== 'object' || data === null) {
-    return { valid: false, error: '备份数据格式无效' }
+    return { valid: false, error: t('backup.validation.invalidFormat') }
   }
 
   const backup = data as Partial<BackupData>
 
   if (backup.version !== CURRENT_SCHEMA_VERSION) {
-    return { valid: false, error: `不支持的备份版本: ${backup.version}` }
+    return {
+      valid: false,
+      error: t('backup.validation.unsupportedVersion', { version: backup.version })
+    }
   }
 
   if (!Array.isArray(backup.bookmarks)) {
-    return { valid: false, error: '书签数据格式无效' }
+    return { valid: false, error: t('backup.validation.invalidBookmarks') }
   }
 
   for (const bookmark of backup.bookmarks) {
     if (!bookmark.id || !bookmark.url) {
-      return { valid: false, error: '书签数据不完整' }
+      return { valid: false, error: t('backup.validation.incompleteBookmark') }
     }
   }
 
@@ -79,7 +83,7 @@ export function parseBackup(jsonString: string): {
 
     return { success: true, data: parsed as BackupData }
   } catch {
-    return { success: false, error: 'JSON 解析失败，文件可能已损坏' }
+    return { success: false, error: t('backup.jsonParseFailed') }
   }
 }
 

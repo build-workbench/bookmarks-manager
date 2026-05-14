@@ -20,8 +20,8 @@ export default function Duplicates() {
     return (
       <div className="text-center py-12 text-muted">
         <AlertCircle className="w-12 h-12 mx-auto mb-3 text-amber-400 opacity-80" />
-        <p>当前导入会话已变更，重复簇结果已失效</p>
-        <p className="text-xs mt-2">请先回到"上传合并"重新执行合并去重</p>
+        <p>{t('duplicates.needsMerge')}</p>
+        <p className="text-xs mt-2">{t('duplicates.needsMergeHint')}</p>
       </div>
     )
   }
@@ -30,8 +30,8 @@ export default function Duplicates() {
     return (
       <div className="text-center py-12 text-muted">
         <AlertCircle className="w-12 h-12 mx-auto mb-3 text-muted opacity-80" />
-        <p>当前只恢复了上次合并快照，未保留重复簇明细</p>
-        <p className="text-xs mt-2">如需查看重复簇，请重新导入原始书签并执行合并去重</p>
+        <p>{t('duplicates.noFullMergeData')}</p>
+        <p className="text-xs mt-2">{t('duplicates.noFullMergeDataHint')}</p>
       </div>
     )
   }
@@ -39,15 +39,17 @@ export default function Duplicates() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">重复书签簇</h2>
-        <div className="text-sm text-muted">{dupEntries.length} 组重复</div>
+        <h2 className="text-xl font-semibold">{t('duplicates.clusterTitle')}</h2>
+        <div className="text-sm text-muted">
+          {t('duplicates.groupCount', { count: dupEntries.length })}
+        </div>
       </div>
 
       {dupEntries.length === 0 && (
         <div className="text-center py-12 text-muted">
           <Check className="w-12 h-12 mx-auto mb-3 text-green-500 opacity-50" />
-          <p>没有发现重复书签</p>
-          <p className="text-xs mt-2">请先在"上传合并"页面进行合并去重</p>
+          <p>{t('duplicates.empty')}</p>
+          <p className="text-xs mt-2">{t('duplicates.noDuplicatesHint')}</p>
         </div>
       )}
 
@@ -55,7 +57,7 @@ export default function Duplicates() {
         {dupEntries.map(([normalizedUrl, items], idx) => (
           <div key={normalizedUrl} className="rounded-lg border border-border p-4 bg-card/50">
             <div className="text-sm font-medium text-muted mb-3">
-              重复组 #{idx + 1} ({items.length} 个副本)
+              {t('duplicates.cluster', { index: idx + 1, count: items.length })}
             </div>
 
             <div className="space-y-2">
@@ -84,7 +86,7 @@ export default function Duplicates() {
                         </a>
                         {itemIdx === 0 && (
                           <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded flex-shrink-0">
-                            保留
+                            {t('duplicates.keep')}
                           </span>
                         )}
                       </div>

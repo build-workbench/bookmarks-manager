@@ -127,7 +127,7 @@ export function VirtualList<T>({
       </div>
       {items.length === 0 && (
         <div className="flex items-center justify-center h-full text-muted" role="status">
-          暂无数据
+          {t('virtualList.noData')}
         </div>
       )}
     </div>

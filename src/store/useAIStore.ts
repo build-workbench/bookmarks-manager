@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import type { LLMConfig } from '@/ai/types'
 import { configService } from '@/ai/configService'
 import { createAdapter } from '@/ai/adapters'
+import { t } from '@/locales'
 
 interface AIState {
   config: LLMConfig | null
@@ -55,7 +56,7 @@ export const useAIStore = create<AIState>((set, get) => ({
     const { config } = get()
 
     if (!config) {
-      set({ connectionStatus: 'error', connectionError: '未配置 API' })
+      set({ connectionStatus: 'error', connectionError: t('ai.notConfigured') })
       return false
     }
 
@@ -70,10 +71,10 @@ export const useAIStore = create<AIState>((set, get) => ({
         return true
       }
 
-      set({ connectionStatus: 'error', connectionError: 'API Key 无效' })
+      set({ connectionStatus: 'error', connectionError: t('ai.invalidApiKey') })
       return false
     } catch (error) {
-      const message = error instanceof Error ? error.message : '连接测试失败'
+      const message = error instanceof Error ? error.message : t('ai.connectionFailed')
       set({ connectionStatus: 'error', connectionError: message })
       return false
     }

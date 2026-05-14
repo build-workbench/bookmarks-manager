@@ -100,7 +100,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
     return (
       <div className="flex items-center justify-center p-8">
         <Loader2 className="w-6 h-6 animate-spin text-sky-400" />
-        <span className="ml-2 text-gray-400">加载配置中...</span>
+        <span className="ml-2 text-gray-400">{t('ai.loadingConfig')}</span>
       </div>
     )
   }
@@ -109,14 +109,14 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
     <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
       <div className="flex items-center gap-3 mb-6">
         <Settings className="w-6 h-6 text-sky-400" />
-        <h2 className="text-xl font-semibold text-white">AI 配置</h2>
+        <h2 className="text-xl font-semibold text-white">{t('ai.configTitle')}</h2>
       </div>
 
       <div className="space-y-6">
         <div>
           <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
             <Server className="w-4 h-4" />
-            服务提供商
+            {t('ai.provider')}
           </label>
           <select
             value={provider}
@@ -125,7 +125,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
           >
             <option value="openai">OpenAI</option>
             <option value="claude">Claude (Anthropic)</option>
-            <option value="custom">自定义端点</option>
+            <option value="custom">{t('ai.customEndpoint')}</option>
           </select>
         </div>
 
@@ -139,7 +139,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
               type={showApiKey ? 'text' : 'password'}
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              placeholder="输入你的 API Key"
+              placeholder={t('ai.apiKeyPlaceholder')}
               className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 pr-10 text-white placeholder-gray-500 focus:ring-2 focus:ring-sky-500 focus:border-transparent"
             />
             <button
@@ -150,16 +150,14 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
               {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
-          <p className="mt-1 text-xs text-gray-500">
-            API Key 安全存储在本地 IndexedDB 中，不会上传到任何服务器
-          </p>
+          <p className="mt-1 text-xs text-gray-500">{t('ai.apiKeyHint')}</p>
         </div>
 
         {provider === 'custom' && (
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
               <Server className="w-4 h-4" />
-              API 端点 URL
+              {t('ai.endpointUrl')}
             </label>
             <input
               type="url"
@@ -174,14 +172,14 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
         <div>
           <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
             <Cpu className="w-4 h-4" />
-            模型
+            {t('ai.model')}
           </label>
           {provider === 'custom' ? (
             <input
               type="text"
               value={model}
               onChange={(e) => setModel(e.target.value)}
-              placeholder="输入模型名称"
+              placeholder={t('ai.modelPlaceholder')}
               className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-sky-500 focus:border-transparent"
             />
           ) : (
@@ -201,7 +199,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <label>
-            <div className="text-sm font-medium text-gray-300 mb-2">最大输出 Tokens</div>
+            <div className="text-sm font-medium text-gray-300 mb-2">{t('ai.maxTokens')}</div>
             <input
               type="number"
               min={1}
@@ -275,7 +273,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
             ) : (
               <Server className="w-4 h-4" />
             )}
-            测试连接
+            {t('ai.testConnection')}
           </button>
           <button
             onClick={handleSave}
@@ -287,7 +285,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
             ) : (
               <CheckCircle className="w-4 h-4" />
             )}
-            保存配置
+            {t('ai.saveConfig')}
           </button>
         </div>
       </div>

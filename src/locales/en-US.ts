@@ -273,5 +273,160 @@ export default {
   // Alert messages
   'alert.needsMerge':
     'Current import session has changed. Old statistics, search results, and export content are outdated. Please go to "Upload & Merge" to merge and dedupe again.',
-  'alert.goMerge': 'Go Merge'
+  'alert.goMerge': 'Go Merge',
+
+  // Search Page - Extended
+  'search.needsMerge': 'Current import session has changed, search index is outdated',
+  'search.needsMergeHint': 'Please go to "Upload & Merge" to re-run merge and dedupe',
+  'search.placeholderFull': 'Search bookmark title, URL or folder...',
+  'search.advancedFilter': 'Advanced filters (combine with search)',
+  'search.reset': 'Reset',
+  'search.domain': 'Domain',
+  'search.allDomains': 'All domains',
+  'search.rootFolder': 'Root folder',
+  'search.allFolders': 'All folders',
+  'search.folderKeyword': 'Folder keyword (contains match)',
+  'search.folderKeywordPlaceholder': 'e.g. dev / AI / reading',
+  'search.dateStart': 'Start date',
+  'search.dateEnd': 'End date',
+  'search.export': 'Export',
+  'search.currentResults': 'Current results',
+  'search.all': 'All',
+  'search.preserveFolder': 'Preserve folder structure',
+  'search.exportButton': 'Export {format}',
+  'search.importFirst': 'Please import bookmarks in "Upload & Merge" first',
+  'search.noMatch': 'No matching bookmarks found',
+  'search.found': 'Found {count} results',
+  'search.searchHits': '(search hits: {count})',
+  'search.loadMore': 'Load more ({count} items)',
+  'search.exportedAs': 'Exported as {format} format',
+
+  // Backup Page - Extended
+  'backup.pageTitle': 'Data Backup & Restore',
+  'backup.description':
+    'Export your bookmarks and optional AI config as a JSON file. Use it to restore on another device or as an archive.',
+  'backup.localNote': 'Note: All data is processed locally, never uploaded to any server.',
+  'backup.options': 'Backup options',
+  'backup.bookmarkData': 'Bookmark data',
+  'backup.aiConfigData': 'AI config (API keys, etc.)',
+  'backup.estimatedSize': 'Estimated backup size',
+  'backup.bookmarkCount': 'Bookmarks: {count}',
+  'backup.faq.title': 'FAQ',
+  'backup.faq.q1': 'What does the backup file contain?',
+  'backup.faq.a1':
+    'The backup is a JSON text file containing your selected bookmark data and optional AI config. You can view it with any text editor.',
+  'backup.faq.q2': 'How to migrate to another device?',
+  'backup.faq.a2':
+    'Create a backup on the old device and download the JSON file, then open this app on the new device, go to Backup and select "Restore from Backup".',
+  'backup.faq.q3': 'Are API keys safe?',
+  'backup.faq.a3':
+    'Yes. The backup file is stored locally on your device, never uploaded to any server. Keep the backup file secure as it may contain sensitive API keys.',
+
+  // Duplicates Page - Extended
+  'duplicates.needsMerge': 'Current import session has changed, duplicate clusters are outdated',
+  'duplicates.needsMergeHint': 'Please go to "Upload & Merge" to re-run merge and dedupe',
+  'duplicates.noFullMergeData':
+    'Only restored previous merge snapshot, duplicate cluster details not preserved',
+  'duplicates.noFullMergeDataHint':
+    'To view duplicate clusters, re-import original bookmarks and run merge & dedupe',
+  'duplicates.clusterTitle': 'Duplicate Bookmark Clusters',
+  'duplicates.groupCount': '{count} duplicate groups',
+  'duplicates.noDuplicatesHint': 'Please run merge & dedupe in "Upload & Merge" first',
+  'duplicates.cluster': 'Cluster #{index} ({count} copies)',
+  'duplicates.keep': 'Keep',
+
+  // Upload & Merge Page - Extended
+  'upload.selectFiles': 'Select exported bookmark HTML files, multiple supported',
+  'upload.dragOrClick': 'Click to select or drag files here',
+  'upload.importSessionFiles': 'Files in current import session',
+  'upload.bookmarkCountShort': '{count} bookmarks',
+  'upload.remove': 'Remove',
+  'upload.restoredHint':
+    'Restored previous merge result from local database, {count} bookmarks. Original import files and duplicate cluster info not preserved; re-import and merge to re-organize.',
+  'upload.needsMergeWarning':
+    'Current import session has changed. Old merge results, search index, and duplicate clusters are outdated. Click "Merge & Dedupe" to regenerate.',
+  'upload.rawItems': 'Raw items',
+  'upload.mergedItems': 'Merged',
+  'upload.duplicateItems': 'Duplicates',
+  'upload.mergeButton': 'Merge & Dedupe',
+  'upload.exportButton': 'Export {format}',
+  'upload.clearButton': 'Clear',
+  'upload.invalidFiles':
+    'No valid HTML bookmark files detected. Ensure files have .html or .htm extension',
+  'upload.rejectedFiles': '({names}{more} format not supported)',
+  'upload.importSuccess': 'Successfully imported {count} file(s)',
+  'upload.importPartialSuccess': 'Imported {accepted} file(s) (skipped {rejected} non-HTML files)',
+
+  // AI Page - Extended
+  'ai.pageTitle': 'Optional AI Config',
+  'ai.description':
+    'Bookmarks Manager core workflow does not require AI. This section only provides local BYOK config and connection testing. All keys and settings are stored only in this browser.',
+
+  // Error Boundary - Extended
+  'error.pageLoadFailed': 'Page load failed',
+  'error.componentLoadFailed': 'Component load failed',
+  'error.checkNetwork': 'Please check your network and refresh the page',
+  'error.refreshPage': 'Refresh page',
+
+  // Dashboard - Extended
+  'dashboard.chart.pieDescription': 'Deduplicated: {total}, Duplicates: {duplicates}',
+  'dashboard.chart.barDescription': 'Top 10 domains: {domains}',
+  'dashboard.chart.lineDescription': 'Added by year: {years}',
+  'dashboard.folderLabel': 'Folder: {path}',
+
+  // AI Settings - Extended
+  'ai.loadingConfig': 'Loading config...',
+  'ai.configTitle': 'AI Config',
+  'ai.provider': 'Provider',
+  'ai.customEndpoint': 'Custom endpoint',
+  'ai.apiKeyPlaceholder': 'Enter your API Key',
+  'ai.apiKeyHint': 'API Key is stored locally in IndexedDB, never uploaded to any server',
+  'ai.endpointUrl': 'API Endpoint URL',
+  'ai.model': 'Model',
+  'ai.modelPlaceholder': 'Enter model name',
+  'ai.maxTokens': 'Max Output Tokens',
+  'ai.testConnection': 'Test Connection',
+  'ai.saveConfig': 'Save Config',
+
+  // Virtual List
+  'virtualList.noData': 'No data',
+
+  // Worker
+  'worker.parseFailed': 'Failed to parse {file}: {error}',
+  'worker.normalizing': 'Normalizing URLs...',
+  'worker.computingDuplicates': 'Computing duplicate clusters...',
+
+  // AI Store
+  'ai.notConfigured': 'API not configured',
+  'ai.invalidApiKey': 'Invalid API Key',
+  'ai.connectionFailed': 'Connection test failed',
+
+  // Backup util
+  'backup.invalidFormat': 'Invalid backup data format',
+
+  // Stage messages
+  'stage.importing': 'Importing and parsing...',
+  'stage.parsing': 'Parsing {file} ({current}/{total})...',
+  'stage.merging': 'Merging and deduplicating...',
+  'stage.workerProcessing': 'Worker processing...',
+  'stage.normalizing': 'Normalizing URLs...',
+  'stage.computingDuplicates': 'Computing duplicate clusters...',
+  'stage.saving': 'Saving to local database...',
+  'stage.buildingIndex': 'Building search index...',
+  'stage.workerFallback': 'Worker failed, switching to main thread...',
+  'stage.computingClusters': 'Computing clusters and keep items...',
+  'stage.generatingStats': 'Generating statistics...',
+  'stage.restoring': 'Restoring from local database...',
+  'stage.clearing': 'Clearing local data...',
+
+  // Backup validation
+  'backup.validation.invalidFormat': 'Invalid backup data format',
+  'backup.validation.unsupportedVersion': 'Unsupported backup version: {version}',
+  'backup.validation.invalidBookmarks': 'Invalid bookmarks data format',
+  'backup.validation.incompleteBookmark': 'Incomplete bookmark data',
+  'backup.jsonParseFailed': 'JSON parsing failed, file may be corrupted',
+
+  // Worker stage
+  'stage.parsingWorker': 'Parsing {file} ({current}/{total})... (Worker)',
+  'stage.buildingIndexWorker': 'Worker building search index...'
 } as const

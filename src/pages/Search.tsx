@@ -195,7 +195,10 @@ export default function Search() {
       const filename = `bookmarks_${scopeTag}_${folderTag}_${timestamp}.${ext}`
 
       downloadFile(content, filename, getExportMimeType(exportFormat))
-      setMessage({ type: 'success', text: `已导出为 ${exportFormat.toUpperCase()} 格式` })
+      setMessage({
+        type: 'success',
+        text: t('search.exportedAs', { format: exportFormat.toUpperCase() })
+      })
     } catch {
       setMessage({ type: 'error', text: t('search.exportFailed') })
     }
@@ -205,8 +208,8 @@ export default function Search() {
     return (
       <div className="text-center py-12 text-muted">
         <AlertCircle className="w-12 h-12 mx-auto mb-3 text-amber-400 opacity-80" />
-        <p>当前导入会话已变更，搜索索引已失效</p>
-        <p className="text-xs mt-2">请先回到"上传合并"重新执行合并去重</p>
+        <p>{t('search.needsMerge')}</p>
+        <p className="text-xs mt-2">{t('search.needsMergeHint')}</p>
       </div>
     )
   }
@@ -219,7 +222,7 @@ export default function Search() {
           type="text"
           value={query}
           onChange={(e) => handleSearch(e.target.value)}
-          placeholder="搜索书签标题、URL或目录..."
+          placeholder={t('search.placeholderFull')}
           className="w-full pl-10 pr-4 py-3 rounded-lg bg-card border border-border focus:border-sky-500 focus:outline-none"
         />
       </div>
@@ -229,25 +232,25 @@ export default function Search() {
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2 text-sm font-medium text-foreground">
               <Filter className="w-4 h-4 text-muted" />
-              高级过滤（可与搜索组合）
+              {t('search.advancedFilter')}
             </div>
             <button
               onClick={resetFilters}
               className="text-xs px-3 py-1.5 rounded bg-card-hover hover:bg-card-hover text-foreground transition"
             >
-              重置
+              {t('search.reset')}
             </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <label className="space-y-1">
-              <div className="text-xs text-muted">域名</div>
+              <div className="text-xs text-muted">{t('search.domain')}</div>
               <select
                 value={domain}
                 onChange={(e) => setDomain(e.target.value)}
                 className="w-full rounded bg-card border border-border px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
               >
-                <option value="">全部域名</option>
+                <option value="">{t('search.allDomains')}</option>
                 {domainOptions.map(([host, count]) => (
                   <option key={host} value={host}>
                     {host} ({count})
@@ -257,13 +260,13 @@ export default function Search() {
             </label>
 
             <label className="space-y-1">
-              <div className="text-xs text-muted">目录（一级）</div>
+              <div className="text-xs text-muted">{t('search.rootFolder')}</div>
               <select
                 value={rootFolder}
                 onChange={(e) => setRootFolder(e.target.value)}
                 className="w-full rounded bg-card border border-border px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
               >
-                <option value="">全部目录</option>
+                <option value="">{t('search.allFolders')}</option>
                 {rootFolderOptions.map(([name, count]) => (
                   <option key={name} value={name}>
                     {name} ({count})
@@ -273,19 +276,19 @@ export default function Search() {
             </label>
 
             <label className="space-y-1">
-              <div className="text-xs text-muted">目录关键字（包含匹配）</div>
+              <div className="text-xs text-muted">{t('search.folderKeyword')}</div>
               <input
                 type="text"
                 value={folderKeyword}
                 onChange={(e) => setFolderKeyword(e.target.value)}
-                placeholder="例如：开发 / AI / 阅读"
+                placeholder={t('search.folderKeywordPlaceholder')}
                 className="w-full rounded bg-card border border-border px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
               />
             </label>
 
             <div className="grid grid-cols-2 gap-2">
               <label className="space-y-1">
-                <div className="text-xs text-muted">开始日期</div>
+                <div className="text-xs text-muted">{t('search.dateStart')}</div>
                 <input
                   type="date"
                   value={dateStart}
@@ -294,7 +297,7 @@ export default function Search() {
                 />
               </label>
               <label className="space-y-1">
-                <div className="text-xs text-muted">结束日期</div>
+                <div className="text-xs text-muted">{t('search.dateEnd')}</div>
                 <input
                   type="date"
                   value={dateEnd}
@@ -309,7 +312,7 @@ export default function Search() {
             <div className="flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-2 text-sm font-medium text-foreground">
                 <Download className="w-4 h-4 text-muted" />
-                导出
+                {t('search.export')}
               </div>
 
               <label className="flex items-center gap-2 text-sm text-muted">
@@ -319,7 +322,7 @@ export default function Search() {
                   checked={exportScope === 'filtered'}
                   onChange={() => setExportScope('filtered')}
                 />
-                当前结果 ({filteredItems.length})
+                {t('search.currentResults')} ({filteredItems.length})
               </label>
               <label className="flex items-center gap-2 text-sm text-muted">
                 <input
@@ -328,7 +331,7 @@ export default function Search() {
                   checked={exportScope === 'all'}
                   onChange={() => setExportScope('all')}
                 />
-                全量 ({mergedItems.length})
+                {t('search.all')} ({mergedItems.length})
               </label>
 
               <label className="flex items-center gap-2 text-sm text-muted">
@@ -337,7 +340,7 @@ export default function Search() {
                   checked={preserveFolders}
                   onChange={(e) => setPreserveFolders(e.target.checked)}
                 />
-                保留目录结构
+                {t('search.preserveFolder')}
               </label>
 
               <div className="ml-auto flex items-center gap-2">
@@ -359,7 +362,9 @@ export default function Search() {
                     exportScope === 'all' ? mergedItems.length === 0 : filteredItems.length === 0
                   }
                 >
-                  导出 {EXPORT_FORMAT_OPTIONS.find((o) => o.format === exportFormat)?.label}
+                  {t('search.exportButton', {
+                    format: EXPORT_FORMAT_OPTIONS.find((o) => o.format === exportFormat)?.label
+                  })}
                 </button>
               </div>
             </div>
@@ -387,22 +392,22 @@ export default function Search() {
       {mergedItems.length === 0 && (
         <div className="text-center py-12 text-muted">
           <SearchIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
-          <p>请先在"上传合并"页面导入书签</p>
+          <p>{t('search.importFirst')}</p>
         </div>
       )}
 
       {(query || hasActiveFilters) && filteredItems.length === 0 && mergedItems.length > 0 && (
         <div className="text-center py-12 text-muted">
-          <p>未找到匹配的书签</p>
+          <p>{t('search.noMatch')}</p>
         </div>
       )}
 
       {(query || hasActiveFilters) && filteredItems.length > 0 && (
         <div>
           <div className="text-sm text-muted mb-2">
-            找到 {filteredItems.length} 条结果
+            {t('search.found', { count: filteredItems.length })}
             {query && results.length > 0 && (
-              <span className="ml-2">（搜索命中 {results.length}）</span>
+              <span className="ml-2">{t('search.searchHits', { count: results.length })}</span>
             )}
           </div>
 
@@ -476,7 +481,7 @@ export default function Search() {
                   onClick={() => setLimit(limit + 50)}
                   className="w-full py-2 text-sm text-muted hover:text-sky-400 transition"
                 >
-                  加载更多 ({filteredItems.length - limit} 条)
+                  {t('search.loadMore', { count: filteredItems.length - limit })}
                 </button>
               )}
             </div>

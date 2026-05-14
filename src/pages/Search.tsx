@@ -1,5 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Search as SearchIcon, ExternalLink, Folder, Filter, Download, AlertCircle, CheckCircle } from 'lucide-react'
+import {
+  Search as SearchIcon,
+  ExternalLink,
+  Folder,
+  Filter,
+  Download,
+  AlertCircle,
+  CheckCircle
+} from 'lucide-react'
+import { t } from '@/locales'
 import useBookmarksStore from '@/store/useBookmarksStore'
 import type { SearchResultItem } from '@/utils/search'
 import type { Bookmark } from '@/utils/bookmarkParser'
@@ -7,7 +16,7 @@ import {
   exportBookmarks,
   type ExportFormat,
   getExportFileExtension,
-  getExportMimeType,
+  getExportMimeType
 } from '@/utils/exporters'
 import { getHostname } from '@/utils/url'
 import { VirtualList } from '@/ui/VirtualList'
@@ -31,7 +40,7 @@ export default function Search() {
   const [exportFormat, setExportFormat] = useState<ExportFormat>('html')
   const [limit, setLimit] = useState(50)
 
-  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const byId = useMemo(() => {
     const map = new Map<string, Bookmark>()
@@ -63,7 +72,7 @@ export default function Search() {
   const rootFolderOptions = useMemo(() => {
     const counts = new Map<string, number>()
     for (const it of mergedItems) {
-      const key = (it.path && it.path.length > 0 ? it.path[0] : '(无目录)')
+      const key = it.path && it.path.length > 0 ? it.path[0] : t('search.noFolder')
       counts.set(key, (counts.get(key) || 0) + 1)
     }
     return Array.from(counts.entries()).sort((a, b) => b[1] - a[1])
@@ -78,7 +87,7 @@ export default function Search() {
 
     if (rootFolder) {
       items = items.filter((it) => {
-        const key = (it.path && it.path.length > 0 ? it.path[0] : '(无目录)')
+        const key = it.path && it.path.length > 0 ? it.path[0] : t('search.noFolder')
         return key === rootFolder
       })
     }
@@ -89,7 +98,9 @@ export default function Search() {
     }
 
     if (dateStart || dateEnd) {
-      const startTs = dateStart ? Math.floor(new Date(`${dateStart}T00:00:00`).getTime() / 1000) : null
+      const startTs = dateStart
+        ? Math.floor(new Date(`${dateStart}T00:00:00`).getTime() / 1000)
+        : null
       const endTs = dateEnd ? Math.floor(new Date(`${dateEnd}T23:59:59`).getTime() / 1000) : null
       items = items.filter((it) => {
         const ts = it.addDate ?? it.lastModified
@@ -104,7 +115,9 @@ export default function Search() {
   }, [baseItems, dateEnd, dateStart, domain, folderKeyword, rootFolder])
 
   const displayItems = useMemo(() => filteredItems.slice(0, limit), [filteredItems, limit])
-  const hasActiveFilters = Boolean(domain || rootFolder || folderKeyword.trim() || dateStart || dateEnd)
+  const hasActiveFilters = Boolean(
+    domain || rootFolder || folderKeyword.trim() || dateStart || dateEnd
+  )
 
   useEffect(() => {
     setLimit(50)
@@ -121,10 +134,7 @@ export default function Search() {
     const parts = text.split(re)
     return parts.map((part, i) =>
       i % 2 === 1 ? (
-        <mark
-          key={`${part}-${i}`}
-          className="rounded bg-sky-500/20 px-1 text-sky-200"
-        >
+        <mark key={`${part}-${i}`} className="rounded bg-sky-500/20 px-1 text-sky-200">
           {part}
         </mark>
       ) : (
@@ -169,13 +179,13 @@ export default function Search() {
     try {
       const items = exportScope === 'all' ? mergedItems : filteredItems
       if (items.length === 0) {
-        setMessage({ type: 'error', text: '没有可导出的书签' })
+        setMessage({ type: 'error', text: t('search.noExport') })
         return
       }
 
       const content = exportBookmarks(items, exportFormat, {
         preserveFolders,
-        includeMetadata: exportFormat === 'json' || exportFormat === 'csv',
+        includeMetadata: exportFormat === 'json' || exportFormat === 'csv'
       })
 
       const timestamp = new Date().toISOString().split('T')[0]
@@ -187,16 +197,16 @@ export default function Search() {
       downloadFile(content, filename, getExportMimeType(exportFormat))
       setMessage({ type: 'success', text: `已导出为 ${exportFormat.toUpperCase()} 格式` })
     } catch {
-      setMessage({ type: 'error', text: '导出失败' })
+      setMessage({ type: 'error', text: t('search.exportFailed') })
     }
   }
 
   if (needsMerge) {
     return (
-      <div className="text-center py-12 text-slate-400">
+      <div className="text-center py-12 text-muted">
         <AlertCircle className="w-12 h-12 mx-auto mb-3 text-amber-400 opacity-80" />
         <p>当前导入会话已变更，搜索索引已失效</p>
-        <p className="text-xs mt-2">请先回到“上传合并”重新执行合并去重</p>
+        <p className="text-xs mt-2">请先回到"上传合并"重新执行合并去重</p>
       </div>
     )
   }
@@ -204,26 +214,26 @@ export default function Search() {
   return (
     <div className="space-y-4 max-w-4xl mx-auto">
       <div className="relative">
-        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
         <input
           type="text"
           value={query}
-          onChange={e => handleSearch(e.target.value)}
+          onChange={(e) => handleSearch(e.target.value)}
           placeholder="搜索书签标题、URL或目录..."
-          className="w-full pl-10 pr-4 py-3 rounded-lg bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"
+          className="w-full pl-10 pr-4 py-3 rounded-lg bg-card border border-border focus:border-sky-500 focus:outline-none"
         />
       </div>
 
       {mergedItems.length > 0 && (
-        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 space-y-4">
+        <div className="rounded-lg border border-border bg-card/50 p-4 space-y-4">
           <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-sm font-medium text-slate-200">
-              <Filter className="w-4 h-4 text-slate-400" />
+            <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+              <Filter className="w-4 h-4 text-muted" />
               高级过滤（可与搜索组合）
             </div>
             <button
               onClick={resetFilters}
-              className="text-xs px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 transition"
+              className="text-xs px-3 py-1.5 rounded bg-card-hover hover:bg-card-hover text-foreground transition"
             >
               重置
             </button>
@@ -231,11 +241,11 @@ export default function Search() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <label className="space-y-1">
-              <div className="text-xs text-slate-400">域名</div>
+              <div className="text-xs text-muted">域名</div>
               <select
                 value={domain}
                 onChange={(e) => setDomain(e.target.value)}
-                className="w-full rounded bg-slate-900 border border-slate-700 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
+                className="w-full rounded bg-card border border-border px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
               >
                 <option value="">全部域名</option>
                 {domainOptions.map(([host, count]) => (
@@ -247,11 +257,11 @@ export default function Search() {
             </label>
 
             <label className="space-y-1">
-              <div className="text-xs text-slate-400">目录（一级）</div>
+              <div className="text-xs text-muted">目录（一级）</div>
               <select
                 value={rootFolder}
                 onChange={(e) => setRootFolder(e.target.value)}
-                className="w-full rounded bg-slate-900 border border-slate-700 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
+                className="w-full rounded bg-card border border-border px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
               >
                 <option value="">全部目录</option>
                 {rootFolderOptions.map(([name, count]) => (
@@ -263,46 +273,46 @@ export default function Search() {
             </label>
 
             <label className="space-y-1">
-              <div className="text-xs text-slate-400">目录关键字（包含匹配）</div>
+              <div className="text-xs text-muted">目录关键字（包含匹配）</div>
               <input
                 type="text"
                 value={folderKeyword}
                 onChange={(e) => setFolderKeyword(e.target.value)}
                 placeholder="例如：开发 / AI / 阅读"
-                className="w-full rounded bg-slate-900 border border-slate-700 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
+                className="w-full rounded bg-card border border-border px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
               />
             </label>
 
             <div className="grid grid-cols-2 gap-2">
               <label className="space-y-1">
-                <div className="text-xs text-slate-400">开始日期</div>
+                <div className="text-xs text-muted">开始日期</div>
                 <input
                   type="date"
                   value={dateStart}
                   onChange={(e) => setDateStart(e.target.value)}
-                  className="w-full rounded bg-slate-900 border border-slate-700 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
+                  className="w-full rounded bg-card border border-border px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
                 />
               </label>
               <label className="space-y-1">
-                <div className="text-xs text-slate-400">结束日期</div>
+                <div className="text-xs text-muted">结束日期</div>
                 <input
                   type="date"
                   value={dateEnd}
                   onChange={(e) => setDateEnd(e.target.value)}
-                  className="w-full rounded bg-slate-900 border border-slate-700 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
+                  className="w-full rounded bg-card border border-border px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
                 />
               </label>
             </div>
           </div>
 
-          <div className="pt-2 border-t border-slate-800">
+          <div className="pt-2 border-t border-border">
             <div className="flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-2 text-sm font-medium text-slate-200">
-                <Download className="w-4 h-4 text-slate-400" />
+              <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                <Download className="w-4 h-4 text-muted" />
                 导出
               </div>
 
-              <label className="flex items-center gap-2 text-sm text-slate-300">
+              <label className="flex items-center gap-2 text-sm text-muted">
                 <input
                   type="radio"
                   name="export-scope"
@@ -311,7 +321,7 @@ export default function Search() {
                 />
                 当前结果 ({filteredItems.length})
               </label>
-              <label className="flex items-center gap-2 text-sm text-slate-300">
+              <label className="flex items-center gap-2 text-sm text-muted">
                 <input
                   type="radio"
                   name="export-scope"
@@ -321,7 +331,7 @@ export default function Search() {
                 全量 ({mergedItems.length})
               </label>
 
-              <label className="flex items-center gap-2 text-sm text-slate-300">
+              <label className="flex items-center gap-2 text-sm text-muted">
                 <input
                   type="checkbox"
                   checked={preserveFolders}
@@ -334,7 +344,7 @@ export default function Search() {
                 <select
                   value={exportFormat}
                   onChange={(e) => setExportFormat(e.target.value as ExportFormat)}
-                  className="rounded bg-slate-800 border border-slate-700 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
+                  className="rounded bg-card-hover border border-border px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
                 >
                   {EXPORT_FORMAT_OPTIONS.map((opt) => (
                     <option key={opt.format} value={opt.format}>
@@ -345,9 +355,11 @@ export default function Search() {
                 <button
                   onClick={onExport}
                   className="px-4 py-2 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={exportScope === 'all' ? mergedItems.length === 0 : filteredItems.length === 0}
+                  disabled={
+                    exportScope === 'all' ? mergedItems.length === 0 : filteredItems.length === 0
+                  }
                 >
-                  导出 {EXPORT_FORMAT_OPTIONS.find(o => o.format === exportFormat)?.label}
+                  导出 {EXPORT_FORMAT_OPTIONS.find((o) => o.format === exportFormat)?.label}
                 </button>
               </div>
             </div>
@@ -356,11 +368,13 @@ export default function Search() {
       )}
 
       {message && (
-        <div className={`rounded-lg border p-4 flex items-center gap-3 ${
-          message.type === 'success'
-            ? 'bg-green-500/10 border-green-500/50 text-green-400'
-            : 'bg-red-500/10 border-red-500/50 text-red-400'
-        }`}>
+        <div
+          className={`rounded-lg border p-4 flex items-center gap-3 ${
+            message.type === 'success'
+              ? 'bg-green-500/10 border-green-500/50 text-green-400'
+              : 'bg-red-500/10 border-red-500/50 text-red-400'
+          }`}
+        >
           {message.type === 'success' ? (
             <CheckCircle className="w-5 h-5 flex-shrink-0" />
           ) : (
@@ -371,25 +385,27 @@ export default function Search() {
       )}
 
       {mergedItems.length === 0 && (
-        <div className="text-center py-12 text-slate-400">
+        <div className="text-center py-12 text-muted">
           <SearchIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
-          <p>请先在“上传合并”页面导入书签</p>
+          <p>请先在"上传合并"页面导入书签</p>
         </div>
       )}
 
       {(query || hasActiveFilters) && filteredItems.length === 0 && mergedItems.length > 0 && (
-        <div className="text-center py-12 text-slate-400">
+        <div className="text-center py-12 text-muted">
           <p>未找到匹配的书签</p>
         </div>
       )}
 
       {(query || hasActiveFilters) && filteredItems.length > 0 && (
         <div>
-          <div className="text-sm text-slate-400 mb-2">
+          <div className="text-sm text-muted mb-2">
             找到 {filteredItems.length} 条结果
-            {query && results.length > 0 && <span className="ml-2">（搜索命中 {results.length}）</span>}
+            {query && results.length > 0 && (
+              <span className="ml-2">（搜索命中 {results.length}）</span>
+            )}
           </div>
-          
+
           {/* Use virtual list for large datasets (>200 items) */}
           {filteredItems.length > 200 ? (
             <VirtualList
@@ -397,16 +413,23 @@ export default function Search() {
               itemHeight={88}
               containerHeight={600}
               renderItem={(item) => (
-                <div className="rounded-lg bg-slate-900 border border-slate-800 p-4 hover:border-slate-700 transition mx-1">
+                <div className="rounded-lg bg-card border border-border p-4 hover:border-border transition mx-1">
                   <div className="flex items-start gap-3">
-                    <ExternalLink className="w-4 h-4 text-slate-400 mt-1 flex-shrink-0" />
+                    <ExternalLink className="w-4 h-4 text-muted mt-1 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:text-sky-300 font-medium break-all">
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sky-400 hover:text-sky-300 font-medium break-all"
+                      >
                         {highlightText(item.title || item.url, query)}
                       </a>
-                      <div className="text-xs text-slate-500 mt-1 break-all">{highlightText(item.url, query)}</div>
+                      <div className="text-xs text-muted mt-1 break-all">
+                        {highlightText(item.url, query)}
+                      </div>
                       {item.path && item.path.length > 0 && (
-                        <div className="flex items-center gap-1 mt-2 text-xs text-slate-400">
+                        <div className="flex items-center gap-1 mt-2 text-xs text-muted">
                           <Folder className="w-3 h-3" />
                           <span>{highlightText(item.path.join(' / '), query)}</span>
                         </div>
@@ -419,16 +442,26 @@ export default function Search() {
           ) : (
             <div className="space-y-1">
               {displayItems.map((item) => (
-                <div key={item.id} className="rounded-lg bg-slate-900 border border-slate-800 p-4 hover:border-slate-700 transition">
+                <div
+                  key={item.id}
+                  className="rounded-lg bg-card border border-border p-4 hover:border-border transition"
+                >
                   <div className="flex items-start gap-3">
-                    <ExternalLink className="w-4 h-4 text-slate-400 mt-1 flex-shrink-0" />
+                    <ExternalLink className="w-4 h-4 text-muted mt-1 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:text-sky-300 font-medium break-all">
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sky-400 hover:text-sky-300 font-medium break-all"
+                      >
                         {highlightText(item.title || item.url, query)}
                       </a>
-                      <div className="text-xs text-slate-500 mt-1 break-all">{highlightText(item.url, query)}</div>
+                      <div className="text-xs text-muted mt-1 break-all">
+                        {highlightText(item.url, query)}
+                      </div>
                       {item.path && item.path.length > 0 && (
-                        <div className="flex items-center gap-1 mt-2 text-xs text-slate-400">
+                        <div className="flex items-center gap-1 mt-2 text-xs text-muted">
                           <Folder className="w-3 h-3" />
                           <span>{highlightText(item.path.join(' / '), query)}</span>
                         </div>
@@ -441,7 +474,7 @@ export default function Search() {
               {filteredItems.length > limit && (
                 <button
                   onClick={() => setLimit(limit + 50)}
-                  className="w-full py-2 text-sm text-slate-400 hover:text-sky-400 transition"
+                  className="w-full py-2 text-sm text-muted hover:text-sky-400 transition"
                 >
                   加载更多 ({filteredItems.length - limit} 条)
                 </button>

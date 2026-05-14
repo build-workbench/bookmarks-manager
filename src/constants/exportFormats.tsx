@@ -5,12 +5,32 @@ export interface ExportFormatOption {
   format: ExportFormat
   label: string
   icon: React.ReactNode
-  description: string
+  descriptionKey: string
 }
 
 export const EXPORT_FORMAT_OPTIONS: ExportFormatOption[] = [
-  { format: 'html', label: 'HTML', icon: <FileText className="w-4 h-4" />, description: '浏览器兼容格式' },
-  { format: 'json', label: 'JSON', icon: <FileJson className="w-4 h-4" />, description: '结构化数据' },
-  { format: 'csv', label: 'CSV', icon: <FileSpreadsheet className="w-4 h-4" />, description: '表格格式' },
-  { format: 'markdown', label: 'Markdown', icon: <FileCode className="w-4 h-4" />, description: '文档格式' },
+  {
+    format: 'html',
+    label: 'HTML',
+    icon: <FileText className="w-4 h-4" />,
+    descriptionKey: 'export.htmlDesc'
+  },
+  {
+    format: 'json',
+    label: 'JSON',
+    icon: <FileJson className="w-4 h-4" />,
+    descriptionKey: 'export.jsonDesc'
+  },
+  {
+    format: 'csv',
+    label: 'CSV',
+    icon: <FileSpreadsheet className="w-4 h-4" />,
+    descriptionKey: 'export.csvDesc'
+  },
+  {
+    format: 'markdown',
+    label: 'Markdown',
+    icon: <FileCode className="w-4 h-4" />,
+    descriptionKey: 'export.markdownDesc'
+  }
 ]

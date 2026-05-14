@@ -1,6 +1,17 @@
 import { useState, useEffect } from 'react'
-import { Settings, Key, Server, Cpu, CheckCircle, XCircle, Loader2, Eye, EyeOff } from 'lucide-react'
+import {
+  Settings,
+  Key,
+  Server,
+  Cpu,
+  CheckCircle,
+  XCircle,
+  Loader2,
+  Eye,
+  EyeOff
+} from 'lucide-react'
 import { useAIStore } from '@/store/useAIStore'
+import { t } from '@/locales'
 import { configService } from '@/ai/configService'
 import type { LLMConfig } from '@/ai/types'
 
@@ -11,7 +22,8 @@ interface AISettingsProps {
 }
 
 export function AISettings({ onConfigSaved }: AISettingsProps) {
-  const { config, saveConfig, testConnection, connectionStatus, connectionError, loadConfig } = useAIStore()
+  const { config, saveConfig, testConnection, connectionStatus, connectionError, loadConfig } =
+    useAIStore()
   const [provider, setProvider] = useState<Provider>('openai')
   const [apiKey, setApiKey] = useState('')
   const [model, setModel] = useState('')
@@ -70,12 +82,12 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
     setSaveResult(null)
     try {
       await saveConfig(getConfig())
-      setSaveResult({ success: true, message: '配置已保存' })
+      setSaveResult({ success: true, message: t('ai.configSaved') })
       onConfigSaved?.()
     } catch (error) {
       setSaveResult({
         success: false,
-        message: error instanceof Error ? error.message : '保存失败'
+        message: t('ai.saveFailed')
       })
     } finally {
       setIsSaving(false)
@@ -179,7 +191,9 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
               className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
             >
               {models.map((m) => (
-                <option key={m} value={m}>{m}</option>
+                <option key={m} value={m}>
+                  {m}
+                </option>
               ))}
             </select>
           )}
@@ -211,25 +225,41 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
         </div>
 
         {connectionStatus !== 'idle' && (
-          <div className={`flex items-center gap-2 p-3 rounded-lg ${
-            connectionStatus === 'connected' ? 'bg-green-900/30 text-green-400' :
-            connectionStatus === 'error' ? 'bg-red-900/30 text-red-400' :
-            'bg-slate-700/50 text-slate-300'
-          }`}>
-            {connectionStatus === 'connected' ? <CheckCircle className="w-5 h-5" /> :
-              connectionStatus === 'error' ? <XCircle className="w-5 h-5" /> :
-              <Loader2 className="w-5 h-5 animate-spin" />}
+          <div
+            className={`flex items-center gap-2 p-3 rounded-lg ${
+              connectionStatus === 'connected'
+                ? 'bg-green-900/30 text-green-400'
+                : connectionStatus === 'error'
+                  ? 'bg-red-900/30 text-red-400'
+                  : 'bg-card-hover/50 text-muted'
+            }`}
+          >
+            {connectionStatus === 'connected' ? (
+              <CheckCircle className="w-5 h-5" />
+            ) : connectionStatus === 'error' ? (
+              <XCircle className="w-5 h-5" />
+            ) : (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            )}
             <span>
-              {connectionStatus === 'connected' ? '连接成功！' : connectionError || '正在测试连接...'}
+              {connectionStatus === 'connected'
+                ? t('ai.connected')
+                : connectionError || t('ai.testing')}
             </span>
           </div>
         )}
 
         {saveResult && (
-          <div className={`flex items-center gap-2 p-3 rounded-lg ${
-            saveResult.success ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
-          }`}>
-            {saveResult.success ? <CheckCircle className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
+          <div
+            className={`flex items-center gap-2 p-3 rounded-lg ${
+              saveResult.success ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
+            }`}
+          >
+            {saveResult.success ? (
+              <CheckCircle className="w-5 h-5" />
+            ) : (
+              <XCircle className="w-5 h-5" />
+            )}
             <span>{saveResult.message}</span>
           </div>
         )}
@@ -240,7 +270,11 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
             disabled={!apiKey || isTesting || (provider === 'custom' && !baseUrl)}
             className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500 text-white rounded-lg transition-colors"
           >
-            {isTesting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Server className="w-4 h-4" />}
+            {isTesting ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Server className="w-4 h-4" />
+            )}
             测试连接
           </button>
           <button
@@ -248,7 +282,11 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
             disabled={!apiKey || !model || isSaving || (provider === 'custom' && !baseUrl)}
             className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-500 disabled:bg-gray-800 disabled:text-gray-500 text-white rounded-lg transition-colors"
           >
-            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+            {isSaving ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <CheckCircle className="w-4 h-4" />
+            )}
             保存配置
           </button>
         </div>

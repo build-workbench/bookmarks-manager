@@ -1,0 +1,277 @@
+export default {
+  // App Header Navigation
+  'nav.upload': 'Upload & Merge',
+  'nav.dashboard': 'Dashboard',
+  'nav.search': 'Search',
+  'nav.duplicates': 'Duplicates',
+  'nav.ai': 'AI',
+  'nav.backup': 'Backup',
+
+  // Theme
+  'theme.light': 'Light Mode',
+  'theme.dark': 'Dark Mode',
+  'theme.auto': 'Follow System',
+
+  // Common
+  'common.loading': 'Loading...',
+  'common.error': 'An error occurred',
+  'common.success': 'Success',
+  'common.cancel': 'Cancel',
+  'common.confirm': 'Confirm',
+  'common.save': 'Save',
+  'common.export': 'Export',
+  'common.import': 'Import',
+  'common.yes': 'Yes',
+  'common.no': 'No',
+  'common.unknownError': 'Unknown error',
+
+  // Upload & Merge Page
+  'upload.title': 'Upload & Merge',
+  'upload.dropzone': 'Drag bookmark files here, or click to select',
+  'upload.supportedFormats':
+    'Supports Netscape Bookmark format exported from Chrome, Firefox, Edge, Safari',
+  'upload.bookmarkCount': '{count} bookmarks',
+  'upload.importFailed': 'Failed to import file: {error}',
+  'upload.importFirst': 'Please import bookmark files first',
+  'upload.mergeComplete': 'Merge complete! Data saved to local database',
+  'upload.mergeFailed': 'Merge failed',
+  'upload.exportSuccess': 'Exported as {format} format',
+  'upload.exportFailed': 'Export failed',
+  'upload.fileRemoved': 'File removed: {name}',
+  'upload.rawItemsLabel': 'Total bookmarks in current import session',
+  'upload.noRawItems': 'No active import session',
+  'upload.mergedItemsLabel': 'Deduplicated bookmarks',
+  'upload.restoredLabel': 'Restored from previous merge',
+  'upload.duplicatesLabel': 'Detected duplicate clusters',
+  'upload.duplicatesUnavailable': 'Available after full merge',
+
+  // Dashboard Page
+  'dashboard.title': 'Dashboard',
+  'dashboard.deduplicated': 'Deduplicated',
+  'dashboard.duplicates': 'Duplicates',
+  'dashboard.needsMerge': 'Current import session has changed, dashboard statistics are outdated',
+  'dashboard.needsMergeHint': 'Please go to "Upload & Merge" to re-run merge and dedupe',
+  'dashboard.restoredWarning':
+    'Currently showing merged snapshot restored from local database. Basic stats are available, but duplicate cluster info may not represent the full results of the last import session.',
+  'dashboard.totalBookmarks': 'Total Bookmarks',
+  'dashboard.duplicateCount': 'Duplicates',
+  'dashboard.domainCount': 'Domains',
+  'dashboard.duplicateRatio': 'Duplicate Ratio',
+  'dashboard.topDomains': 'Top 10 Domains',
+  'dashboard.byYear': 'Added by Year',
+  'dashboard.bookmarkList': 'Bookmark List',
+  'dashboard.loadMore': 'Load More',
+  'dashboard.items': 'items',
+  'dashboard.chart.pieAria': 'Bookmark duplicate ratio pie chart',
+  'dashboard.chart.barAria': 'Bookmark domain distribution bar chart',
+  'dashboard.chart.lineAria': 'Bookmark yearly addition trend chart',
+  'dashboard.chart.listAria': 'Bookmark list',
+
+  // Search Page
+  'search.title': 'Search',
+  'search.placeholder': 'Search bookmarks...',
+  'search.noResults': 'No matching bookmarks found',
+  'search.noExport': 'No bookmarks to export',
+  'search.exportSuccess': 'Exported as {format} format',
+  'search.exportFailed': 'Export failed',
+  'search.noFolder': '(No folder)',
+
+  // Duplicates Page
+  'duplicates.title': 'Duplicates',
+  'duplicates.empty': 'No duplicate bookmarks',
+  'duplicates.source': 'Source: {source}',
+
+  // AI Page
+  'ai.title': 'AI Settings',
+  'ai.configSaved': 'Configuration saved',
+  'ai.saveFailed': 'Save failed',
+  'ai.testing': 'Testing connection...',
+  'ai.connected': 'Connection successful!',
+
+  // Backup Page
+  'backup.title': 'Backup',
+  'backup.create': 'Create Backup',
+  'backup.restore': 'Restore from Backup',
+  'backup.creating': 'Creating backup...',
+  'backup.restoring': 'Restoring...',
+  'backup.success': 'Backup successful! File size: {size}',
+  'backup.failed': 'Backup failed: {error}',
+  'backup.parseFailed': 'Failed to parse backup file',
+  'backup.confirmRestore': 'Are you sure you want to restore the following data?',
+  'backup.warning': '⚠️ This will replace all current data!',
+  'backup.restoreSuccess': 'Restore successful! Bookmarks: {count}{aiConfig}',
+  'backup.aiConfigRestored': ', AI config restored',
+  'backup.restoreFailed': 'Restore failed: {error}',
+  'backup.aiConfigLabel': 'AI Config',
+
+  // Export Formats
+  'export.html': 'HTML',
+  'export.json': 'JSON',
+  'export.csv': 'CSV',
+  'export.markdown': 'Markdown',
+  'export.htmlDesc': 'Browser compatible format',
+  'export.jsonDesc': 'Structured data',
+  'export.csvDesc': 'Spreadsheet format',
+  'export.markdownDesc': 'Document format',
+
+  // Landing Page - Hero
+  'hero.title': 'Bookmarks Manager',
+  'hero.subtitle': 'Local-first bookmark cleanup tool',
+  'hero.description':
+    'Import, deduplicate, search, analyze, and export browser bookmarks. Everything runs locally, privacy first.',
+  'hero.getStarted': 'Get Started',
+  'hero.viewDemo': 'View Demo',
+  'hero.stats.total': 'Total Bookmarks',
+  'hero.stats.duplicates': 'Duplicates',
+  'hero.stats.domains': 'Domains',
+  'hero.stats.trend': 'Bookmark Growth Trend',
+  'hero.badge': 'Free & Open Source',
+  'hero.headline': 'Organize your',
+  'hero.headlineHighlight': 'digital bookmarks',
+  'hero.github': 'GitHub Open Source',
+  'hero.trust.local': '100% Local Processing',
+  'hero.trust.noSignup': 'No Sign-up Required',
+  'hero.trust.pwa': 'PWA Support',
+  'hero.preview.upload': 'Upload & Merge',
+  'hero.preview.backup': 'Local Backup',
+  'hero.preview.processed': 'Local Processing Complete',
+  'hero.preview.restore': 'Local Backup Restore',
+  'hero.scrollHint': 'Scroll down to learn more',
+
+  // Landing Page - Features
+  'features.badge': 'Core Features',
+  'features.title': 'All-in-one Bookmark Cleanup & Management',
+  'features.subtitle':
+    'From import, dedupe to search, backup and export, covering the complete local bookmark organization workflow',
+  'features.smartMerge.title': 'Smart Merge',
+  'features.smartMerge.desc':
+    'One-click import from Chrome, Firefox, Edge, Safari bookmark files. Automatically identifies and merges duplicate folder structures.',
+  'features.smartDedup.title': 'Smart Deduplication',
+  'features.smartDedup.desc':
+    'URL normalization algorithm intelligently identifies duplicate bookmarks, handles http/https, tracking parameters, case differences, and keeps the earliest version.',
+  'features.search.title': 'Full-Text Search',
+  'features.search.desc':
+    'High-performance search engine based on MiniSearch, supports title, URL, folder path full-text search with fuzzy matching, millisecond response.',
+  'features.ai.title': 'Optional AI Config',
+  'features.ai.desc':
+    'Optional integration with OpenAI, Claude models. Bring your own API key, stored locally only. No data uploaded by default.',
+  'features.stats.title': 'Visual Statistics',
+  'features.stats.desc':
+    'ECharts-powered local statistics view, showing domain distribution, time trends, and duplicate ratio to help you quickly assess results.',
+  'features.privacy.title': 'Privacy First',
+  'features.privacy.desc':
+    'All processing happens locally in your browser, IndexedDB storage, no data upload. Open source code is auditable, you truly control your data.',
+  'features.learnMore': 'Learn More',
+  'features.privacyNote': 'All data processed locally,',
+  'features.privacyHighlight': 'never uploaded to server',
+
+  // Landing Page - How It Works
+  'howItWorks.title': 'How It Works',
+  'howItWorks.badge': 'Simple 3 Steps',
+  'howItWorks.subtitle': 'Easily organize your bookmarks',
+  'howItWorks.step1.title': 'Import Bookmarks',
+  'howItWorks.step1.desc':
+    'Export bookmark files from Chrome, Firefox, Edge, Safari. Supports drag-and-drop upload or click to select, multiple files at once.',
+  'howItWorks.step1.description':
+    'Export bookmark files from Chrome, Firefox, Edge, Safari. Supports drag-and-drop upload or click to select, multiple files at once.',
+  'howItWorks.step1.f1': 'Multi-browser support',
+  'howItWorks.step1.feature1': 'Multi-browser support',
+  'howItWorks.step1.f2': 'Batch import',
+  'howItWorks.step1.feature2': 'Batch import',
+  'howItWorks.step1.f3': 'Drag and drop',
+  'howItWorks.step1.feature3': 'Drag and drop',
+  'howItWorks.step2.title': 'Merge & Dedupe',
+  'howItWorks.step2.desc':
+    'System automatically merges duplicate folders, removes duplicate bookmarks, and provides stable statistics view, search, and duplicate browsing.',
+  'howItWorks.step2.description':
+    'System automatically merges duplicate folders, removes duplicate bookmarks, and provides stable statistics view, search, and duplicate browsing.',
+  'howItWorks.step2.f1': 'Auto dedupe',
+  'howItWorks.step2.feature1': 'Auto dedupe',
+  'howItWorks.step2.f2': 'Duplicate overview',
+  'howItWorks.step2.feature2': 'Duplicate overview',
+  'howItWorks.step2.f3': 'Local search',
+  'howItWorks.step2.feature3': 'Local search',
+  'howItWorks.step3.title': 'Export & Organize',
+  'howItWorks.step3.desc':
+    'Export organized bookmarks as standard HTML format, can be imported back to any browser. Also supports JSON, CSV for backup.',
+  'howItWorks.step3.description':
+    'Export organized bookmarks as standard HTML format, can be imported back to any browser. Also supports JSON, CSV for backup.',
+  'howItWorks.step3.f1': 'Standard format',
+  'howItWorks.step3.feature1': 'Standard format',
+  'howItWorks.step3.f2': 'Multi-format export',
+  'howItWorks.step3.feature2': 'Multi-format export',
+  'howItWorks.step3.f3': 'Restore anytime',
+  'howItWorks.step3.feature3': 'Restore anytime',
+  'howItWorks.bottomNote':
+    'The entire process runs locally, no data upload required. Upload bookmarks → One-click merge → Instant results',
+
+  // Landing Page - FAQ
+  'faq.title': 'FAQ',
+  'faq.badge': 'FAQ',
+  'faq.heading': 'Have Questions?',
+  'faq.subtitle': 'Here are the most frequently asked questions',
+  'faq.githubIssue': 'Submit an Issue on GitHub',
+  'faq.q1': 'Will my bookmark data be uploaded to a server?',
+  'faq.a1':
+    'Absolutely not. Bookmarks Manager is a purely local application. All bookmark file processing happens in your browser. We use IndexedDB for local storage, with no backend server. Your bookmarks never leave your device.',
+  'faq.q2': 'Which browser bookmark files are supported?',
+  'faq.a2':
+    'Supports standard Netscape Bookmark HTML format exports from all major browsers including Chrome, Firefox, Edge, Safari, Brave, Opera, etc. Just export bookmarks to an HTML file in your browser, then drag and drop to upload to this tool.',
+  'faq.q3': 'How do I use AI features? Is there a fee?',
+  'faq.a3':
+    'Currently only optional AI configuration and connection testing capabilities are retained. You can provide your own OpenAI or Claude API key, configuration is saved locally in the browser only. The tool does not manage keys or upload your bookmarks to any service.',
+  'faq.q4': 'How does the deduplication algorithm work?',
+  'faq.a4':
+    'We use intelligent URL normalization algorithm. Before processing, URLs are standardized: unified protocol (http/https), lowercase hostname, removal of tracking parameters (like utm_source), sorting query parameters, etc. This identifies bookmarks pointing to the same page despite format differences.',
+  'faq.q5': 'Can organized bookmarks be imported back to browsers?',
+  'faq.a5':
+    'Of course. We export standard bookmark HTML format that can be imported in any browser\'s bookmark manager. Just click the "Export" button to generate the organized HTML file, then select "Import Bookmarks" in your target browser.',
+  'faq.q6': 'How do I use PWA offline features?',
+  'faq.a6':
+    'After first visit, the app is automatically cached locally. You can add the website to your home screen (Chrome/Edge click install icon in address bar, Safari use "Add to Home Screen"), then open and use most features even offline.',
+  'faq.more': 'Have more questions?',
+
+  // Landing Page - Footer
+  'footer.product': 'Product',
+  'footer.getStarted': 'Get Started',
+  'footer.features': 'Features',
+  'footer.tutorial': 'Tutorial',
+  'footer.resources': 'Resources',
+  'footer.github': 'GitHub Repo',
+  'footer.demo': 'Live Demo',
+  'footer.feedback': 'Feedback',
+  'footer.license': 'MIT License',
+  'footer.docs': 'Documentation',
+  'footer.madeWith': 'Built with ❤️, protecting your privacy',
+  'footer.copyright': '© 2024 Bookmarks Manager. All rights reserved.',
+  'footer.cta.title': 'Ready to clean up your bookmarks?',
+  'footer.cta.description':
+    'Start using Bookmarks Manager to easily organize your digital bookmarks',
+  'footer.cta.button': 'Get Started Free',
+  'footer.brand.description':
+    'Local-first bookmark management tool, privacy protected, completely free',
+  'footer.links.startNow': 'Get Started',
+  'footer.links.features': 'Features',
+  'footer.links.tutorial': 'Tutorial',
+  'footer.links.github': 'GitHub Repo',
+  'footer.links.demo': 'Live Demo',
+  'footer.links.feedback': 'Feedback',
+  'footer.links.mitLicense': 'MIT License',
+  'footer.links.documentation': 'Documentation',
+
+  // Error Boundary
+  'error.title': 'Error',
+  'error.message': 'An unknown error occurred',
+  'error.retry': 'Retry',
+
+  // ARIA labels
+  'aria.mainNav': 'Main navigation',
+  'aria.themeSwitch': 'Theme switch',
+  'aria.list': 'List',
+  'aria.chart': 'Chart',
+
+  // Alert messages
+  'alert.needsMerge':
+    'Current import session has changed. Old statistics, search results, and export content are outdated. Please go to "Upload & Merge" to merge and dedupe again.',
+  'alert.goMerge': 'Go Merge'
+} as const

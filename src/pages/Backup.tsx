@@ -9,6 +9,7 @@ import {
   type BackupOptions
 } from '@/utils/backup'
 import useBookmarksStore from '@/store/useBookmarksStore'
+import { t } from '@/locales'
 
 export default function Backup() {
   const [isCreatingBackup, setIsCreatingBackup] = useState(false)
@@ -50,9 +51,9 @@ export default function Backup() {
       a.remove()
       URL.revokeObjectURL(url)
 
-      setMessage({ type: 'success', text: `备份成功！文件大小: ${formatBytes(blob.size)}` })
+      setMessage({ type: 'success', text: t('backup.success', { size: formatBytes(blob.size) }) })
     } catch (error) {
-      setMessage({ type: 'error', text: `备份失败: ${String(error)}` })
+      setMessage({ type: 'error', text: t('backup.failed', { error: String(error) }) })
     } finally {
       setIsCreatingBackup(false)
     }
@@ -72,7 +73,7 @@ export default function Backup() {
         const parseResult = parseBackup(content)
 
         if (!parseResult.success || !parseResult.data) {
-          setMessage({ type: 'error', text: parseResult.error || '备份文件解析失败' })
+          setMessage({ type: 'error', text: parseResult.error || t('backup.parseFailed') })
           setIsRestoring(false)
           return
         }
@@ -80,12 +81,12 @@ export default function Backup() {
         // Show confirmation dialog with stats
         const backup = parseResult.data
         const confirmMessage = [
-          '确定要恢复以下数据吗？',
+          t('backup.confirmRestore'),
           '',
           `书签: ${backup.bookmarks?.length || 0} 条`,
-          `AI配置: ${backup.aiConfig ? '有' : '无'}`,
+          `${t('backup.aiConfigLabel')}: ${backup.aiConfig ? t('common.yes') : t('common.no')}`,
           '',
-          '⚠️ 这将替换当前所有数据！'
+          t('backup.warning')
         ].join('\n')
 
         if (!confirm(confirmMessage)) {
@@ -99,15 +100,21 @@ export default function Backup() {
           const stats = restoreResult.stats
           setMessage({
             type: 'success',
-            text: `恢复成功！书签: ${stats.bookmarksRestored} 条${stats.aiConfigRestored ? '，AI 配置已恢复' : ''}`
+            text: t('backup.restoreSuccess', {
+              bookmarks: stats.bookmarksRestored,
+              aiConfig: stats.aiConfigRestored ? t('backup.aiConfigRestored') : ''
+            })
           })
           // Reload bookmarks
           await loadFromDB()
         } else {
-          setMessage({ type: 'error', text: `恢复失败: ${restoreResult.error}` })
+          setMessage({
+            type: 'error',
+            text: t('backup.restoreFailed', { error: restoreResult.error })
+          })
         }
       } catch (error) {
-        setMessage({ type: 'error', text: `恢复失败: ${String(error)}` })
+        setMessage({ type: 'error', text: t('backup.restoreFailed', { error: String(error) }) })
       } finally {
         setIsRestoring(false)
         if (fileInputRef.current) {
@@ -121,13 +128,13 @@ export default function Backup() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+      <div className="rounded-lg border border-border bg-card/50 p-6">
         <div className="flex items-center gap-3 mb-4">
           <Database className="w-6 h-6 text-sky-400" />
           <h2 className="text-xl font-semibold">数据备份与恢复</h2>
         </div>
 
-        <p className="text-slate-400 text-sm mb-6">
+        <p className="text-muted text-sm mb-6">
           备份功能可以将您的书签数据与可选 AI 配置导出为一个 JSON 文件。
           您可以使用该文件在另一台设备上恢复数据，或作为数据归档。
           <br />
@@ -152,38 +159,38 @@ export default function Backup() {
         )}
 
         {/* Backup Options */}
-        <div className="rounded-lg border border-slate-800 bg-slate-900/30 p-4 mb-6">
-          <div className="flex items-center gap-2 mb-3 text-sm font-medium text-slate-200">
+        <div className="rounded-lg border border-border bg-card/30 p-4 mb-6">
+          <div className="flex items-center gap-2 mb-3 text-sm font-medium text-foreground">
             <Settings className="w-4 h-4" />
             备份选项
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-muted cursor-pointer">
               <input
                 type="checkbox"
                 checked={options.includeBookmarks}
                 onChange={(e) => setOptions((o) => ({ ...o, includeBookmarks: e.target.checked }))}
-                className="rounded border-slate-600"
+                className="rounded border-border"
               />
-              <Database className="w-4 h-4 text-slate-400" />
+              <Database className="w-4 h-4 text-muted" />
               书签数据
             </label>
 
-            <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-muted cursor-pointer">
               <input
                 type="checkbox"
                 checked={options.includeAIConfig}
                 onChange={(e) => setOptions((o) => ({ ...o, includeAIConfig: e.target.checked }))}
-                className="rounded border-slate-600"
+                className="rounded border-border"
               />
-              <Brain className="w-4 h-4 text-slate-400" />
+              <Brain className="w-4 h-4 text-muted" />
               AI 配置（API密钥等）
             </label>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-800 text-xs text-slate-500">
-            预计备份大小: <span className="text-slate-300">{formatBytes(backupSize)}</span>
+          <div className="mt-4 pt-3 border-t border-border text-xs text-muted">
+            预计备份大小: <span className="text-muted">{formatBytes(backupSize)}</span>
           </div>
         </div>
 
@@ -195,12 +202,12 @@ export default function Backup() {
             className="px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
           >
             <Download className="w-4 h-4" />
-            {isCreatingBackup ? '正在创建备份...' : '创建备份'}
+            {isCreatingBackup ? t('backup.creating') : t('backup.create')}
           </button>
 
           <label className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2 cursor-pointer">
             <Upload className="w-4 h-4" />
-            {isRestoring ? '正在恢复...' : '从备份恢复'}
+            {isRestoring ? t('backup.restoring') : t('backup.restore')}
             <input
               ref={fileInputRef}
               type="file"
@@ -214,12 +221,12 @@ export default function Backup() {
       </div>
 
       {/* FAQ */}
-      <div className="rounded-lg border border-slate-800 bg-slate-900/30 p-6">
+      <div className="rounded-lg border border-border bg-card/30 p-6">
         <h3 className="font-medium mb-4">常见问题</h3>
 
-        <div className="space-y-4 text-sm text-slate-400">
+        <div className="space-y-4 text-sm text-muted">
           <div>
-            <div className="text-slate-200 font-medium mb-1">备份文件包含什么？</div>
+            <div className="text-foreground font-medium mb-1">备份文件包含什么？</div>
             <p>
               备份文件是一个 JSON 格式的文本文件，包含您选择的书签数据，以及可选的 AI
               配置。您可以用文本编辑器查看其内容。
@@ -227,7 +234,7 @@ export default function Backup() {
           </div>
 
           <div>
-            <div className="text-slate-200 font-medium mb-1">如何迁移到另一台设备？</div>
+            <div className="text-foreground font-medium mb-1">如何迁移到另一台设备？</div>
             <p>
               在旧设备上创建备份并下载 JSON
               文件，然后在新设备上打开此应用，进入备份页面选择"从备份恢复"即可。
@@ -235,7 +242,7 @@ export default function Backup() {
           </div>
 
           <div>
-            <div className="text-slate-200 font-medium mb-1">API密钥安全吗？</div>
+            <div className="text-foreground font-medium mb-1">API密钥安全吗？</div>
             <p>
               是的。备份文件存储在您的本地设备上，不会上传到任何服务器。建议您妥善保管备份文件，因为其中可能包含敏感的
               API 密钥。

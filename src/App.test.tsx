@@ -3,6 +3,44 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter, useLocation } from 'react-router-dom'
 import App from '@/App'
 
+// Mock window.matchMedia
+const matchMediaMock = vi.fn().mockImplementation((query: string) => ({
+  matches: false,
+  media: query,
+  onchange: null,
+  addListener: vi.fn(),
+  removeListener: vi.fn(),
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
+  dispatchEvent: vi.fn()
+}))
+
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: matchMediaMock
+})
+
+// Mock localStorage
+const localStorageMock = (() => {
+  let store: Record<string, string> = {}
+  return {
+    getItem: vi.fn((key: string) => store[key] || null),
+    setItem: vi.fn((key: string, value: string) => {
+      store[key] = value
+    }),
+    removeItem: vi.fn((key: string) => {
+      delete store[key]
+    }),
+    clear: vi.fn(() => {
+      store = {}
+    })
+  }
+})()
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock
+})
+
 const loadFromDB = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
 const useBookmarksStoreMock = vi.hoisted(() =>
   vi.fn(() => ({

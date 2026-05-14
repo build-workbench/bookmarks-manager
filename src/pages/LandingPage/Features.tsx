@@ -1,57 +1,52 @@
 import { GitMerge, Search, Brain, BarChart3, Shield, Zap, Lock } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { t } from '@/locales'
 
 const features = [
   {
     icon: GitMerge,
-    title: '智能合并',
-    description:
-      '支持 Chrome、Firefox、Edge、Safari 等多浏览器书签文件一键导入，自动识别并合并重复文件夹结构。',
+    titleKey: 'features.smartMerge.title',
+    descKey: 'features.smartMerge.desc',
     color: 'from-blue-500 to-cyan-500',
     bgColor: 'bg-blue-500/10',
     borderColor: 'border-blue-500/20'
   },
   {
     icon: Zap,
-    title: '智能去重',
-    description:
-      'URL 规范化算法智能识别重复书签，自动处理 http/https、追踪参数、大小写等差异，保留最早添加的版本。',
+    titleKey: 'features.smartDedup.title',
+    descKey: 'features.smartDedup.desc',
     color: 'from-amber-500 to-orange-500',
     bgColor: 'bg-amber-500/10',
     borderColor: 'border-amber-500/20'
   },
   {
     icon: Search,
-    title: '全文搜索',
-    description:
-      '基于 MiniSearch 的高性能搜索引擎，支持标题、URL、文件夹路径全文检索，模糊匹配，毫秒级响应。',
+    titleKey: 'features.search.title',
+    descKey: 'features.search.desc',
     color: 'from-emerald-500 to-teal-500',
     bgColor: 'bg-emerald-500/10',
     borderColor: 'border-emerald-500/20'
   },
   {
     icon: Brain,
-    title: 'AI 可选配置',
-    description:
-      '按需接入 OpenAI、Claude 等模型，仅保留自备 Key 的本地配置与连接测试。默认不上传任何数据。',
+    titleKey: 'features.ai.title',
+    descKey: 'features.ai.desc',
     color: 'from-violet-500 to-purple-500',
     bgColor: 'bg-violet-500/10',
     borderColor: 'border-violet-500/20'
   },
   {
     icon: BarChart3,
-    title: '可视化统计',
-    description:
-      'ECharts 驱动的本地统计视图，展示域名分布、时间趋势和重复占比，帮助你快速判断整理结果。',
+    titleKey: 'features.stats.title',
+    descKey: 'features.stats.desc',
     color: 'from-rose-500 to-pink-500',
     bgColor: 'bg-rose-500/10',
     borderColor: 'border-rose-500/20'
   },
   {
     icon: Shield,
-    title: '隐私优先',
-    description:
-      '所有处理在浏览器本地完成，IndexedDB 存储，不上传任何数据。开源代码可审计，真正掌控你的数据。',
+    titleKey: 'features.privacy.title',
+    descKey: 'features.privacy.desc',
     color: 'from-sky-500 to-indigo-500',
     bgColor: 'bg-sky-500/10',
     borderColor: 'border-sky-500/20'
@@ -82,7 +77,7 @@ export default function Features() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative py-24 lg:py-32 bg-slate-950">
+    <section ref={sectionRef} className="relative py-24 lg:py-32 bg-background">
       {/* Background */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900/50 via-slate-950 to-slate-950" />
 
@@ -91,14 +86,12 @@ export default function Features() {
         <div className="text-center mb-16 lg:mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm mb-6">
             <Zap className="w-4 h-4" />
-            <span>核心功能</span>
+            <span>{t('features.badge')}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
-            一站式书签清理与管理
+            {t('features.title')}
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-            从导入、去重到搜索、备份与导出，覆盖完整的本地书签整理流程
-          </p>
+          <p className="text-lg text-muted max-w-2xl mx-auto">{t('features.subtitle')}</p>
         </div>
 
         {/* Features Grid */}
@@ -109,9 +102,9 @@ export default function Features() {
 
             return (
               <div
-                key={feature.title}
+                key={feature.titleKey}
                 data-index={index}
-                className={`group relative p-6 lg:p-8 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-900/50 ${
+                className={`group relative p-6 lg:p-8 rounded-2xl bg-card/50 border border-border hover:border-border transition-all duration-500 hover:shadow-2xl hover:shadow-slate-900/50 ${
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
@@ -133,13 +126,13 @@ export default function Features() {
 
                 {/* Content */}
                 <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-sky-400 transition-colors">
-                  {feature.title}
+                  {t(feature.titleKey)}
                 </h3>
-                <p className="text-slate-400 leading-relaxed text-sm">{feature.description}</p>
+                <p className="text-muted leading-relaxed text-sm">{t(feature.descKey)}</p>
 
                 {/* Hover Arrow */}
-                <div className="mt-6 flex items-center text-sm text-slate-500 group-hover:text-sky-400 transition-colors">
-                  <span>了解更多</span>
+                <div className="mt-6 flex items-center text-sm text-muted group-hover:text-sky-400 transition-colors">
+                  <span>{t('features.learnMore')}</span>
                   <svg
                     className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform"
                     fill="none"
@@ -161,10 +154,10 @@ export default function Features() {
 
         {/* Bottom CTA */}
         <div className="mt-16 text-center">
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-slate-900/50 border border-slate-800">
+          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-card/50 border border-border">
             <Lock className="w-5 h-5 text-emerald-400" />
-            <span className="text-slate-300">所有数据在本地处理，</span>
-            <span className="text-emerald-400 font-medium">永不上传到服务器</span>
+            <span className="text-muted">{t('features.privacyNote')}</span>
+            <span className="text-emerald-400 font-medium">{t('features.privacyHighlight')}</span>
           </div>
         </div>
       </div>

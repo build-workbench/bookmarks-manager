@@ -1,9 +1,24 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        card: {
+          DEFAULT: 'var(--card)',
+          hover: 'var(--card-hover)'
+        },
+        border: 'var(--border)',
+        muted: {
+          DEFAULT: 'var(--muted)',
+          foreground: 'var(--muted-foreground)'
+        },
+        input: 'var(--input)',
+        ring: 'var(--ring)',
+        'header-bg': 'var(--header-bg)',
         brand: {
           50: '#f0f9ff',
           100: '#e0f2fe',

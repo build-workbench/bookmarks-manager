@@ -4,6 +4,7 @@
  */
 
 import { useRef, useState, useEffect, useCallback, useMemo } from 'react'
+import { t } from '@/locales'
 
 interface VirtualListProps<T> {
   items: T[]
@@ -25,7 +26,7 @@ export function VirtualList<T>({
   containerHeight = 400,
   overscan = 5,
   className = '',
-  'aria-label': ariaLabel = '列表',
+  'aria-label': ariaLabel = t('aria.list'),
   role = 'list'
 }: VirtualListProps<T>) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -113,13 +114,19 @@ export function VirtualList<T>({
     >
       <div style={{ height: totalHeight, position: 'relative' }} role="presentation">
         {virtualItems.map(({ item, index, style }) => (
-          <div key={index} style={style} role="listitem" aria-setsize={items.length} aria-posinset={index + 1}>
+          <div
+            key={index}
+            style={style}
+            role="listitem"
+            aria-setsize={items.length}
+            aria-posinset={index + 1}
+          >
             {renderItem(item, index)}
           </div>
         ))}
       </div>
       {items.length === 0 && (
-        <div className="flex items-center justify-center h-full text-slate-500" role="status">
+        <div className="flex items-center justify-center h-full text-muted" role="status">
           暂无数据
         </div>
       )}

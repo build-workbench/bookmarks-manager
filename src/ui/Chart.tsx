@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { EChartsOption } from 'echarts'
 import type { EChartsType } from 'echarts/core'
+import { t } from '@/locales'
 
 interface ChartProps {
   option: EChartsOption
@@ -29,7 +30,7 @@ function getEChartsInit() {
     const [charts, components, renderers] = await Promise.all([
       import('echarts/charts'),
       import('echarts/components'),
-      import('echarts/renderers'),
+      import('echarts/renderers')
     ])
 
     const { PieChart, BarChart, LineChart } = charts
@@ -44,19 +45,24 @@ function getEChartsInit() {
       TooltipComponent,
       GridComponent,
       LegendComponent,
-      CanvasRenderer,
+      CanvasRenderer
     ])
 
     return {
       init: echarts.init,
-      getInstanceByDom: echarts.getInstanceByDom,
+      getInstanceByDom: echarts.getInstanceByDom
     }
   })()
 
   return echartsInitPromise
 }
 
-export default function Chart({ option, height = 320, 'aria-label': ariaLabel = '图表', description }: ChartProps) {
+export default function Chart({
+  option,
+  height = 320,
+  'aria-label': ariaLabel = t('aria.chart'),
+  description
+}: ChartProps) {
   const ref = useRef<HTMLDivElement | null>(null)
   const instRef = useRef<EChartsType | null>(null)
   const optionRef = useRef(option)

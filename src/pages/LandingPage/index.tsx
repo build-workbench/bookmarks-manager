@@ -6,7 +6,7 @@ import Footer from './Footer'
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-background">
       <Hero />
       <section id="features">
         <Features />

@@ -1,37 +1,47 @@
 import { Upload, Cpu, Download, ArrowRight, CheckCircle } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-
-const steps = [
-  {
-    icon: Upload,
-    number: '01',
-    title: '导入书签',
-    description:
-      '从 Chrome、Firefox、Edge、Safari 导出书签文件，支持拖拽上传或点击选择，可同时导入多个文件。',
-    features: ['多浏览器兼容', '批量导入', '拖拽上传'],
-    color: 'from-sky-500 to-blue-500'
-  },
-  {
-    icon: Cpu,
-    number: '02',
-    title: '合并去重',
-    description:
-      '系统自动合并重复文件夹、去除重复书签，并提供稳定的统计视图、搜索和重复项浏览能力。',
-    features: ['自动去重', '重复概览', '本地搜索'],
-    color: 'from-violet-500 to-purple-500'
-  },
-  {
-    icon: Download,
-    number: '03',
-    title: '导出整理',
-    description:
-      '将整理后的书签导出为标准 HTML 格式，支持导入回任何浏览器。也可导出 JSON、CSV 用于备份。',
-    features: ['标准格式', '多格式导出', '随时恢复'],
-    color: 'from-emerald-500 to-teal-500'
-  }
-]
+import { t } from '@/locales'
 
 export default function HowItWorks() {
+  const steps = [
+    {
+      icon: Upload,
+      number: '01',
+      title: t('howItWorks.step1.title'),
+      description: t('howItWorks.step1.description'),
+      features: [
+        t('howItWorks.step1.feature1'),
+        t('howItWorks.step1.feature2'),
+        t('howItWorks.step1.feature3')
+      ],
+      color: 'from-sky-500 to-blue-500'
+    },
+    {
+      icon: Cpu,
+      number: '02',
+      title: t('howItWorks.step2.title'),
+      description: t('howItWorks.step2.description'),
+      features: [
+        t('howItWorks.step2.feature1'),
+        t('howItWorks.step2.feature2'),
+        t('howItWorks.step2.feature3')
+      ],
+      color: 'from-violet-500 to-purple-500'
+    },
+    {
+      icon: Download,
+      number: '03',
+      title: t('howItWorks.step3.title'),
+      description: t('howItWorks.step3.description'),
+      features: [
+        t('howItWorks.step3.feature1'),
+        t('howItWorks.step3.feature2'),
+        t('howItWorks.step3.feature3')
+      ],
+      color: 'from-emerald-500 to-teal-500'
+    }
+  ]
+
   const [visibleSteps, setVisibleSteps] = useState<Set<number>>(new Set())
   const sectionRef = useRef<HTMLDivElement>(null)
 
@@ -55,7 +65,7 @@ export default function HowItWorks() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative py-24 lg:py-32 bg-slate-950 overflow-hidden">
+    <section ref={sectionRef} className="relative py-24 lg:py-32 bg-background overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl" />
@@ -66,14 +76,12 @@ export default function HowItWorks() {
         {/* Section Header */}
         <div className="text-center mb-16 lg:mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-sm mb-6">
-            <span>简单三步</span>
+            <span>{t('howItWorks.badge')}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
-            轻松整理你的书签
+            {t('howItWorks.title')}
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-            无需复杂配置，上传、合并、导出，三步搞定书签整理
-          </p>
+          <p className="text-lg text-muted max-w-2xl mx-auto">{t('howItWorks.subtitle')}</p>
         </div>
 
         {/* Steps */}
@@ -98,7 +106,7 @@ export default function HowItWorks() {
                   style={{ transitionDelay: `${index * 200}ms` }}
                 >
                   {/* Card */}
-                  <div className="relative bg-slate-900/50 backdrop-blur border border-slate-800 rounded-2xl p-8 hover:border-slate-700 transition-colors group">
+                  <div className="relative bg-card/50 backdrop-blur border border-border rounded-2xl p-8 hover:border-border transition-colors group">
                     {/* Step Number Badge */}
                     <div
                       className={`absolute -top-4 left-8 px-4 py-1 rounded-full bg-gradient-to-r ${step.color} text-white text-sm font-bold shadow-lg`}
@@ -115,14 +123,14 @@ export default function HowItWorks() {
 
                     {/* Content */}
                     <h3 className="text-2xl font-bold text-white mb-4">{step.title}</h3>
-                    <p className="text-slate-400 mb-6 leading-relaxed">{step.description}</p>
+                    <p className="text-muted mb-6 leading-relaxed">{step.description}</p>
 
                     {/* Feature List */}
                     <div className="space-y-3">
                       {step.features.map((feature) => (
                         <div key={feature} className="flex items-center gap-3 text-sm">
                           <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                          <span className="text-slate-300">{feature}</span>
+                          <span className="text-muted">{feature}</span>
                         </div>
                       ))}
                     </div>
@@ -131,8 +139,8 @@ export default function HowItWorks() {
                   {/* Arrow (Desktop, not on last item) */}
                   {index < steps.length - 1 && (
                     <div className="hidden lg:flex absolute top-24 -right-6 z-10 w-12 h-12 items-center justify-center">
-                      <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center">
-                        <ArrowRight className="w-5 h-5 text-slate-500" />
+                      <div className="w-10 h-10 rounded-full bg-card-hover border border-border flex items-center justify-center">
+                        <ArrowRight className="w-5 h-5 text-muted" />
                       </div>
                     </div>
                   )}
@@ -144,11 +152,7 @@ export default function HowItWorks() {
 
         {/* Bottom Note */}
         <div className="mt-16 text-center">
-          <p className="text-slate-500">
-            整个过程在浏览器本地完成，
-            <span className="text-sky-400">无需等待上传</span>，
-            <span className="text-emerald-400">即刻出结果</span>
-          </p>
+          <p className="text-muted">{t('howItWorks.bottomNote')}</p>
         </div>
       </div>
     </section>

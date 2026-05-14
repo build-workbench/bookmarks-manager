@@ -6,6 +6,12 @@
 import { useBookmarksStoreWithWorker } from './useBookmarksStore.worker'
 import useBookmarksStoreOriginal from './useBookmarksStore'
 import { useAIStore } from './useAIStore'
+import {
+  usePreferencesStore,
+  initializePreferences,
+  watchSystemTheme,
+  detectBrowserLanguage
+} from './usePreferencesStore'
 
 // Use original store by default for stability
 // Worker store can be enabled via feature flag
@@ -17,7 +23,13 @@ export const useBookmarksStore = USE_WORKER_STORE
   : useBookmarksStoreOriginal
 
 // Re-export all stores
-export { useAIStore }
+export {
+  useAIStore,
+  usePreferencesStore,
+  initializePreferences,
+  watchSystemTheme,
+  detectBrowserLanguage
+}
 
 // Re-export the original store as default for backward compatibility
 export default useBookmarksStoreOriginal

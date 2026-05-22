@@ -30,7 +30,7 @@ src/
 1. The user imports one or more bookmark HTML files
 2. `bookmarkParser.ts` parses Netscape bookmark HTML into local models
 3. `useBookmarksStore.ts` normalizes URLs and folder paths
-4. Deduplication picks a canonical bookmark per normalized URL
+4. `bookmarkProcessing.ts` owns deduplication and stats so worker and main-thread paths share one interface
 5. The merged result is written to Dexie and indexed for search
 
 ### Search and export

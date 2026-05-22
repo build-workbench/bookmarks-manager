@@ -22,7 +22,8 @@ interface AISettingsProps {
 }
 
 export function AISettings({ onConfigSaved }: AISettingsProps) {
-  const { config, testConnection, connectionStatus, connectionError, loadConfig } = useAIStore()
+  const { config, saveConfig, testConnection, connectionStatus, connectionError, loadConfig } =
+    useAIStore()
   const [provider, setProvider] = useState<Provider>('openai')
   const [apiKey, setApiKey] = useState('')
   const [model, setModel] = useState('')
@@ -69,9 +70,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
   const handleTestConnection = async () => {
     setIsTesting(true)
     try {
-      const cfg = getConfig()
-      await configService.saveConfig(cfg)
-      await testConnection(cfg)
+      await testConnection(getConfig())
     } finally {
       setIsTesting(false)
     }
@@ -81,7 +80,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
     setIsSaving(true)
     setSaveResult(null)
     try {
-      const result = await configService.saveConfig(getConfig())
+      const result = await saveConfig(getConfig())
       if (result.success) {
         setSaveResult({ success: true, message: t('ai.configSaved') })
         onConfigSaved?.()

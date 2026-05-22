@@ -1,9 +1,14 @@
 import { create } from 'zustand'
 import { parseNetscapeBookmarks, type Bookmark } from '@/utils/bookmarkParser'
-import { normalizeUrl, getHostname } from '@/utils/url'
+import { normalizeUrl } from '@/utils/url'
 import { exportBookmarks, type ExportFormat, type ExportOptions } from '@/utils/exporters'
 import { normalizePath } from '@/utils/folders'
 import { clearBookmarks, saveBookmarks, loadBookmarks, type StoredBookmark } from '@/utils/db'
+import {
+  createBookmarkStats,
+  processBookmarks,
+  type BookmarkStats
+} from '@/utils/bookmarkProcessing'
 import {
   createSearchIndex,
   resetSearchIndex,
@@ -12,26 +17,6 @@ import {
 } from '@/utils/search'
 import { getWorkerClient, terminateWorker } from '@/workers/bookmarkWorkerClient'
 import { t } from '@/locales'
-
-type Stats = {
-  total: number
-  duplicates: number
-  byDomain: Record<string, number>
-  byYear: Record<string, number>
-}
-
-function computeStats(merged: Bookmark[], duplicates: number): Stats {
-  const byDomain: Record<string, number> = {}
-  const byYear: Record<string, number> = {}
-  for (const it of merged) {
-    const host = getHostname(it.url) || 'unknown'
-    byDomain[host] = (byDomain[host] || 0) + 1
-    const ts = it.addDate || it.lastModified
-    const year = ts ? new Date(ts * 1000).getFullYear().toString() : 'Unknown'
-    byYear[year] = (byYear[year] || 0) + 1
-  }
-  return { total: merged.length, duplicates, byDomain, byYear }
-}
 
 type State = {
   rawItems: Bookmark[]
@@ -44,7 +29,7 @@ type State = {
   needsMerge: boolean
   hasFullMergeData: boolean
   stage: string
-  stats: Stats
+  stats: BookmarkStats
   useWorker: boolean // Worker toggle
   importFiles: (files: FileList | File[]) => Promise<void>
   removeSourceFile: (sourceFile: string) => void
@@ -57,7 +42,7 @@ type State = {
   toggleWorker: () => void
 }
 
-const emptyStats: Stats = { total: 0, duplicates: 0, byDomain: {}, byYear: {} }
+const emptyStats: BookmarkStats = { total: 0, duplicates: 0, byDomain: {}, byYear: {} }
 
 const useBookmarksStore = create<State>((set, get) => {
   const invalidateDerivedData = () => {
@@ -176,54 +161,26 @@ const useBookmarksStore = create<State>((set, get) => {
           }
         }
 
-        // Traditional synchronous processing (fallback or small datasets)
-        const groups = new Map<string, Bookmark[]>()
-        for (const it of raw) {
-          const key = normalizeUrl(it.url)
-          const arr = groups.get(key) || []
-          arr.push(it)
-          groups.set(key, arr)
-        }
-        const merged: Bookmark[] = []
-        const dups: Record<string, Bookmark[]> = {}
-
-        const getBookmarkTimestamp = (it: Bookmark): number => {
-          const ts = it.addDate ?? it.lastModified
-          return typeof ts === 'number' && ts > 0 ? ts : Number.POSITIVE_INFINITY
-        }
-
         set({ stage: t('stage.computingClusters') })
-        for (const [k, arr] of groups) {
-          let best = arr[0]
-          for (const it of arr) {
-            if (getBookmarkTimestamp(it) < getBookmarkTimestamp(best)) best = it
-          }
-          if (arr.length > 1) {
-            dups[k] = [best, ...arr.filter((it) => it.id !== best.id)]
-          }
-          merged.push(best)
-        }
-
-        set({ stage: t('stage.generatingStats') })
-        const stats = computeStats(merged, raw.length - merged.length)
+        const result = processBookmarks(raw)
         set({
           restoredItems: [],
-          mergedItems: merged,
-          duplicates: dups,
-          stats,
+          mergedItems: result.merged,
+          duplicates: result.duplicates,
+          stats: result.stats,
           needsMerge: false,
           hasFullMergeData: true
         })
 
         set({ stage: t('stage.saving') })
-        const storedItems: StoredBookmark[] = merged.map((it) => ({
+        const storedItems: StoredBookmark[] = result.merged.map((it) => ({
           ...it,
           normalized: normalizeUrl(it.url)
         }))
         await saveBookmarks(storedItems)
 
         set({ stage: t('stage.buildingIndex') })
-        createSearchIndex(merged)
+        createSearchIndex(result.merged)
       } finally {
         set({ merging: false, stage: '' })
       }
@@ -234,7 +191,7 @@ const useBookmarksStore = create<State>((set, get) => {
         const stored = await loadBookmarks()
         if (stored.length > 0) {
           const restored = stored.map(({ normalized: _normalized, ...rest }) => rest)
-          const stats = computeStats(restored, 0)
+          const stats = createBookmarkStats(restored, 0)
           set({
             rawItems: [],
             restoredItems: restored,

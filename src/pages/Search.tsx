@@ -20,6 +20,7 @@ import {
 } from '@/utils/exporters'
 import { getHostname } from '@/utils/url'
 import { VirtualList } from '@/ui/VirtualList'
+import { SafeExternalLink } from '@/ui/SafeExternalLink'
 import { EXPORT_FORMAT_OPTIONS } from '@/constants/exportFormats'
 import { downloadFile } from '@/utils/download'
 
@@ -425,14 +426,13 @@ export default function Search() {
                   <div className="flex items-start gap-3">
                     <ExternalLink className="w-4 h-4 text-muted mt-1 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <a
+                      <SafeExternalLink
                         href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="text-sky-400 hover:text-sky-300 font-medium break-all"
+                        unsafeClassName="text-sky-400 font-medium break-all"
                       >
                         {highlightText(item.title || item.url, query)}
-                      </a>
+                      </SafeExternalLink>
                       <div className="text-xs text-muted mt-1 break-all">
                         {highlightText(item.url, query)}
                       </div>
@@ -457,14 +457,13 @@ export default function Search() {
                   <div className="flex items-start gap-3">
                     <ExternalLink className="w-4 h-4 text-muted mt-1 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <a
+                      <SafeExternalLink
                         href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="text-sky-400 hover:text-sky-300 font-medium break-all"
+                        unsafeClassName="text-sky-400 font-medium break-all"
                       >
                         {highlightText(item.title || item.url, query)}
-                      </a>
+                      </SafeExternalLink>
                       <div className="text-xs text-muted mt-1 break-all">
                         {highlightText(item.url, query)}
                       </div>

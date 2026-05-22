@@ -76,8 +76,10 @@ export async function clearBookmarks() {
 }
 
 export async function saveBookmarks(items: StoredBookmark[]) {
-  await db.bookmarks.clear()
-  await db.bookmarks.bulkAdd(items)
+  await db.transaction('rw', db.bookmarks, async () => {
+    await db.bookmarks.clear()
+    await db.bookmarks.bulkAdd(items)
+  })
 }
 
 export async function loadBookmarks(): Promise<StoredBookmark[]> {
@@ -94,4 +96,8 @@ export async function saveAIConfig(config: Omit<AIConfig, 'id' | 'updatedAt'>): 
     id: 'default',
     updatedAt: Date.now()
   })
+}
+
+export async function clearAIConfig(): Promise<void> {
+  await db.aiConfig.delete('default')
 }

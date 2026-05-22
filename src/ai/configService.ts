@@ -4,7 +4,7 @@
  */
 
 import type { LLMConfig } from './types'
-import { getAIConfig, saveAIConfig } from '@/utils/db'
+import { clearAIConfig, getAIConfig, saveAIConfig } from '@/utils/db'
 import { LLM_PROVIDERS, DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE } from './constants'
 import { createAdapter } from './adapters'
 
@@ -118,14 +118,7 @@ export function getDefaultModel(provider: 'openai' | 'claude' | 'custom'): strin
  * Clear AI configuration
  */
 export async function clearConfig(): Promise<void> {
-  // Save empty config to clear
-  await saveAIConfig({
-    provider: 'openai',
-    apiKey: '',
-    model: '',
-    maxTokens: DEFAULT_MAX_TOKENS,
-    temperature: DEFAULT_TEMPERATURE
-  })
+  await clearAIConfig()
 }
 
 // Export as a service object for convenience

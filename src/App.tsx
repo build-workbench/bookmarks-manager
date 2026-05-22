@@ -7,6 +7,7 @@ import { LazyErrorBoundary } from '@/ui/ErrorBoundary'
 import { ThemeSwitch } from '@/ui/ThemeSwitch'
 import { LanguageSwitch } from '@/ui/LanguageSwitch'
 import { t } from '@/locales'
+import { normalizeLegacyHashRoute } from '@/utils/routes'
 
 const LandingPage = lazy(() => import('@/pages/LandingPage'))
 const UploadMerge = lazy(() => import('@/pages/UploadMerge'))
@@ -132,10 +133,9 @@ function LegacyRedirectHandler() {
   const location = useLocation()
 
   useEffect(() => {
-    const hash = window.location.hash
-    if (hash && hash !== '#/' && !hash.startsWith('#/app/')) {
-      const oldPath = hash.replace('#/', '')
-      window.location.hash = `#/app${oldPath.startsWith('/') ? oldPath : `/${oldPath}`}`
+    const normalizedHash = normalizeLegacyHashRoute(window.location.hash)
+    if (normalizedHash) {
+      window.location.hash = normalizedHash
     }
   }, [location])
 

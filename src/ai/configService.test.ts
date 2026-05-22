@@ -216,6 +216,8 @@ describe('Config Service', () => {
 
       // Verify it's cleared
       expect(await configService.isConfigured()).toBe(false)
+      expect(await configService.getConfig()).toBeNull()
+      expect(await db.aiConfig.toArray()).toEqual([])
     })
   })
 })

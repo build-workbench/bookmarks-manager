@@ -6,12 +6,6 @@
 import type { Bookmark } from '@/utils/bookmarkParser'
 import type { WorkerMessage, WorkerResponse } from './bookmarkWorker'
 
-export interface ParseFilesResult {
-  bookmarks: Bookmark[]
-  errors: string[]
-  progress?: { current: number; total: number; fileName: string }
-}
-
 export interface MergeDedupResult {
   merged: Bookmark[]
   duplicates: Record<string, Bookmark[]>
@@ -23,16 +17,13 @@ export interface MergeDedupResult {
   }
 }
 
-interface PendingResolver {
-  resolve: (value: unknown) => void
-  reject: (reason: Error) => void
-  onProgress?: (progress: unknown) => void
-}
-
 export class BookmarkWorkerClient {
   private worker: Worker | null = null
-  private messageId = 0
-  private pendingResolvers = new Map<number, PendingResolver>()
+  private activeMerge: {
+    resolve: (value: MergeDedupResult) => void
+    reject: (reason: Error) => void
+    onProgress?: (stage: string) => void
+  } | null = null
 
   constructor() {
     this.initWorker()
@@ -44,96 +35,47 @@ export class BookmarkWorkerClient {
     this.worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
       const data = event.data
 
-      // Handle progress updates - they don't have a specific resolver
-      if (data.type.endsWith('_PROGRESS')) {
+      if (!this.activeMerge) {
         return
       }
 
-      // Handle results and errors
-      const resolver = this.pendingResolvers.get(this.messageId)
-      if (!resolver) return
-
-      if (data.type === 'ERROR') {
-        resolver.reject(new Error(data.payload.message))
-      } else {
-        resolver.resolve(data.payload)
+      if (data.type === 'MERGE_BOOKMARKS_PROGRESS') {
+        this.activeMerge.onProgress?.(data.payload.stage)
+        return
       }
 
-      this.pendingResolvers.delete(this.messageId)
+      if (data.type === 'ERROR') {
+        this.activeMerge.reject(new Error(data.payload.message))
+        this.activeMerge = null
+        return
+      }
+
+      this.activeMerge.resolve({
+        merged: data.payload.merged,
+        duplicates: data.payload.groups,
+        stats: {
+          total: data.payload.total,
+          duplicates: data.payload.duplicates,
+          byDomain: data.payload.byDomain,
+          byYear: data.payload.byYear
+        }
+      })
+      this.activeMerge = null
     }
 
     this.worker.onerror = (error) => {
       console.error('Worker error:', error)
-      // Reject all pending
-      this.pendingResolvers.forEach(({ reject }) => {
-        reject(new Error('Worker error: ' + error.message))
-      })
-      this.pendingResolvers.clear()
+      this.activeMerge?.reject(new Error('Worker error: ' + error.message))
+      this.activeMerge = null
     }
   }
 
-  private postMessage<T>(
-    message: WorkerMessage,
-    onProgress?: (progress: unknown) => void
-  ): Promise<T> {
-    return new Promise((resolve, reject) => {
-      if (!this.worker) {
-        reject(new Error('Worker not initialized'))
-        return
-      }
-
-      this.messageId++
-      this.pendingResolvers.set(this.messageId, {
-        resolve: resolve as (value: unknown) => void,
-        reject,
-        onProgress
-      })
-
-      try {
-        this.worker.postMessage(message)
-      } catch (error) {
-        this.pendingResolvers.delete(this.messageId)
-        reject(error)
-      }
-    })
-  }
-
-  /**
-   * Parse multiple bookmark files
-   */
-  async parseFiles(
-    files: Array<{ name: string; content: string }>,
-    onProgress?: (current: number, total: number, fileName: string) => void
-  ): Promise<ParseFilesResult> {
-    const result: ParseFilesResult = { bookmarks: [], errors: [] }
-
-    // Set up progress listener
-    const progressHandler = (event: MessageEvent<WorkerResponse>) => {
-      if (event.data.type === 'PARSE_FILES_PROGRESS' && onProgress) {
-        const { current, total, fileName } = event.data.payload
-        onProgress(current, total, fileName)
-      }
+  private postMessage(message: WorkerMessage): void {
+    if (!this.worker) {
+      throw new Error('Worker not initialized')
     }
 
-    if (this.worker) {
-      this.worker.addEventListener('message', progressHandler)
-    }
-
-    try {
-      const payload = await this.postMessage<{
-        bookmarks: Bookmark[]
-        errors: string[]
-      }>({ type: 'PARSE_FILES', payload: { files } })
-
-      result.bookmarks = payload.bookmarks
-      result.errors = payload.errors
-    } finally {
-      if (this.worker) {
-        this.worker.removeEventListener('message', progressHandler)
-      }
-    }
-
-    return result
+    this.worker.postMessage(message)
   }
 
   /**
@@ -143,93 +85,25 @@ export class BookmarkWorkerClient {
     bookmarks: Bookmark[],
     onProgress?: (stage: string) => void
   ): Promise<MergeDedupResult> {
-    const result: MergeDedupResult = {
-      merged: [],
-      duplicates: {},
-      stats: { total: 0, duplicates: 0, byDomain: {}, byYear: {} }
-    }
-
-    // Progress handler
-    const progressHandler = (event: MessageEvent<WorkerResponse>) => {
-      if (event.data.type === 'MERGE_DEDUP_PROGRESS' && onProgress) {
-        onProgress(event.data.payload.stage)
+    return new Promise((resolve, reject) => {
+      if (this.activeMerge) {
+        reject(new Error('Worker is already processing a merge job'))
+        return
       }
-    }
 
-    if (this.worker) {
-      this.worker.addEventListener('message', progressHandler)
-    }
+      this.activeMerge = {
+        resolve,
+        reject,
+        onProgress
+      }
 
-    try {
-      // Listen for both MERGE_DEDUP_RESULT and STATS_RESULT
-      let mergeReceived = false
-      let statsReceived = false
-
-      await new Promise<void>((resolve, reject) => {
-        const handler = (event: MessageEvent<WorkerResponse>) => {
-          const data = event.data
-
-          if (data.type === 'MERGE_DEDUP_RESULT') {
-            result.merged = data.payload.merged
-            result.duplicates = data.payload.duplicates
-            mergeReceived = true
-          }
-
-          if (data.type === 'STATS_RESULT') {
-            result.stats = data.payload
-            statsReceived = true
-          }
-
-          if (data.type === 'ERROR') {
-            reject(new Error(data.payload.message))
-            return
-          }
-
-          if (mergeReceived && statsReceived) {
-            resolve()
-          }
-        }
-
-        if (this.worker) {
-          // Replace the main handler temporarily
-          const originalHandler = this.worker.onmessage
-          this.worker.onmessage = (event) => {
-            progressHandler(event)
-            handler(event)
-            // Also call original handler for cleanup
-            if (originalHandler && mergeReceived && statsReceived) {
-              originalHandler.call(this.worker!, event)
-            }
-          }
-        }
-
-        // Send the message
-        this.postMessage({ type: 'MERGE_DEDUP', payload: { bookmarks } }).catch(reject)
-
-        // Timeout after 60 seconds
-        setTimeout(() => {
-          if (!mergeReceived || !statsReceived) {
-            reject(new Error('Worker timeout'))
-          }
-        }, 60000)
-      })
-    } finally {
-      // Restore original handler
-      this.initWorker()
-    }
-
-    return result
-  }
-
-  /**
-   * Build search index (result is not returned, just completion signal)
-   */
-  async buildSearchIndex(bookmarks: Bookmark[]): Promise<boolean> {
-    const result = await this.postMessage<{ success: boolean }>({
-      type: 'BUILD_SEARCH_INDEX',
-      payload: { bookmarks }
+      try {
+        this.postMessage({ type: 'MERGE_BOOKMARKS', payload: { bookmarks } })
+      } catch (error) {
+        this.activeMerge = null
+        reject(error)
+      }
     })
-    return result.success
   }
 
   /**
@@ -240,7 +114,8 @@ export class BookmarkWorkerClient {
       this.worker.terminate()
       this.worker = null
     }
-    this.pendingResolvers.clear()
+    this.activeMerge?.reject(new Error('Worker terminated'))
+    this.activeMerge = null
   }
 }
 

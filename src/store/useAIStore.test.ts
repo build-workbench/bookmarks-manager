@@ -36,6 +36,21 @@ describe('useAIStore', () => {
     expect(state.config).toEqual(mockConfig)
   })
 
+  it('saves config through the store seam and updates local state', async () => {
+    const mockConfig: LLMConfig = {
+      provider: 'openai',
+      apiKey: 'saved-key',
+      model: 'gpt-4o-mini'
+    }
+
+    vi.mocked(configService.saveConfig).mockResolvedValue({ success: true })
+
+    await expect(useAIStore.getState().saveConfig(mockConfig)).resolves.toEqual({ success: true })
+
+    expect(configService.saveConfig).toHaveBeenCalledWith(mockConfig)
+    expect(useAIStore.getState().config).toEqual(mockConfig)
+  })
+
   it('tests connection with the configured adapter', async () => {
     const mockConfig: LLMConfig = {
       provider: 'openai',

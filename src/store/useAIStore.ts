@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import type { LLMConfig } from '@/ai/types'
+import type { ConfigServiceResult } from '@/ai/configService'
 import { createAdapter } from '@/ai/adapters'
 import { configService } from '@/ai/configService'
 import { t } from '@/locales'
@@ -9,6 +10,7 @@ interface AIState {
   connectionStatus: 'idle' | 'testing' | 'connected' | 'error'
   connectionError: string | null
   loadConfig: () => Promise<void>
+  saveConfig: (config: LLMConfig) => Promise<ConfigServiceResult>
   testConnection: (config: LLMConfig) => Promise<boolean>
 }
 
@@ -24,6 +26,14 @@ export const useAIStore = create<AIState>((set) => ({
   loadConfig: async () => {
     const config = await configService.getConfig()
     set({ config })
+  },
+
+  saveConfig: async (config: LLMConfig) => {
+    const result = await configService.saveConfig(config)
+    if (result.success) {
+      set({ config })
+    }
+    return result
   },
 
   testConnection: async (config: LLMConfig) => {

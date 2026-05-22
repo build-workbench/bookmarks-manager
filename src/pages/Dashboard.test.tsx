@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import Dashboard from './Dashboard'
 import useBookmarksStore from '@/store/useBookmarksStore'
 
@@ -71,5 +71,19 @@ describe('Dashboard', () => {
     render(<Dashboard />)
 
     expect(screen.getByText(/书签列表/)).toBeInTheDocument()
+  })
+
+  it('does not render unsafe imported bookmark URLs as clickable links', async () => {
+    vi.mocked(useBookmarksStore).mockReturnValue({
+      ...mockStore,
+      mergedItems: [{ id: '1', title: 'Bad Bookmark', url: 'javascript:alert(1)', path: [] }]
+    } as ReturnType<typeof useBookmarksStore>)
+
+    render(<Dashboard />)
+
+    fireEvent.click(screen.getByRole('button', { name: /书签列表/ }))
+
+    expect(await screen.findByText('Bad Bookmark')).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Bad Bookmark' })).not.toBeInTheDocument()
   })
 })

@@ -2,6 +2,7 @@ import { Trash2, Check, Calendar, AlertCircle } from 'lucide-react'
 import { t } from '@/locales'
 import useBookmarksStore from '@/store/useBookmarksStore'
 import type { Bookmark } from '@/utils/bookmarkParser'
+import { SafeExternalLink } from '@/ui/SafeExternalLink'
 
 export default function Duplicates() {
   const { duplicates, needsMerge, hasFullMergeData } = useBookmarksStore()
@@ -76,14 +77,13 @@ export default function Duplicates() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
-                        <a
+                        <SafeExternalLink
                           href={item.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
                           className="text-sky-400 hover:text-sky-300 text-sm break-all"
+                          unsafeClassName="text-sky-400 text-sm break-all"
                         >
                           {item.title || item.url}
-                        </a>
+                        </SafeExternalLink>
                         {itemIdx === 0 && (
                           <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded flex-shrink-0">
                             {t('duplicates.keep')}

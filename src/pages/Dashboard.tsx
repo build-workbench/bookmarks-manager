@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import useBookmarksStore from '@/store/useBookmarksStore'
 import Chart from '@/ui/Chart'
+import { SafeExternalLink } from '@/ui/SafeExternalLink'
 import type { EChartsOption } from 'echarts'
 import { t } from '@/locales'
 
@@ -177,12 +178,11 @@ export default function Dashboard() {
                   className="rounded bg-card/50 border border-border p-3 hover:border-border transition"
                   role="listitem"
                 >
-                  <a
+                  <SafeExternalLink
                     href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="flex items-start gap-2 group"
-                    aria-label={item.title || item.url}
+                    unsafeClassName="flex items-start gap-2 group"
+                    ariaLabel={item.title || item.url}
                   >
                     <ExternalLink
                       className="w-4 h-4 text-muted mt-0.5 flex-shrink-0 group-hover:text-sky-400 transition"
@@ -202,7 +202,7 @@ export default function Dashboard() {
                         </div>
                       )}
                     </div>
-                  </a>
+                  </SafeExternalLink>
                 </div>
               ))}
 

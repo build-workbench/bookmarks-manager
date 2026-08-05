@@ -1,18 +1,18 @@
-# Contributing
+# 贡献说明
 
-Bookmarks Manager is maintained as a **small, solo-first repository**. The process is optimized for clear OpenSpec scope, fast local verification, and low automation noise.
+Bookmarks Manager 目前按 **单人维护、低噪音治理** 的方式运作。流程重点不是 PR 仪式，而是：OpenSpec 先行、范围清晰、本地验证到位。
 
-## Workflow
+## 开发流程
 
-1. Start with `openspec/changes/` for any meaningful product or repository change.
-2. Keep changes focused. If a proposal grows into multiple concerns, split it.
-3. Direct pushes are the default maintainer workflow after local verification.
-4. Use a focused review step such as `/review` before pushing cross-cutting changes.
-5. Do not default to `/fleet` or orchestration-heavy workflows; prefer one active change, native tools, `gh`, and a long-running session.
+1. 任何有意义的产品或仓库改动，先从 `openspec/changes/` 开始。
+2. 变更范围保持聚焦；如果一个 proposal 已经混入多个主题，就拆分。
+3. 维护者默认在本地验证后直接推送。
+4. 对跨模块、风险较高或难验证的改动，推送前用 `/review` 一类的审查步骤再过一遍。
+5. 不默认使用 `/fleet` 或其它编排过重的流程；优先使用一个 active change、原生工具、`gh` 和长会话推进工作。
 
-External contributors are welcome, but the repository workflow is optimized around low-friction maintenance rather than a PR-heavy process.
+外部贡献者仍然可以参与，但当前仓库流程优先追求低摩擦维护，而不是围绕 PR 仪式设计。
 
-## Local setup
+## 本地启动
 
 ```bash
 git clone https://github.com/LessUp/bookmarks-manager.git
@@ -21,25 +21,25 @@ npm install
 npm run dev
 ```
 
-## Verification
+## 验证命令
 
 ```bash
 npm run validate
 npm run build
 ```
 
-- Run `npm run validate` for all code changes.
-- Run `npm run build` when touching routes, PWA metadata, GitHub Pages behavior, or workflow/deployment files.
+- 所有代码改动都要跑 `npm run validate`
+- 如果改动涉及路由、PWA 元数据、GitHub Pages、工作流或部署行为，还要补跑 `npm run build`
 
-## What to update when you change the repo
+## 改仓库时顺手维护什么
 
-| Change type                | Update these too                                                       |
-| -------------------------- | ---------------------------------------------------------------------- |
-| Product behavior           | OpenSpec change artifacts, README if user-facing                       |
-| Routing / PWA / deployment | `index.html`, manifest, Pages workflow, build docs                     |
-| Architecture changes       | `docs/ARCHITECTURE*.md`                                                |
-| Workflow / tooling changes | `AGENTS.md`, `CLAUDE.md`, `.github/copilot-instructions.md`, this file |
+| 改动类型          | 同步更新                            |
+| ----------------- | ----------------------------------- |
+| 产品行为          | OpenSpec 变更文档，必要时更新 README |
+| 路由 / PWA / 部署 | `index.html`、manifest、Pages workflow、相关说明文档 |
+| 架构变化          | `docs/ARCHITECTURE.md`              |
+| 流程 / 工具变化   | `AGENTS.md`、本文档                 |
 
-## Documentation bar
+## 文档原则
 
-Prefer a **small maintained doc set** over large generic references. If a doc cannot be kept current, remove it instead of preserving stale detail.
+文档宁可少，但必须准。不能长期维护的文档，不要留成"看起来很全、实际上早就漂移"的负担。

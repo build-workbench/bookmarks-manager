@@ -83,11 +83,11 @@ IndexedDB 表（Dexie）：
 
 | 文件                     | 用途               |
 | ------------------------ | ------------------ |
-| `README.md` / `zh-CN`    | 产品概述与本地运行 |
+| `README.md`              | 产品概述与本地运行 |
 | `docs/ARCHITECTURE.md`   | 架构地图           |
 | `docs/CONTRIBUTING.md`   | 实际工作流程       |
 | `CHANGELOG.md`           | 精选发布历史       |
-| `AGENTS.md` / `CLAUDE.md | AI 助手约定        |
+| `AGENTS.md`              | AI 助手约定        |
 
 ## 边界与禁忌
 

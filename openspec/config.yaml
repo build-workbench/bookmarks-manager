@@ -10,7 +10,7 @@ context: |
   Router: HashRouter (required for GitHub Pages SPA)
   AI: BYOK mode (user provides API key, stored in IndexedDB)
   Workflow: OpenSpec-first, solo direct-push after local validation
-  Maintained docs: README, CHANGELOG, docs/README, docs/ARCHITECTURE, docs/CONTRIBUTING, AGENTS, CLAUDE
+  Maintained docs: README, CHANGELOG, docs/ARCHITECTURE, docs/CONTRIBUTING, AGENTS
   Public entry: landing page at #/ and workspace under #/app/*
 
   Key principles:

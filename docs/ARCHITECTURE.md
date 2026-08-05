@@ -1,52 +1,52 @@
-# Architecture
+# 架构说明
 
-Bookmarks Manager is a **client-only React + TypeScript PWA**. All bookmark processing happens in the browser and persisted state lives in IndexedDB through Dexie.
+Bookmarks Manager 是一个**纯前端 React + TypeScript PWA**。所有书签处理都在浏览器中完成，持久化状态通过 Dexie 写入 IndexedDB。
 
-## Runtime surfaces
+## 运行时入口
 
-| Surface        | Responsibility                                                 |
-| -------------- | -------------------------------------------------------------- |
-| `#/`           | Public landing page for GitHub Pages visitors                  |
-| `#/app/*`      | Application workspace                                          |
-| Service worker | Offline assets and installability                              |
-| IndexedDB      | Bookmarks, settings, backup data, and optional local AI config |
+| 入口           | 作用                                         |
+| -------------- | -------------------------------------------- |
+| `#/`           | GitHub Pages 访问者看到的公开落地页          |
+| `#/app/*`      | 应用工作区                                   |
+| Service Worker | 离线资源缓存与安装能力                       |
+| IndexedDB      | 书签、设置、备份数据，以及可选的本地 AI 配置 |
 
-## Code map
+## 代码结构
 
 ```text
 src/
-├── pages/        Route-level UI
-├── ui/           Shared UI components
-├── store/        Zustand stores
-├── utils/        Parsing, search, storage, export, backup helpers
-├── ai/           Optional BYOK AI config and adapters
-└── workers/      Worker support for large imports
+├── pages/        路由级页面
+├── ui/           可复用 UI 组件
+├── store/        Zustand 状态
+├── utils/        解析、搜索、存储、导出、备份工具
+├── ai/           可选的自备 Key AI 配置与适配器
+└── workers/      大数据量导入时的 Worker 支持
 ```
 
-## Main flows
+## 主要流程
 
-### Import and merge
+### 导入与合并
 
-1. The user imports one or more bookmark HTML files
-2. `bookmarkParser.ts` parses Netscape bookmark HTML into local models
-3. `useBookmarksStore.ts` normalizes URLs and folder paths
-4. `bookmarkProcessing.ts` owns deduplication and stats so worker and main-thread paths share one interface
-5. The merged result is written to Dexie and indexed for search
+1. 用户导入一个或多个书签 HTML 文件
+2. `bookmarkParser.ts` 解析 Netscape Bookmark HTML
+3. `useBookmarksStore.ts` 规范化 URL 和目录路径
+4. 去重逻辑按规范化 URL 选出保留项
+5. 合并结果写入 Dexie，并构建搜索索引
 
-### Search and export
+### 搜索与导出
 
-1. Search indexes are created in memory with MiniSearch
-2. Search and filter pages query the in-memory index plus stored bookmark data
-3. Export helpers generate HTML, JSON, CSV, or Markdown on demand
+1. MiniSearch 在内存中构建索引
+2. 搜索和筛选页面组合使用内存索引与本地书签数据
+3. 导出工具按需生成 HTML、JSON、CSV、Markdown
 
-### Optional AI config
+### 可选 AI 配置
 
-- AI support is optional and reduced to local BYOK configuration plus connection testing
-- The core bookmark workflow does not depend on AI
+- AI 能力是可选的，且要求用户自备 Key
+- 核心书签整理流程不依赖 AI；当前仅保留本地配置与连接测试
 
-## Operational rules
+## 运行规则
 
-- Router: `HashRouter` for GitHub Pages compatibility
-- Quality gate: `npm run validate`
-- Build check: `npm run build`
-- OpenSpec tracks meaningful product and repository changes
+- 路由：`HashRouter`，保证 GitHub Pages 兼容
+- 质量门：`npm run validate`
+- 构建检查：`npm run build`
+- 有范围的产品或仓库改动由 OpenSpec 管理

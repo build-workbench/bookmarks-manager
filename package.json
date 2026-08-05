@@ -21,22 +21,14 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:analyze": "tsc -b && ANALYZE=true vite build",
-    "build:staging": "tsc -b && VITE_BASE_PATH=/ vite build",
     "typecheck": "tsc -b",
     "preview": "vite preview",
     "lint": "eslint src --ext .ts,.tsx --max-warnings=0",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "format": "prettier . --check",
     "format:fix": "prettier . --write",
-    "format:staged": "lint-staged",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "clean": "rimraf dist dev-dist tsconfig.tsbuildinfo tsconfig.node.tsbuildinfo coverage eslint-report.json .nyc_output",
-    "validate": "npm run typecheck && npm run lint && npm run test",
-    "ci": "npm run clean && npm ci && npm run validate && npm run build",
-    "prepare": "husky install || true"
+    "validate": "npm run typecheck && npm run lint && npm run test"
   },
   "dependencies": {
     "cytoscape": "^3.28.0",
@@ -67,13 +59,9 @@
     "eslint-plugin-react-refresh": "^0.4.7",
     "fake-indexeddb": "^6.0.0",
     "fast-check": "^3.23.2",
-    "husky": "^9.1.0",
     "jsdom": "^25.0.1",
-    "lint-staged": "^15.2.0",
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
-    "rimraf": "^6.0.0",
-    "rollup-plugin-visualizer": "^5.12.0",
     "tailwindcss": "^3.4.13",
     "typescript": "5.5.4",
     "vite": "^5.4.8",
@@ -81,14 +69,5 @@
     "vitest": "^2.1.8",
     "workbox-build": "^7.4.0",
     "workbox-window": "^7.4.0"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md,yaml,yml}": [
-      "prettier --write"
-    ]
   }
 }

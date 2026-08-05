@@ -77,7 +77,7 @@ The repository SHALL keep assistant instructions aligned across tools and scoped
 #### Scenario: Core instruction files remain authoritative
 
 - **WHEN** an assistant reads project guidance
-- **THEN** it can rely on `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md`
+- **THEN** it can rely on `AGENTS.md` as the single source of assistant instructions
 
 #### Scenario: Instructions reflect real retained scope
 
@@ -98,7 +98,7 @@ The repository SHALL keep automation minimal and enforceable, focusing on meanin
 #### Scenario: Local hooks stay lightweight
 
 - **WHEN** code is committed or pushed
-- **THEN** hooks stay limited to staged formatting on commit and full validation on push
+- **THEN** the repository relies on editor format-on-save and local `npm run validate` instead of pre-commit hooks
 
 #### Scenario: CI focuses on meaningful checks
 

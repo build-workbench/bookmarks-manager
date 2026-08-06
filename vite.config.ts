@@ -13,13 +13,7 @@ export default defineConfig(({ mode }) => {
     base,
     resolve: {
       alias: {
-        '@': resolve(__dirname, 'src'),
-        '@ai': resolve(__dirname, 'src/ai'),
-        '@components': resolve(__dirname, 'src/ui'),
-        '@pages': resolve(__dirname, 'src/pages'),
-        '@store': resolve(__dirname, 'src/store'),
-        '@utils': resolve(__dirname, 'src/utils'),
-        '@workers': resolve(__dirname, 'src/workers')
+        '@': resolve(__dirname, 'src')
       }
     },
     plugins: [
@@ -41,18 +35,6 @@ export default defineConfig(({ mode }) => {
               src: 'favicon.svg',
               sizes: 'any',
               type: 'image/svg+xml',
-              purpose: 'any maskable'
-            },
-            {
-              src: 'pwa-192x192.png',
-              sizes: '192x192',
-              type: 'image/png',
-              purpose: 'any maskable'
-            },
-            {
-              src: 'pwa-512x512.png',
-              sizes: '512x512',
-              type: 'image/png',
               purpose: 'any maskable'
             }
           ],
@@ -105,7 +87,7 @@ export default defineConfig(({ mode }) => {
       coverage: {
         provider: 'v8',
         reporter: ['text', 'json', 'html', 'lcov'],
-        exclude: ['node_modules/', 'src/test/', '**/*.d.ts', '**/*.config.*', '**/types/**'],
+        exclude: ['node_modules/', 'src/test/', '**/*.d.ts', '**/*.config.*'],
         thresholds: {
           lines: 35,
           functions: 50,

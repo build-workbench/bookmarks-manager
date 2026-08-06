@@ -29,42 +29,10 @@ class BookmarksDB extends Dexie {
 
   constructor() {
     super('BookmarksDB')
-
     this.version(1).stores({
       bookmarks: 'id, url, normalized, title, sourceFile',
-      settings: 'id'
-    })
-
-    this.version(2).stores({
-      bookmarks: 'id, url, normalized, title, sourceFile',
       settings: 'id',
-      aiConfig: 'id',
-      aiCache: 'id, type, expiresAt',
-      aiUsage: '++id, timestamp, operation',
-      aiPrompts: 'id, isDefault',
-      aiUsageLimits: 'id'
-    })
-
-    this.version(3).stores({
-      bookmarks: 'id, url, normalized, title, sourceFile',
-      settings: 'id',
-      aiConfig: 'id',
-      aiCache: 'id, type, expiresAt',
-      aiUsage: '++id, timestamp, operation',
-      aiPrompts: 'id, isDefault',
-      aiUsageLimits: 'id',
-      cleanupSessions: 'id, updatedAt'
-    })
-
-    this.version(4).stores({
-      bookmarks: 'id, url, normalized, title, sourceFile',
-      settings: 'id',
-      aiConfig: 'id',
-      aiCache: null,
-      aiUsage: null,
-      aiPrompts: null,
-      aiUsageLimits: null,
-      cleanupSessions: null
+      aiConfig: 'id'
     })
   }
 }

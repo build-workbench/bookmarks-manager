@@ -21,7 +21,7 @@ import {
 import { getHostname } from '@/utils/url'
 import { VirtualList } from '@/ui/VirtualList'
 import { SafeExternalLink } from '@/ui/SafeExternalLink'
-import { EXPORT_FORMAT_OPTIONS } from '@/constants/exportFormats'
+import { EXPORT_FORMAT_OPTIONS } from '@/utils/exporters/formats'
 import { downloadFile } from '@/utils/download'
 
 export default function Search() {

@@ -3,7 +3,7 @@ import { Upload, FileText, Trash2, Download, AlertCircle, CheckCircle } from 'lu
 import useBookmarksStore from '@/store/useBookmarksStore'
 import type { ExportFormat } from '@/utils/exporters'
 import { getExportFileExtension, getExportMimeType } from '@/utils/exporters'
-import { EXPORT_FORMAT_OPTIONS } from '@/constants/exportFormats'
+import { EXPORT_FORMAT_OPTIONS } from '@/utils/exporters/formats'
 import { downloadFile } from '@/utils/download'
 import { t } from '@/locales'
 

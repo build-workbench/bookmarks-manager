@@ -1,4 +1,4 @@
-import type { ExportFormat } from '@/utils/exporters'
+import type { ExportFormat } from './index'
 import { FileCode, FileJson, FileSpreadsheet, FileText } from 'lucide-react'
 
 export interface ExportFormatOption {

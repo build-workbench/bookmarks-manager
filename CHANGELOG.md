@@ -1,16 +1,19 @@
 # 更新日志
 
-这里只保留**精简且有意义的版本记录**，不再堆积低价值的内部噪音。
-
 ## Unreleased
 
 ### Changed
 
-- 文档体系精简为仅中文版，移除英文镜像与冗余索引/模板文件
-- 移除 pre-commit 钩子（husky/lint-staged），改由编辑器 formatOnSave 保障格式
-- 移除 `.github` 下的 issue 模板、安全策略与 copilot 指令，仅保留部署工作流
-- 合并 AI 助手指令为单一 `AGENTS.md`，删除 `CLAUDE.md`
-- 精简 `package.json` 脚本，移除 analyze/staging/ci/clean/coverage/watch 等冗余入口
+- 彻底轻量化重构：删除 openspec、.claude、docs、screenshots、types 等过程/工具开销
+- 路径别名从 7 个精简为 1 个（仅保留 `@/`），删除 6 个零使用别名
+- DB schema 从 4 个版本折叠为单版本（移除已废弃的 aiCache/aiUsage/cleanupSessions 等表）
+- 删除零引用的 barrel 文件（store/index.ts、ai/index.ts）
+- 消除 detectBrowserLanguage 重复定义
+- exportFormats 从独立 constants/ 目录移入 utils/exporters/
+- PWA manifest 移除不存在的 PNG 图标引用，仅保留 SVG favicon
+- CI 与部署工作流合并为单一 pages.yml
+- README 重写为自包含文档，新增 MIT LICENSE 文件
+- .gitignore 和 .vscode 配置清理
 
 ## 1.1.0 - 2026-04-15
 

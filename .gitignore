@@ -1,6 +1,7 @@
 node_modules
 dist
 dev-dist
+coverage
 
 # IDE
 .vscode/*
@@ -13,7 +14,6 @@ dev-dist
 # OS
 .DS_Store
 Thumbs.db
-desktop.ini
 
 # Environment
 .env
@@ -21,28 +21,10 @@ desktop.ini
 !.env.example
 
 # Build artifacts
-tsconfig.tsbuildinfo
-tsconfig.node.tsbuildinfo
+*.tsbuildinfo
 vite.config.d.ts
 vite.config.js
-*.tsbuildinfo
-
-# Coverage
-coverage
 
 # Logs
 *.log
 npm-debug.log*
-
-# Windsurf
-.windsurf/
-
-# Claude
-CLAUDE.local.md
-.claude/*
-!.claude/commands/
-!.claude/skills/
-!.claude/settings.json
-
-# OMC (agent tool)
-.omc/

@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+### Added
+
+- 两阶段去重：URL 精确匹配 + 标题相似度检测（域名内 Jaccard 相似度 > 0.8）
+- 基于域名规则的自动分类（AI/编程/学习/社区/资讯/娱乐/工具/生物/其他）
+- Dashboard 新增分类分布图表
+- 自动分类工具模块 `utils/classify.ts`
+
+### Changed
+
+- 取消归档状态，恢复主动维护
+- 修复在线演示 URL（lessup.github.io -> aicl-lab.github.io）
+- README 重写，聚焦隐私优先定位，更新功能概览
+- BookmarkStats 类型新增 byCategory 字段，贯通 Worker 管道
+
 ### Changed
 
 - 彻底轻量化重构：删除 openspec、.claude、docs、screenshots、types 等过程/工具开销

@@ -26,7 +26,7 @@ const footerLinks: Record<string, { labelKey: string; links: FooterLink[] }> = {
       },
       {
         labelKey: 'footer.links.demo',
-        href: 'https://lessup.github.io/bookmarks-manager/',
+        href: 'https://aicl-lab.github.io/bookmarks-manager/',
         external: true
       },
       {

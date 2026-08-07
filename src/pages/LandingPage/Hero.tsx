@@ -103,7 +103,7 @@ export default function Hero() {
                 <div className="flex-1 mx-4">
                   <div className="bg-card-hover rounded-md px-3 py-1.5 text-xs text-muted flex items-center gap-2">
                     <BookMarked className="w-3 h-3" />
-                    lessup.github.io/bookmarks-manager
+                    aicl-lab.github.io/bookmarks-manager
                   </div>
                 </div>
               </div>

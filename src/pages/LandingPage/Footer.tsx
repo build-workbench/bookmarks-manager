@@ -156,12 +156,12 @@ export default function Footer() {
               <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
               <span>by</span>
               <a
-                href="https://github.com/LessUp"
+                href="https://github.com/vibe-knight"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted hover:text-white transition-colors"
               >
-                LessUp
+                vibe-knight
               </a>
             </div>
             <div>© {new Date().getFullYear()} Bookmarks Manager. MIT License.</div>

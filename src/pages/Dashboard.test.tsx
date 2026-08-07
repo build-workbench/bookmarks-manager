@@ -21,7 +21,8 @@ describe('Dashboard', () => {
       total: 100,
       duplicates: 20,
       byDomain: { 'github.com': 30, 'google.com': 20 },
-      byYear: { '2023': 50, '2024': 50 }
+      byYear: { '2023': 50, '2024': 50 },
+      byCategory: { '编程': 30, '工具': 20 }
     },
     mergedItems: [],
     needsMerge: false,

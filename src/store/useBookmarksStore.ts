@@ -42,7 +42,7 @@ type State = {
   toggleWorker: () => void
 }
 
-const emptyStats: BookmarkStats = { total: 0, duplicates: 0, byDomain: {}, byYear: {} }
+const emptyStats: BookmarkStats = { total: 0, duplicates: 0, byDomain: {}, byYear: {}, byCategory: {} }
 
 const useBookmarksStore = create<State>((set, get) => {
   const invalidateDerivedData = () => {

@@ -14,6 +14,7 @@ export interface MergeDedupResult {
     duplicates: number
     byDomain: Record<string, number>
     byYear: Record<string, number>
+    byCategory: Record<string, number>
   }
 }
 
@@ -57,7 +58,8 @@ export class BookmarkWorkerClient {
           total: data.payload.total,
           duplicates: data.payload.duplicates,
           byDomain: data.payload.byDomain,
-          byYear: data.payload.byYear
+          byYear: data.payload.byYear,
+          byCategory: data.payload.byCategory
         }
       })
       this.activeMerge = null

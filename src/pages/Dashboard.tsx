@@ -61,6 +61,10 @@ export default function Dashboard() {
     () => Object.entries(stats.byYear).sort((a, b) => a[0].localeCompare(b[0])),
     [stats.byYear]
   )
+  const categories = useMemo(
+    () => Object.entries(stats.byCategory || {}).sort((a, b) => b[1] - a[1]),
+    [stats.byCategory]
+  )
   const displayItems = useMemo(() => mergedItems.slice(0, limit), [mergedItems, limit])
   const pieOption = useMemo(
     () => pie(stats.total, stats.duplicates),
@@ -68,6 +72,7 @@ export default function Dashboard() {
   )
   const barOption = useMemo(() => bar(domains), [domains])
   const lineOption = useMemo(() => line(years), [years])
+  const categoryOption = useMemo(() => bar(categories), [categories])
 
   if (needsMerge) {
     return (
@@ -148,6 +153,20 @@ export default function Dashboard() {
           })}
         />
       </div>
+
+      {categories.length > 0 && (
+        <div className="rounded border border-border p-4">
+          <div className="text-sm mb-2 font-medium">{t('dashboard.byCategory')}</div>
+          <Chart
+            option={categoryOption}
+            height={300}
+            aria-label={t('dashboard.chart.categoryAria')}
+            description={t('dashboard.chart.barDescription', {
+              domains: categories.map(([c, n]) => `${c}(${n})`).join(', ')
+            })}
+          />
+        </div>
+      )}
 
       {mergedItems.length > 0 && (
         <div className="rounded border border-border p-4">

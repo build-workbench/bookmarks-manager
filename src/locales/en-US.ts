@@ -59,6 +59,8 @@ export default {
   'dashboard.duplicateRatio': 'Duplicate Ratio',
   'dashboard.topDomains': 'Top 10 Domains',
   'dashboard.byYear': 'Added by Year',
+  'dashboard.byCategory': 'Category Distribution',
+  'dashboard.chart.categoryAria': 'Bookmark category distribution bar chart',
   'dashboard.bookmarkList': 'Bookmark List',
   'dashboard.loadMore': 'Load More',
   'dashboard.items': 'items',

@@ -34,7 +34,7 @@ describe('useBookmarksStore', () => {
       needsMerge: false,
       hasFullMergeData: false,
       stage: '',
-      stats: { total: 0, duplicates: 0, byDomain: {}, byYear: {} }
+      stats: { total: 0, duplicates: 0, byDomain: {}, byYear: {}, byCategory: {} }
     })
   })
 
@@ -67,7 +67,7 @@ describe('useBookmarksStore', () => {
       duplicates: { dup: [first, second] },
       needsMerge: false,
       hasFullMergeData: true,
-      stats: { total: 1, duplicates: 1, byDomain: { 'a.com': 1 }, byYear: { '2023': 1 } }
+      stats: { total: 1, duplicates: 1, byDomain: { 'a.com': 1 }, byYear: { '2023': 1 }, byCategory: {} }
     })
 
     useBookmarksStore.getState().removeSourceFile('a.html')
@@ -92,7 +92,7 @@ describe('useBookmarksStore', () => {
       duplicates: { dup: [bookmark({ id: 'd1' }), bookmark({ id: 'd2' })] },
       needsMerge: true,
       hasFullMergeData: true,
-      stats: { total: 1, duplicates: 1, byDomain: { 'example.com': 1 }, byYear: { '2023': 1 } }
+      stats: { total: 1, duplicates: 1, byDomain: { 'example.com': 1 }, byYear: { '2023': 1 }, byCategory: {} }
     })
 
     await useBookmarksStore.getState().clear()

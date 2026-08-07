@@ -19,6 +19,7 @@ export type WorkerResponse =
         duplicates: number
         byDomain: Record<string, number>
         byYear: Record<string, number>
+        byCategory: Record<string, number>
       }
     }
   | { type: 'MERGE_BOOKMARKS_PROGRESS'; payload: { stage: string } }
@@ -47,7 +48,8 @@ function mergeBookmarks(
       total: result.stats.total,
       duplicates: result.stats.duplicates,
       byDomain: result.stats.byDomain,
-      byYear: result.stats.byYear
+      byYear: result.stats.byYear,
+      byCategory: result.stats.byCategory
     }
   }
 }

@@ -58,6 +58,8 @@ export default {
   'dashboard.duplicateRatio': '重复占比',
   'dashboard.topDomains': 'Top 10 域名',
   'dashboard.byYear': '按年份新增',
+  'dashboard.byCategory': '分类分布',
+  'dashboard.chart.categoryAria': '书签分类分布柱状图',
   'dashboard.bookmarkList': '书签列表',
   'dashboard.loadMore': '加载更多',
   'dashboard.items': '条',

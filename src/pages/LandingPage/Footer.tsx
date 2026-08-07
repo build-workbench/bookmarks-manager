@@ -21,17 +21,17 @@ const footerLinks: Record<string, { labelKey: string; links: FooterLink[] }> = {
     links: [
       {
         labelKey: 'footer.links.github',
-        href: 'https://github.com/LessUp/bookmarks-manager',
+        href: 'https://github.com/vibe-knight/bookmarks-manager',
         external: true
       },
       {
         labelKey: 'footer.links.demo',
-        href: 'https://aicl-lab.github.io/bookmarks-manager/',
+        href: 'https://vibe-knight.github.io/bookmarks-manager/',
         external: true
       },
       {
         labelKey: 'footer.links.feedback',
-        href: 'https://github.com/LessUp/bookmarks-manager/issues',
+        href: 'https://github.com/vibe-knight/bookmarks-manager/issues',
         external: true
       }
     ]
@@ -41,12 +41,12 @@ const footerLinks: Record<string, { labelKey: string; links: FooterLink[] }> = {
     links: [
       {
         labelKey: 'footer.links.mitLicense',
-        href: 'https://github.com/LessUp/bookmarks-manager/blob/master/LICENSE',
+        href: 'https://github.com/vibe-knight/bookmarks-manager/blob/master/LICENSE',
         external: true
       },
       {
         labelKey: 'footer.links.documentation',
-        href: 'https://github.com/LessUp/bookmarks-manager#readme',
+        href: 'https://github.com/vibe-knight/bookmarks-manager#readme',
         external: true
       }
     ]
@@ -97,7 +97,7 @@ export default function Footer() {
               <p className="text-sm text-muted mb-4">{t('footer.brand.description')}</p>
               <div className="flex items-center gap-4">
                 <a
-                  href="https://github.com/LessUp/bookmarks-manager"
+                  href="https://github.com/vibe-knight/bookmarks-manager"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-muted hover:text-white transition-colors"

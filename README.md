@@ -2,7 +2,7 @@
 
 **纯前端、无后端、数据不出浏览器的书签整理 PWA。** 导入浏览器导出的书签文件，在本地完成合并、去重、搜索、自动分类和导出。
 
-[在线演示](https://aicl-lab.github.io/bookmarks-manager/)
+[在线演示](https://vibe-knight.github.io/bookmarks-manager/)
 
 ## 它解决什么问题
 
@@ -62,7 +62,7 @@ IndexedDB 表（Dexie）：`bookmarks`、`settings`、`aiConfig`
 ## 本地运行
 
 ```bash
-git clone https://github.com/AICL-Lab/bookmarks-manager.git
+git clone https://github.com/vibe-knight/bookmarks-manager.git
 cd bookmarks-manager
 npm install
 npm run dev

@@ -2,7 +2,17 @@
 
 **纯前端、无后端、数据不出浏览器的书签整理 PWA。** 导入浏览器导出的书签文件，在本地完成合并、去重、搜索、自动分类和导出。
 
-[在线演示](https://vibe-knight.github.io/bookmarks-manager/)
+[GitHub 仓库](https://github.com/build-workbench/bookmarks-manager)
+
+## 功能截图
+
+| 落地页 | 统计仪表盘 |
+| --- | --- |
+| ![落地页](public/screenshots/landing.png) | ![统计仪表盘](public/screenshots/dashboard.png) |
+
+| 全文搜索 | 重复检测 |
+| --- | --- |
+| ![全文搜索](public/screenshots/search.png) | ![重复检测](public/screenshots/duplicates.png) |
 
 ## 它解决什么问题
 
@@ -62,7 +72,7 @@ IndexedDB 表（Dexie）：`bookmarks`、`settings`、`aiConfig`
 ## 本地运行
 
 ```bash
-git clone https://github.com/vibe-knight/bookmarks-manager.git
+git clone https://github.com/build-workbench/bookmarks-manager.git
 cd bookmarks-manager
 npm install
 npm run dev

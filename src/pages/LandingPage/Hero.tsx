@@ -72,7 +72,7 @@ export default function Hero() {
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </a>
               <a
-                href="https://github.com/vibe-knight/bookmarks-manager"
+                href="https://github.com/build-workbench/bookmarks-manager"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-card-hover/50 hover:bg-card-hover text-muted hover:text-white font-medium rounded-xl border border-border hover:border-border transition-all duration-300"
@@ -103,7 +103,7 @@ export default function Hero() {
                 <div className="flex-1 mx-4">
                   <div className="bg-card-hover rounded-md px-3 py-1.5 text-xs text-muted flex items-center gap-2">
                     <BookMarked className="w-3 h-3" />
-                    vibe-knight.github.io/bookmarks-manager
+                    build-workbench.github.io/bookmarks-manager
                   </div>
                 </div>
               </div>

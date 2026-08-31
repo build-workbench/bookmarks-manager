@@ -113,13 +113,13 @@ function AppContent() {
             }
           >
             <Routes>
-              <Route path="/app" element={<Navigate to="/app/upload" replace />} />
-              <Route path="/app/upload" element={<UploadMerge />} />
-              <Route path="/app/dashboard" element={<Dashboard />} />
-              <Route path="/app/search" element={<Search />} />
-              <Route path="/app/duplicates" element={<Duplicates />} />
-              <Route path="/app/ai" element={<AI />} />
-              <Route path="/app/backup" element={<Backup />} />
+              <Route path="" element={<Navigate to="/app/upload" replace />} />
+              <Route path="upload" element={<UploadMerge />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="search" element={<Search />} />
+              <Route path="duplicates" element={<Duplicates />} />
+              <Route path="ai" element={<AI />} />
+              <Route path="backup" element={<Backup />} />
               <Route path="*" element={<Navigate to="/app/upload" replace />} />
             </Routes>
           </Suspense>

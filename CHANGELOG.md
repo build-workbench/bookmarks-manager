@@ -12,7 +12,7 @@
 ### Changed
 
 - 取消归档状态，恢复主动维护
-- 修复在线演示 URL（lessup.github.io -> aicl-lab.github.io）
+- 修复在线演示 URL（lessup.github.io -> build-workbench 仓库）
 - README 重写，聚焦隐私优先定位，更新功能概览
 - BookmarkStats 类型新增 byCategory 字段，贯通 Worker 管道
 

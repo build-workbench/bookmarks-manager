@@ -4,6 +4,11 @@ export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        // 英文默认 Code New Roman, 中文默认 Resource Han Rounded CN
+        sans: ['"Code New Roman"', '"Resource Han Rounded CN"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono: ['"Code New Roman"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace']
+      },
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',

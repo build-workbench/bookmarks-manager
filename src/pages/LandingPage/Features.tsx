@@ -8,6 +8,7 @@ const features = [
     titleKey: 'features.smartMerge.title',
     descKey: 'features.smartMerge.desc',
     color: 'from-blue-500 to-cyan-500',
+    tone: 'text-blue-400',
     bgColor: 'bg-blue-500/10',
     borderColor: 'border-blue-500/20'
   },
@@ -16,6 +17,7 @@ const features = [
     titleKey: 'features.smartDedup.title',
     descKey: 'features.smartDedup.desc',
     color: 'from-amber-500 to-orange-500',
+    tone: 'text-amber-400',
     bgColor: 'bg-amber-500/10',
     borderColor: 'border-amber-500/20'
   },
@@ -24,6 +26,7 @@ const features = [
     titleKey: 'features.search.title',
     descKey: 'features.search.desc',
     color: 'from-emerald-500 to-teal-500',
+    tone: 'text-emerald-400',
     bgColor: 'bg-emerald-500/10',
     borderColor: 'border-emerald-500/20'
   },
@@ -32,6 +35,7 @@ const features = [
     titleKey: 'features.ai.title',
     descKey: 'features.ai.desc',
     color: 'from-violet-500 to-purple-500',
+    tone: 'text-violet-400',
     bgColor: 'bg-violet-500/10',
     borderColor: 'border-violet-500/20'
   },
@@ -40,6 +44,7 @@ const features = [
     titleKey: 'features.stats.title',
     descKey: 'features.stats.desc',
     color: 'from-rose-500 to-pink-500',
+    tone: 'text-rose-400',
     bgColor: 'bg-rose-500/10',
     borderColor: 'border-rose-500/20'
   },
@@ -48,6 +53,7 @@ const features = [
     titleKey: 'features.privacy.title',
     descKey: 'features.privacy.desc',
     color: 'from-sky-500 to-indigo-500',
+    tone: 'text-sky-400',
     bgColor: 'bg-sky-500/10',
     borderColor: 'border-sky-500/20'
   }
@@ -118,10 +124,7 @@ export default function Features() {
                 <div
                   className={`w-14 h-14 rounded-xl ${feature.bgColor} border ${feature.borderColor} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
                 >
-                  <Icon
-                    className={`w-7 h-7 bg-gradient-to-br ${feature.color} bg-clip-text`}
-                    style={{ color: 'inherit' }}
-                  />
+                  <Icon className={`w-7 h-7 ${feature.tone}`} />
                 </div>
 
                 {/* Content */}

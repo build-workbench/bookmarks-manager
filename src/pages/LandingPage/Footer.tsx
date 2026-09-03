@@ -1,4 +1,5 @@
-import { BookMarked, Github, Heart, ExternalLink } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { BookMarked, Github, Heart, ExternalLink, ArrowRight } from 'lucide-react'
 import { t } from '@/locales'
 
 interface FooterLink {
@@ -68,17 +69,17 @@ export default function Footer() {
         <div className="absolute inset-0 bg-gradient-to-b from-sky-500/5 to-transparent" />
 
         <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
             {t('footer.cta.title')}
           </h2>
           <p className="text-lg text-muted mb-8 max-w-2xl mx-auto">{t('footer.cta.description')}</p>
-          <a
-            href="#/app/upload"
+          <Link
+            to="/app/upload"
             className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-105"
           >
             {t('footer.cta.button')}
-            <ExternalLink className="w-5 h-5" />
-          </a>
+            <ArrowRight className="w-5 h-5" />
+          </Link>
         </div>
       </div>
 
@@ -92,7 +93,7 @@ export default function Footer() {
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-indigo-500 flex items-center justify-center">
                   <BookMarked className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-bold text-white">Bookmarks Manager</span>
+                <span className="font-bold text-foreground">Bookmarks Manager</span>
               </div>
               <p className="text-sm text-muted mb-4">{t('footer.brand.description')}</p>
               <div className="flex items-center gap-4">
@@ -100,7 +101,7 @@ export default function Footer() {
                   href="https://github.com/build-workbench/bookmarks-manager"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted hover:text-white transition-colors"
+                  className="text-muted hover:text-foreground transition-colors"
                 >
                   <Github className="w-5 h-5" />
                 </a>
@@ -110,7 +111,7 @@ export default function Footer() {
             {/* Links */}
             {Object.entries(footerLinks).map(([key, section]) => (
               <div key={key}>
-                <h3 className="font-semibold text-white mb-4">{t(section.labelKey)}</h3>
+                <h3 className="font-semibold text-foreground mb-4">{t(section.labelKey)}</h3>
                 <ul className="space-y-3">
                   {section.links.map((link) => (
                     <li key={link.labelKey}>
@@ -159,7 +160,7 @@ export default function Footer() {
                 href="https://github.com/build-workbench"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted hover:text-white transition-colors"
+                className="text-muted hover:text-foreground transition-colors"
               >
                 build-workbench
               </a>

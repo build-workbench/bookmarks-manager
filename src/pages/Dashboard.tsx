@@ -8,45 +8,108 @@ import {
   AlertCircle
 } from 'lucide-react'
 import useBookmarksStore from '@/store/useBookmarksStore'
+import { usePreferencesStore } from '@/store/usePreferencesStore'
 import Chart from '@/ui/Chart'
 import { SafeExternalLink } from '@/ui/SafeExternalLink'
 import type { EChartsOption } from 'echarts'
 import { t } from '@/locales'
 
-const pie = (total: number, duplicates: number): EChartsOption => ({
-  tooltip: { trigger: 'item' },
+const pie = (total: number, duplicates: number, isDark = false): EChartsOption => ({
+  tooltip: {
+    trigger: 'item',
+    backgroundColor: isDark ? '#0f172a' : '#ffffff',
+    borderColor: isDark ? '#1e293b' : '#e2e8f0',
+    textStyle: { color: isDark ? '#f8fafc' : '#0f172a' }
+  },
   series: [
     {
       type: 'pie',
       radius: ['40%', '70%'],
       data: [
-        { name: t('dashboard.deduplicated'), value: total },
-        { name: t('dashboard.duplicates'), value: duplicates }
-      ]
+        { name: t('dashboard.deduplicated'), value: total, itemStyle: { color: '#10b981' } },
+        { name: t('dashboard.duplicates'), value: duplicates, itemStyle: { color: '#f43f5e' } }
+      ],
+      label: { color: isDark ? '#94a3b8' : '#64748b' }
     }
   ]
 })
 
-const bar = (domains: Array<[string, number]>): EChartsOption => ({
-  tooltip: {},
+const bar = (domains: Array<[string, number]>, isDark = false): EChartsOption => ({
+  tooltip: {
+    backgroundColor: isDark ? '#0f172a' : '#ffffff',
+    borderColor: isDark ? '#1e293b' : '#e2e8f0',
+    textStyle: { color: isDark ? '#f8fafc' : '#0f172a' }
+  },
+  grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
   xAxis: {
     type: 'category',
     data: domains.map((d) => d[0]),
-    axisLabel: { interval: 0, rotate: 30 }
+    axisLabel: { interval: 0, rotate: 30, color: isDark ? '#94a3b8' : '#64748b' },
+    axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } }
   },
-  yAxis: { type: 'value' },
-  series: [{ type: 'bar', data: domains.map((d) => d[1]) }]
+  yAxis: {
+    type: 'value',
+    axisLabel: { color: isDark ? '#94a3b8' : '#64748b' },
+    splitLine: { lineStyle: { color: isDark ? '#1e293b' : '#f1f5f9' } }
+  },
+  series: [
+    {
+      type: 'bar',
+      data: domains.map((d) => d[1]),
+      itemStyle: { color: '#0ea5e9', borderRadius: [4, 4, 0, 0] }
+    }
+  ]
 })
 
-const line = (years: Array<[string, number]>): EChartsOption => ({
-  tooltip: {},
-  xAxis: { type: 'category', data: years.map((y) => y[0]) },
-  yAxis: { type: 'value' },
-  series: [{ type: 'line', areaStyle: {}, data: years.map((y) => y[1]) }]
+const line = (years: Array<[string, number]>, isDark = false): EChartsOption => ({
+  tooltip: {
+    backgroundColor: isDark ? '#0f172a' : '#ffffff',
+    borderColor: isDark ? '#1e293b' : '#e2e8f0',
+    textStyle: { color: isDark ? '#f8fafc' : '#0f172a' }
+  },
+  grid: { left: '3%', right: '4%', bottom: '10%', containLabel: true },
+  xAxis: {
+    type: 'category',
+    data: years.map((y) => y[0]),
+    axisLabel: { color: isDark ? '#94a3b8' : '#64748b' },
+    axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } }
+  },
+  yAxis: {
+    type: 'value',
+    axisLabel: { color: isDark ? '#94a3b8' : '#64748b' },
+    splitLine: { lineStyle: { color: isDark ? '#1e293b' : '#f1f5f9' } }
+  },
+  series: [
+    {
+      type: 'line',
+      areaStyle: {
+        color: {
+          type: 'linear',
+          x: 0,
+          y: 0,
+          x2: 0,
+          y2: 1,
+          colorStops: [
+            { offset: 0, color: 'rgba(14, 165, 233, 0.4)' },
+            { offset: 1, color: 'rgba(14, 165, 233, 0.02)' }
+          ]
+        }
+      },
+      itemStyle: { color: '#0ea5e9' },
+      data: years.map((y) => y[1])
+    }
+  ]
 })
 
 export default function Dashboard() {
   const { stats, mergedItems, needsMerge, hasFullMergeData } = useBookmarksStore()
+  const theme = usePreferencesStore((state) => state.theme)
+  const isDark =
+    theme === 'dark' ||
+    (theme === 'auto' &&
+      typeof window !== 'undefined' &&
+      Boolean(window.matchMedia?.('(prefers-color-scheme: dark)').matches))
+
   const [showList, setShowList] = useState(false)
   const [limit, setLimit] = useState(20)
 
@@ -67,12 +130,12 @@ export default function Dashboard() {
   )
   const displayItems = useMemo(() => mergedItems.slice(0, limit), [mergedItems, limit])
   const pieOption = useMemo(
-    () => pie(stats.total, stats.duplicates),
-    [stats.total, stats.duplicates]
+    () => pie(stats.total, stats.duplicates, isDark),
+    [stats.total, stats.duplicates, isDark]
   )
-  const barOption = useMemo(() => bar(domains), [domains])
-  const lineOption = useMemo(() => line(years), [years])
-  const categoryOption = useMemo(() => bar(categories), [categories])
+  const barOption = useMemo(() => bar(domains, isDark), [domains, isDark])
+  const lineOption = useMemo(() => line(years, isDark), [years, isDark])
+  const categoryOption = useMemo(() => bar(categories, isDark), [categories, isDark])
 
   if (needsMerge) {
     return (
@@ -194,7 +257,7 @@ export default function Dashboard() {
               {displayItems.map((item) => (
                 <div
                   key={item.id}
-                  className="rounded bg-card/50 border border-border p-3 hover:border-border transition"
+                  className="rounded bg-card/50 border border-border p-3 hover:border-sky-500/40 transition"
                   role="listitem"
                 >
                   <SafeExternalLink

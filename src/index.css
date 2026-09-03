@@ -2,6 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    /* 浅色模式 */
+    --background: #f8fafc; /* slate-50 */
+    --foreground: #0f172a; /* slate-900 */
+    --card: #ffffff;
+    --card-hover: #f1f5f9; /* slate-100 */
+    --border: #e2e8f0; /* slate-200 */
+    --muted: #64748b; /* slate-500 */
+    --muted-foreground: #94a3b8; /* slate-400 */
+    --input: #e2e8f0; /* slate-200 */
+    --ring: #0ea5e9; /* brand-500 */
+    --header-bg: rgba(248, 250, 252, 0.8); /* slate-50/80 */
+  }
+
+  .dark {
+    /* 深色模式 */
+    --background: #020617; /* slate-950 */
+    --foreground: #f8fafc; /* slate-50 */
+    --card: #0f172a; /* slate-900 */
+    --card-hover: #1e293b; /* slate-800 */
+    --border: #1e293b; /* slate-800 */
+    --muted: #94a3b8; /* slate-400 */
+    --muted-foreground: #64748b; /* slate-500 */
+    --input: #1e293b; /* slate-800 */
+    --ring: #0ea5e9; /* brand-500 */
+    --header-bg: rgba(2, 6, 23, 0.8); /* slate-950/80 */
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Code New Roman', 'Resource Han Rounded CN', ui-sans-serif, system-ui, sans-serif;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+}
+
 /* 自托管字体 — 与 UI 同屏加载, font-display: swap 避免 FOIT */
 @font-face {
   font-family: 'Resource Han Rounded CN';

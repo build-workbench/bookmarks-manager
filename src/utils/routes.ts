@@ -1,5 +1,5 @@
 export function normalizeLegacyHashRoute(hash: string): string | null {
-  if (!hash || hash === '#/' || hash.startsWith('#/app/')) {
+  if (!hash || !hash.startsWith('#/') || hash === '#/' || hash.startsWith('#/app/')) {
     return null
   }
 

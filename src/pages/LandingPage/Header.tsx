@@ -5,6 +5,11 @@ import { LanguageSwitch } from '@/ui/LanguageSwitch'
 import { t } from '@/locales'
 
 export function LandingHeader() {
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id)
+    element?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -19,13 +24,34 @@ export function LandingHeader() {
         </Link>
         <div className="flex items-center gap-3 sm:gap-4">
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted">
-            <a href="#features" className="hover:text-foreground transition-colors">
+            <a
+              href="#features"
+              onClick={(e) => {
+                e.preventDefault()
+                scrollToSection('features')
+              }}
+              className="hover:text-foreground transition-colors cursor-pointer"
+            >
               {t('footer.links.features')}
             </a>
-            <a href="#how-it-works" className="hover:text-foreground transition-colors">
+            <a
+              href="#how-it-works"
+              onClick={(e) => {
+                e.preventDefault()
+                scrollToSection('how-it-works')
+              }}
+              className="hover:text-foreground transition-colors cursor-pointer"
+            >
               {t('footer.links.tutorial')}
             </a>
-            <a href="#faq" className="hover:text-foreground transition-colors">
+            <a
+              href="#faq"
+              onClick={(e) => {
+                e.preventDefault()
+                scrollToSection('faq')
+              }}
+              className="hover:text-foreground transition-colors cursor-pointer"
+            >
               FAQ
             </a>
           </nav>

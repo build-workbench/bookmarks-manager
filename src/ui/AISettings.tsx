@@ -224,20 +224,20 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
 
         {connectionStatus !== 'idle' && (
           <div
-            className={`flex items-center gap-2 p-3 rounded-lg ${
+            className={`flex items-center gap-2 p-3 rounded-lg border ${
               connectionStatus === 'connected'
-                ? 'bg-green-900/30 text-green-400'
+                ? 'border-green-500/30 bg-green-500/10 text-green-600 dark:text-green-400'
                 : connectionStatus === 'error'
-                  ? 'bg-red-900/30 text-red-400'
-                  : 'bg-card-hover/50 text-muted'
+                  ? 'border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400'
+                  : 'border-border bg-card-hover/50 text-muted'
             }`}
           >
             {connectionStatus === 'connected' ? (
-              <CheckCircle className="w-5 h-5" />
+              <CheckCircle className="w-5 h-5 flex-shrink-0" />
             ) : connectionStatus === 'error' ? (
-              <XCircle className="w-5 h-5" />
+              <XCircle className="w-5 h-5 flex-shrink-0" />
             ) : (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-5 h-5 animate-spin flex-shrink-0" />
             )}
             <span>
               {connectionStatus === 'connected'
@@ -249,14 +249,16 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
 
         {saveResult && (
           <div
-            className={`flex items-center gap-2 p-3 rounded-lg ${
-              saveResult.success ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
+            className={`flex items-center gap-2 p-3 rounded-lg border ${
+              saveResult.success
+                ? 'border-green-500/30 bg-green-500/10 text-green-600 dark:text-green-400'
+                : 'border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400'
             }`}
           >
             {saveResult.success ? (
-              <CheckCircle className="w-5 h-5" />
+              <CheckCircle className="w-5 h-5 flex-shrink-0" />
             ) : (
-              <XCircle className="w-5 h-5" />
+              <XCircle className="w-5 h-5 flex-shrink-0" />
             )}
             <span>{saveResult.message}</span>
           </div>
@@ -266,7 +268,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
           <button
             onClick={handleTestConnection}
             disabled={!apiKey || isTesting || (provider === 'custom' && !baseUrl)}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-muted hover:bg-card-hover disabled:bg-muted disabled:text-muted-foreground text-foreground rounded-lg transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-card hover:bg-card-hover border border-border disabled:opacity-50 disabled:cursor-not-allowed text-foreground rounded-lg transition-colors font-medium"
           >
             {isTesting ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -278,7 +280,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
           <button
             onClick={handleSave}
             disabled={!apiKey || !model || isSaving || (provider === 'custom' && !baseUrl)}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-500 disabled:bg-muted disabled:text-muted-foreground text-white rounded-lg transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium shadow-sm"
           >
             {isSaving ? (
               <Loader2 className="w-4 h-4 animate-spin" />

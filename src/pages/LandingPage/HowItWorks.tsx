@@ -78,7 +78,7 @@ export default function HowItWorks() {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-sm mb-6">
             <span>{t('howItWorks.badge')}</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
             {t('howItWorks.title')}
           </h2>
           <p className="text-lg text-muted max-w-2xl mx-auto">{t('howItWorks.subtitle')}</p>
@@ -106,7 +106,7 @@ export default function HowItWorks() {
                   style={{ transitionDelay: `${index * 200}ms` }}
                 >
                   {/* Card */}
-                  <div className="relative bg-card/50 backdrop-blur border border-border rounded-2xl p-8 hover:border-border transition-colors group">
+                  <div className="relative bg-card/60 backdrop-blur-sm border border-border rounded-2xl p-8 hover:border-sky-500/40 transition-all hover:shadow-xl hover:shadow-sky-500/5 group">
                     {/* Step Number Badge */}
                     <div
                       className={`absolute -top-4 left-8 px-4 py-1 rounded-full bg-gradient-to-r ${step.color} text-white text-sm font-bold shadow-lg`}
@@ -122,7 +122,7 @@ export default function HowItWorks() {
                     </div>
 
                     {/* Content */}
-                    <h3 className="text-2xl font-bold text-white mb-4">{step.title}</h3>
+                    <h3 className="text-2xl font-bold text-foreground mb-4">{step.title}</h3>
                     <p className="text-muted mb-6 leading-relaxed">{step.description}</p>
 
                     {/* Feature List */}

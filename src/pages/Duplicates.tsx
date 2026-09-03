@@ -1,5 +1,5 @@
 import { Trash2, Check, Calendar, AlertCircle } from 'lucide-react'
-import { t } from '@/locales'
+import { t, getI18nLanguage } from '@/locales'
 import useBookmarksStore from '@/store/useBookmarksStore'
 import type { Bookmark } from '@/utils/bookmarkParser'
 import { SafeExternalLink } from '@/ui/SafeExternalLink'
@@ -10,7 +10,8 @@ export default function Duplicates() {
 
   function formatDate(ts?: number) {
     if (!ts) return 'N/A'
-    return new Date(ts * 1000).toLocaleDateString('zh-CN', {
+    const locale = getI18nLanguage()
+    return new Date(ts * 1000).toLocaleDateString(locale, {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit'
@@ -65,7 +66,7 @@ export default function Duplicates() {
               {items.map((item, itemIdx) => (
                 <div
                   key={item.id}
-                  className="rounded bg-card-hover/50 border border-border p-3 hover:border-border transition"
+                  className="rounded bg-card-hover/50 border border-border p-3 hover:border-sky-500/40 transition"
                 >
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 mt-1">

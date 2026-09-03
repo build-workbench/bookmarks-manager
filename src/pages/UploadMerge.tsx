@@ -92,7 +92,7 @@ export default function UploadMerge() {
       setMessage({ type: 'success', text: successMsg })
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : t('common.unknownError')
-      setMessage({ type: 'error', text: t('upload.importFailed').replace('{error}', errorMsg) })
+      setMessage({ type: 'error', text: t('upload.importFailed', { error: errorMsg }) })
     }
   }
 
@@ -129,7 +129,7 @@ export default function UploadMerge() {
       downloadFile(content, filename, getExportMimeType(format))
       setMessage({
         type: 'success',
-        text: t('upload.exportSuccess').replace('{format}', format.toUpperCase())
+        text: t('upload.exportSuccess', { format: format.toUpperCase() })
       })
     } catch {
       setMessage({ type: 'error', text: t('upload.exportFailed') })
@@ -216,11 +216,11 @@ export default function UploadMerge() {
                     removeSourceFile(name)
                     setMessage({
                       type: 'success',
-                      text: t('upload.fileRemoved').replace('{name}', name)
+                      text: t('upload.fileRemoved', { name })
                     })
                   }}
                   disabled={busy}
-                  className="px-3 py-1.5 rounded bg-card-hover hover:bg-card-hover text-foreground text-sm transition"
+                  className="px-3 py-1.5 rounded bg-card hover:bg-card-hover border border-border text-foreground text-sm transition"
                 >
                   {t('upload.remove')}
                 </button>
@@ -311,7 +311,7 @@ export default function UploadMerge() {
                 disabled={busy || !readyToExport || mergedItems.length === 0}
                 title={t(opt.descriptionKey)}
                 className={`px-3 py-2.5 text-sm font-medium transition flex items-center gap-2 border-r border-border last:border-r-0 disabled:opacity-50 disabled:cursor-not-allowed
-                  ${selectedFormat === opt.format ? 'bg-emerald-600 text-white' : 'bg-card-hover text-muted hover:bg-card-hover'}`}
+                  ${selectedFormat === opt.format ? 'bg-emerald-600 text-white' : 'bg-card-hover text-muted hover:text-foreground hover:bg-card-hover/70'}`}
               >
                 {opt.icon}
                 {opt.label}
@@ -335,7 +335,7 @@ export default function UploadMerge() {
             void clear()
             setMessage(null)
           }}
-          className="px-5 py-2.5 rounded-lg bg-card-hover hover:bg-card-hover disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
+          className="px-5 py-2.5 rounded-lg bg-card hover:bg-card-hover border border-border text-foreground disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
         >
           <Trash2 className="w-4 h-4" />
           {t('upload.clearButton')}

@@ -240,7 +240,7 @@ export default function Search() {
             </div>
             <button
               onClick={resetFilters}
-              className="text-xs px-3 py-1.5 rounded bg-card-hover hover:bg-card-hover text-foreground transition"
+              className="text-xs px-3 py-1.5 rounded bg-card hover:bg-card-hover border border-border text-foreground transition"
             >
               {t('search.reset')}
             </button>
@@ -419,10 +419,10 @@ export default function Search() {
           {filteredItems.length > 200 ? (
             <VirtualList
               items={filteredItems}
-              itemHeight={88}
+              itemHeight={112}
               containerHeight={600}
               renderItem={(item) => (
-                <div className="rounded-lg bg-card border border-border p-4 hover:border-border transition mx-1">
+                <div className="rounded-lg bg-card border border-border p-4 hover:border-sky-500/50 transition mx-1">
                   <div className="flex items-start gap-3">
                     <ExternalLink className="w-4 h-4 text-muted mt-1 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
@@ -452,7 +452,7 @@ export default function Search() {
               {displayItems.map((item) => (
                 <div
                   key={item.id}
-                  className="rounded-lg bg-card border border-border p-4 hover:border-border transition"
+                  className="rounded-lg bg-card border border-border p-4 hover:border-sky-500/50 transition"
                 >
                   <div className="flex items-start gap-3">
                     <ExternalLink className="w-4 h-4 text-muted mt-1 flex-shrink-0" />

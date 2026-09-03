@@ -41,7 +41,7 @@ export default function FAQ() {
             <HelpCircle className="w-4 h-4" />
             <span>{t('faq.badge')}</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
             {t('faq.heading')}
           </h2>
           <p className="text-lg text-muted">{t('faq.subtitle')}</p>
@@ -58,14 +58,14 @@ export default function FAQ() {
                 className={`rounded-xl border transition-all duration-300 overflow-hidden ${
                   isOpen
                     ? 'bg-card/80 border-sky-500/30 shadow-lg shadow-sky-500/5'
-                    : 'bg-card/30 border-border hover:border-border'
+                    : 'bg-card/40 border-border hover:border-sky-500/30'
                 }`}
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                   className="w-full flex items-center justify-between p-6 text-left"
                 >
-                  <span className={`font-medium pr-4 ${isOpen ? 'text-sky-400' : 'text-white'}`}>
+                  <span className={`font-medium pr-4 ${isOpen ? 'text-sky-400' : 'text-foreground'}`}>
                     {faq.question}
                   </span>
                   <ChevronDown

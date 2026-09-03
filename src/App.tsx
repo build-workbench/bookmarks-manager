@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate, NavLink, Link, useLocation } from 'react-router-dom'
 import { useEffect, Suspense, lazy } from 'react'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, BookMarked } from 'lucide-react'
 import useBookmarksStore from '@/store/useBookmarksStore'
 import {
   usePreferencesStore,
@@ -37,23 +37,26 @@ function AppHeader() {
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-border bg-header-bg backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4">
           <Link
             to="/"
-            className="flex items-center gap-2 font-semibold text-foreground transition-colors hover:text-sky-400"
+            className="flex items-center gap-2 font-semibold text-foreground transition-colors hover:text-sky-400 flex-shrink-0"
           >
-            <span>Bookmarks Manager</span>
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-sky-500 to-indigo-500 text-white shadow-sm">
+              <BookMarked className="h-4 w-4" />
+            </div>
+            <span className="hidden sm:inline">Bookmarks Manager</span>
           </Link>
-          <div className="flex items-center gap-4">
-            <nav className="flex gap-1 overflow-x-auto text-sm" aria-label={t('aria.mainNav')}>
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <nav className="flex items-center gap-1 overflow-x-auto text-sm whitespace-nowrap py-1" aria-label={t('aria.mainNav')}>
               {appLinks.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
-                    `rounded px-3 py-2 transition-colors ${
+                    `rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors whitespace-nowrap ${
                       isActive
-                        ? 'bg-sky-600 text-white'
+                        ? 'bg-sky-600 text-white shadow-sm'
                         : 'text-muted hover:bg-card-hover hover:text-foreground'
                     }`
                   }
@@ -62,8 +65,11 @@ function AppHeader() {
                 </NavLink>
               ))}
             </nav>
-            <ThemeSwitch />
-            <LanguageSwitch />
+            <div className="h-4 w-px bg-border flex-shrink-0 hidden xs:block" />
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <ThemeSwitch />
+              <LanguageSwitch />
+            </div>
           </div>
         </div>
       </header>

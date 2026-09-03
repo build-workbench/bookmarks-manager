@@ -85,7 +85,7 @@ export default function Features() {
   return (
     <section ref={sectionRef} className="relative py-24 lg:py-32 bg-background">
       {/* Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900/50 via-slate-950 to-slate-950" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-sky-500/5 via-transparent to-transparent dark:from-slate-900/50 dark:via-slate-950 dark:to-slate-950" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -94,7 +94,7 @@ export default function Features() {
             <Zap className="w-4 h-4" />
             <span>{t('features.badge')}</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
             {t('features.title')}
           </h2>
           <p className="text-lg text-muted max-w-2xl mx-auto">{t('features.subtitle')}</p>
@@ -110,7 +110,7 @@ export default function Features() {
               <div
                 key={feature.titleKey}
                 data-index={index}
-                className={`group relative p-6 lg:p-8 rounded-2xl bg-card/50 border border-border hover:border-border transition-all duration-500 hover:shadow-2xl hover:shadow-slate-900/50 ${
+                className={`group relative p-6 lg:p-8 rounded-2xl bg-card/60 backdrop-blur-sm border border-border hover:border-sky-500/40 transition-all duration-500 hover:shadow-xl hover:shadow-sky-500/5 ${
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
@@ -128,7 +128,7 @@ export default function Features() {
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-sky-400 transition-colors">
+                <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-sky-400 transition-colors">
                   {t(feature.titleKey)}
                 </h3>
                 <p className="text-muted leading-relaxed text-sm">{t(feature.descKey)}</p>

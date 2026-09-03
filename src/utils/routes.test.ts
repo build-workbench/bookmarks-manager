@@ -11,5 +11,8 @@ describe('normalizeLegacyHashRoute', () => {
     expect(normalizeLegacyHashRoute('#/')).toBeNull()
     expect(normalizeLegacyHashRoute('#/app/search')).toBeNull()
     expect(normalizeLegacyHashRoute('')).toBeNull()
+    expect(normalizeLegacyHashRoute('#')).toBeNull()
+    expect(normalizeLegacyHashRoute('#features')).toBeNull()
+    expect(normalizeLegacyHashRoute('#faq')).toBeNull()
   })
 })

@@ -1,8 +1,8 @@
 # Bookmarks Manager
 
-**纯前端、无后端、数据不出浏览器的书签整理 PWA。** 导入浏览器导出的书签文件，在本地完成合并、去重、搜索、自动分类和导出。
+> 纯前端、本地优先的书签合并与智能整理工具。无需注册、没有后端，数据不出浏览器。
 
-[GitHub 仓库](https://github.com/build-workbench/bookmarks-manager)
+[🌐 在线使用](https://build-workbench.github.io/bookmarks-manager/) · [GitHub 仓库](https://github.com/build-workbench/bookmarks-manager) · [报告问题](https://github.com/build-workbench/bookmarks-manager/issues)
 
 ## 功能截图
 
@@ -14,81 +14,66 @@
 | --- | --- |
 | ![全文搜索](public/screenshots/search.png) | ![重复检测](public/screenshots/duplicates.png) |
 
-## 它解决什么问题
+---
 
-很多书签工具不是把数据推到云端（Raindrop.io），就是只做最基础的导入导出。Bookmarks Manager 选择另一条路线：
+## 📖 如何使用
 
-- **本地优先**：书签文件只在浏览器内处理，不上传任何服务器
-- **隐私优先**：没有后端、没有账号体系、没有强制上传
-- **智能整理**：导入、合并、两阶段去重、搜索、自动分类、备份、导出
-- **可安装使用**：基于 GitHub Pages 发布，可作为 PWA 安装到桌面
+只需三步，即可完成多设备、多浏览器书签的汇总与清理：
 
-## 核心流程
+### 1. 导出书签
 
-| 步骤 | 你做什么 | 应用会做什么 |
-| --- | --- | --- |
-| 导入 | 从 Chrome、Firefox、Edge、Safari 等浏览器导出书签 | 在本地解析 Netscape Bookmark HTML |
-| 合并 | 一次加载一个或多个文件 | 规范化目录与 URL，两阶段去重（URL 精确 + 标题相似度） |
-| 整理 | 搜索、查看重复、查看分类统计 | 数据保存在 IndexedDB，方便下次继续 |
-| 导出 | 下载整理后的结果 | 支持导出 HTML、JSON、CSV、Markdown |
+从浏览器中导出书签为 HTML 文件（标准 Netscape Bookmark 格式）：
 
-## 功能概览
+- **Chrome / Edge**：打开书签管理器（快捷键 `Ctrl + Shift + O` / `Cmd + Option + B`）→ 点击右上角 `···` → 选择 **「导出书签」**
+- **Firefox**：打开书签库（`Ctrl + Shift + O` / `Cmd + Shift + O`）→ 点击 **「导入和备份」** → 选择 **「导出书签到 HTML...」**
+- **Safari**：顶部菜单栏选择 **「文件」** → **「导出书签...」**
 
-| 模块 | 已包含能力 |
-| --- | --- |
-| 书签清理 | 多文件导入、URL 规范化、两阶段去重（URL 精确 + 标题相似度）、合并统计 |
-| 自动分类 | 基于域名规则的自动分类（AI/编程/学习/社区/资讯/娱乐/工具/生物/其他），分类统计图表 |
-| 搜索 | 全文搜索（MiniSearch）、模糊匹配、高亮、组合过滤、按筛选结果导出 |
-| 洞察 | 分类分布图、域名和年份图表、重复概览 |
-| AI | 可选的自备 Key 模型配置与连接测试 |
-| 稳定性 | IndexedDB 持久化、备份恢复、大数据量 Worker 支持 |
+### 2. 导入与整理
 
-## 技术架构
+1. 打开 [Bookmarks Manager](https://build-workbench.github.io/bookmarks-manager/)，进入 **「上传合并」**。
+2. 拖入一个或多个书签 HTML 文件（支持多浏览器书签同时合并）。
+3. **去重清理**：在 **「去重」** 页面查看精确重复与相似书签，一键剔除冗余项。
+4. **搜索与分类**：在 **「搜索」** 中快速检索书签，或在 **「仪表盘」** 查看按域名自动分类的统计图表。
 
-纯前端 React + TypeScript PWA，所有书签处理在浏览器中完成，持久化状态通过 Dexie 写入 IndexedDB。
+### 3. 导出并导回浏览器
 
-```
-src/
-├── pages/        路由级页面（落地页 + 工作区）
-├── ui/           通用 UI 组件（Chart, VirtualList 等）
-├── store/        Zustand 状态（bookmarks, ai, preferences）
-├── utils/        书签解析、搜索、去重、分类、存储、导出、备份
-├── ai/           可选 BYOK 配置与适配器
-└── workers/      大数据集的 Web Worker 支持
-```
+1. 点击页面右上角的 **「导出」**。
+2. 选择 **HTML 格式** 下载（已兼容主流浏览器规范）。
+3. 回到浏览器书签管理器，选择 **「导入书签」** 即可。
+   _(亦支持导出为 JSON、Markdown 或 CSV，便于归档与知识库管理)_
 
-路由结构（HashRouter，兼容 GitHub Pages）：
+---
 
-- `#/` - 公开落地页
-- `#/app/upload` - 上传合并
-- `#/app/search` - 全文搜索
-- `#/app/duplicates` - 重复检测
-- `#/app/dashboard` - 统计视图（含分类分布）
-- `#/app/backup` - 备份恢复
-- `#/app/ai` - AI 配置（可选）
+## ✨ 核心特性
 
-IndexedDB 表（Dexie）：`bookmarks`、`settings`、`aiConfig`
+- 🔒 **本地优先，隐私安全**：纯前端运行，书签数据仅保存在浏览器本地 IndexedDB，绝不上传任何服务器。
+- ⚡ **智能合并去重**：自动清洗追踪参数（UTM 等）、规范化 URL，支持 URL 精确去重与标题相似度识别。
+- 🔍 **秒级全文搜索**：内置 MiniSearch 引擎，支持标题、链接、目录多维度组合检索与高亮。
+- 🏷️ **自动分类与洞察**：按域名自动归类（AI、开发、学习、资讯、工具等），直观展示分类与年份分布图表。
+- 📦 **多格式导出与备份**：支持标准 HTML、JSON、Markdown、CSV 导出，并提供完整快照备份与恢复。
+- 📱 **PWA 支持**：可直接安装到桌面独立运行，支持离线使用。
 
-## 本地运行
+---
+
+## 💻 本地开发
 
 ```bash
+# 克隆仓库
 git clone https://github.com/build-workbench/bookmarks-manager.git
 cd bookmarks-manager
+
+# 安装依赖
 npm install
+
+# 启动开发服务器
 npm run dev
+
+# 构建生产版本
+npm run build
 ```
 
-验证命令：
+---
 
-```bash
-npm run validate   # typecheck -> lint -> test
-npm run build      # 生产构建（路由/PWA/部署相关变更时需要）
-```
+## 📄 License
 
-## 项目状态
-
-本项目持续维护中，欢迎提交 Issue 和 PR。
-
-## License
-
-MIT
+[MIT](LICENSE)

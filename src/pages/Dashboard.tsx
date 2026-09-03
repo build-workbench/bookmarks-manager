@@ -5,7 +5,8 @@ import {
   TrendingUp,
   Database,
   Calendar,
-  AlertCircle
+  AlertCircle,
+  Folder
 } from 'lucide-react'
 import useBookmarksStore from '@/store/useBookmarksStore'
 import { usePreferencesStore } from '@/store/usePreferencesStore'
@@ -17,71 +18,115 @@ import { t } from '@/locales'
 const pie = (total: number, duplicates: number, isDark = false): EChartsOption => ({
   tooltip: {
     trigger: 'item',
-    backgroundColor: isDark ? '#0f172a' : '#ffffff',
+    backgroundColor: isDark ? '#0b132b' : '#ffffff',
     borderColor: isDark ? '#1e293b' : '#e2e8f0',
-    textStyle: { color: isDark ? '#f8fafc' : '#0f172a' }
+    borderWidth: 1,
+    padding: [8, 12],
+    textStyle: { color: isDark ? '#f8fafc' : '#0f172a', fontSize: 13 },
+    extraCssText: 'box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.15); border-radius: 10px;'
   },
   series: [
     {
       type: 'pie',
-      radius: ['40%', '70%'],
+      radius: ['45%', '72%'],
+      center: ['50%', '50%'],
+      itemStyle: {
+        borderRadius: 6,
+        borderColor: isDark ? '#0b132b' : '#ffffff',
+        borderWidth: 2
+      },
       data: [
-        { name: t('dashboard.deduplicated'), value: total, itemStyle: { color: '#10b981' } },
-        { name: t('dashboard.duplicates'), value: duplicates, itemStyle: { color: '#f43f5e' } }
+        {
+          name: t('dashboard.deduplicated'),
+          value: total,
+          itemStyle: { color: '#10b981' }
+        },
+        {
+          name: t('dashboard.duplicates'),
+          value: duplicates,
+          itemStyle: { color: '#f43f5e' }
+        }
       ],
-      label: { color: isDark ? '#94a3b8' : '#64748b' }
+      label: {
+        color: isDark ? '#94a3b8' : '#64748b',
+        fontSize: 12
+      }
     }
   ]
 })
 
 const bar = (domains: Array<[string, number]>, isDark = false): EChartsOption => ({
   tooltip: {
-    backgroundColor: isDark ? '#0f172a' : '#ffffff',
+    backgroundColor: isDark ? '#0b132b' : '#ffffff',
     borderColor: isDark ? '#1e293b' : '#e2e8f0',
-    textStyle: { color: isDark ? '#f8fafc' : '#0f172a' }
+    borderWidth: 1,
+    padding: [8, 12],
+    textStyle: { color: isDark ? '#f8fafc' : '#0f172a', fontSize: 13 },
+    extraCssText: 'box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.15); border-radius: 10px;'
   },
-  grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+  grid: { left: '3%', right: '4%', bottom: '15%', top: '10%', containLabel: true },
   xAxis: {
     type: 'category',
     data: domains.map((d) => d[0]),
-    axisLabel: { interval: 0, rotate: 30, color: isDark ? '#94a3b8' : '#64748b' },
-    axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } }
+    axisLabel: { interval: 0, rotate: 28, color: isDark ? '#94a3b8' : '#64748b', fontSize: 11 },
+    axisLine: { lineStyle: { color: isDark ? '#334155' : '#e2e8f0' } },
+    axisTick: { show: false }
   },
   yAxis: {
     type: 'value',
-    axisLabel: { color: isDark ? '#94a3b8' : '#64748b' },
-    splitLine: { lineStyle: { color: isDark ? '#1e293b' : '#f1f5f9' } }
+    axisLabel: { color: isDark ? '#94a3b8' : '#64748b', fontSize: 11 },
+    splitLine: { lineStyle: { color: isDark ? '#1e293b' : '#f1f5f9', type: 'dashed' } }
   },
   series: [
     {
       type: 'bar',
       data: domains.map((d) => d[1]),
-      itemStyle: { color: '#0ea5e9', borderRadius: [4, 4, 0, 0] }
+      itemStyle: {
+        color: {
+          type: 'linear',
+          x: 0,
+          y: 0,
+          x2: 0,
+          y2: 1,
+          colorStops: [
+            { offset: 0, color: '#38bdf8' },
+            { offset: 1, color: '#0284c7' }
+          ]
+        },
+        borderRadius: [6, 6, 0, 0]
+      }
     }
   ]
 })
 
 const line = (years: Array<[string, number]>, isDark = false): EChartsOption => ({
   tooltip: {
-    backgroundColor: isDark ? '#0f172a' : '#ffffff',
+    trigger: 'axis',
+    backgroundColor: isDark ? '#0b132b' : '#ffffff',
     borderColor: isDark ? '#1e293b' : '#e2e8f0',
-    textStyle: { color: isDark ? '#f8fafc' : '#0f172a' }
+    borderWidth: 1,
+    padding: [8, 12],
+    textStyle: { color: isDark ? '#f8fafc' : '#0f172a', fontSize: 13 },
+    extraCssText: 'box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.15); border-radius: 10px;'
   },
-  grid: { left: '3%', right: '4%', bottom: '10%', containLabel: true },
+  grid: { left: '3%', right: '4%', bottom: '10%', top: '10%', containLabel: true },
   xAxis: {
     type: 'category',
     data: years.map((y) => y[0]),
-    axisLabel: { color: isDark ? '#94a3b8' : '#64748b' },
-    axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } }
+    axisLabel: { color: isDark ? '#94a3b8' : '#64748b', fontSize: 11 },
+    axisLine: { lineStyle: { color: isDark ? '#334155' : '#e2e8f0' } },
+    axisTick: { show: false }
   },
   yAxis: {
     type: 'value',
-    axisLabel: { color: isDark ? '#94a3b8' : '#64748b' },
-    splitLine: { lineStyle: { color: isDark ? '#1e293b' : '#f1f5f9' } }
+    axisLabel: { color: isDark ? '#94a3b8' : '#64748b', fontSize: 11 },
+    splitLine: { lineStyle: { color: isDark ? '#1e293b' : '#f1f5f9', type: 'dashed' } }
   },
   series: [
     {
       type: 'line',
+      smooth: true,
+      symbolSize: 7,
       areaStyle: {
         color: {
           type: 'linear',
@@ -90,12 +135,13 @@ const line = (years: Array<[string, number]>, isDark = false): EChartsOption => 
           x2: 0,
           y2: 1,
           colorStops: [
-            { offset: 0, color: 'rgba(14, 165, 233, 0.4)' },
+            { offset: 0, color: 'rgba(14, 165, 233, 0.45)' },
             { offset: 1, color: 'rgba(14, 165, 233, 0.02)' }
           ]
         }
       },
       itemStyle: { color: '#0ea5e9' },
+      lineStyle: { width: 3, color: '#0ea5e9' },
       data: years.map((y) => y[1])
     }
   ]
@@ -139,10 +185,10 @@ export default function Dashboard() {
 
   if (needsMerge) {
     return (
-      <div className="text-center py-12 text-muted">
-        <AlertCircle className="w-12 h-12 mx-auto mb-3 text-amber-400 opacity-80" />
-        <p>{t('dashboard.needsMerge')}</p>
-        <p className="text-xs mt-2">{t('dashboard.needsMergeHint')}</p>
+      <div className="text-center py-16 text-muted rounded-2xl border border-border/80 bg-card/60 backdrop-blur-md p-8 shadow-sm">
+        <AlertCircle className="w-12 h-12 mx-auto mb-3 text-amber-400 opacity-90" />
+        <p className="text-base font-semibold text-foreground">{t('dashboard.needsMerge')}</p>
+        <p className="text-xs text-muted mt-2 max-w-md mx-auto">{t('dashboard.needsMergeHint')}</p>
       </div>
     )
   }
@@ -150,38 +196,79 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {!hasFullMergeData && mergedItems.length > 0 && (
-        <div className="rounded border border-border bg-card/50 p-4 text-sm text-muted">
-          {t('dashboard.restoredWarning')}
+        <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 backdrop-blur-sm p-3.5 text-sm text-amber-600 dark:text-amber-300 shadow-subtle flex items-center gap-3 animate-fade-in-down">
+          <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-500 flex-shrink-0">
+            <AlertCircle className="w-4 h-4" />
+          </div>
+          <span className="font-medium">{t('dashboard.restoredWarning')}</span>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="rounded border border-border p-4">
-          <div className="flex items-center gap-2 text-muted text-sm mb-1">
-            <Database className="w-4 h-4" />
-            <span>{t('dashboard.totalBookmarks')}</span>
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="group relative overflow-hidden rounded-2xl border border-border/80 bg-card/75 backdrop-blur-md p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-500/40 hover:shadow-card-hover">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted">{t('dashboard.totalBookmarks')}</span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/10 text-sky-500 dark:text-sky-400 group-hover:scale-110 group-hover:bg-sky-500/20 transition-all duration-300">
+              <Database className="h-5 w-5" />
+            </div>
           </div>
-          <div className="text-2xl font-semibold mt-1">{stats.total}</div>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-3xl font-extrabold tracking-tight text-foreground">{stats.total}</span>
+            <span className="text-xs text-muted">{t('dashboard.items')}</span>
+          </div>
+          <div className="mt-3.5 h-1.5 w-full rounded-full bg-border/40 overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-sky-500 to-indigo-500 rounded-full w-full opacity-80" />
+          </div>
         </div>
-        <div className="rounded border border-border p-4">
-          <div className="flex items-center gap-2 text-muted text-sm mb-1">
-            <TrendingUp className="w-4 h-4" />
-            <span>{t('dashboard.duplicateCount')}</span>
+
+        <div className="group relative overflow-hidden rounded-2xl border border-border/80 bg-card/75 backdrop-blur-md p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-rose-500/40 hover:shadow-card-hover">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted">{t('dashboard.duplicateCount')}</span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500/10 text-rose-500 dark:text-rose-400 group-hover:scale-110 group-hover:bg-rose-500/20 transition-all duration-300">
+              <TrendingUp className="h-5 w-5" />
+            </div>
           </div>
-          <div className="text-2xl font-semibold mt-1">{stats.duplicates}</div>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-3xl font-extrabold tracking-tight text-rose-500 dark:text-rose-400">{stats.duplicates}</span>
+            <span className="text-xs text-muted">
+              {stats.total > 0 ? `${((stats.duplicates / stats.total) * 100).toFixed(1)}%` : '0%'}
+            </span>
+          </div>
+          <div className="mt-3.5 h-1.5 w-full rounded-full bg-border/40 overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-rose-500 to-amber-500 rounded-full transition-all duration-500"
+              style={{ width: `${stats.total > 0 ? Math.min(100, Math.round((stats.duplicates / stats.total) * 100)) : 0}%` }}
+            />
+          </div>
         </div>
-        <div className="rounded border border-border p-4">
-          <div className="flex items-center gap-2 text-muted text-sm mb-1">
-            <Calendar className="w-4 h-4" />
-            <span>{t('dashboard.domainCount')}</span>
+
+        <div className="group relative overflow-hidden rounded-2xl border border-border/80 bg-card/75 backdrop-blur-md p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-500/40 hover:shadow-card-hover">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted">{t('dashboard.domainCount')}</span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all duration-300">
+              <Calendar className="h-5 w-5" />
+            </div>
           </div>
-          <div className="text-2xl font-semibold mt-1">{Object.keys(stats.byDomain).length}</div>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-3xl font-extrabold tracking-tight text-foreground">{Object.keys(stats.byDomain).length}</span>
+            <span className="text-xs text-muted">{t('search.allDomains')}</span>
+          </div>
+          <div className="mt-3.5 h-1.5 w-full rounded-full bg-border/40 overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full w-full opacity-80" />
+          </div>
         </div>
       </div>
 
+      {/* Charts Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="rounded border border-border p-4">
-          <div className="text-sm mb-2 font-medium">{t('dashboard.duplicateRatio')}</div>
+        <div className="rounded-2xl border border-border/80 bg-card/75 backdrop-blur-md p-5 shadow-sm transition-all duration-300 hover:border-sky-500/30">
+          <div className="flex items-center justify-between pb-3 mb-2 border-b border-border/50">
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-emerald-500" />
+              <h3 className="text-sm font-semibold text-foreground tracking-tight">{t('dashboard.duplicateRatio')}</h3>
+            </div>
+          </div>
           <Chart
             option={pieOption}
             height={300}
@@ -192,8 +279,13 @@ export default function Dashboard() {
             })}
           />
         </div>
-        <div className="rounded border border-border p-4">
-          <div className="text-sm mb-2 font-medium">{t('dashboard.topDomains')}</div>
+        <div className="rounded-2xl border border-border/80 bg-card/75 backdrop-blur-md p-5 shadow-sm transition-all duration-300 hover:border-sky-500/30">
+          <div className="flex items-center justify-between pb-3 mb-2 border-b border-border/50">
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-sky-500" />
+              <h3 className="text-sm font-semibold text-foreground tracking-tight">{t('dashboard.topDomains')}</h3>
+            </div>
+          </div>
           <Chart
             option={barOption}
             height={300}
@@ -205,8 +297,13 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="rounded border border-border p-4">
-        <div className="text-sm mb-2 font-medium">{t('dashboard.byYear')}</div>
+      <div className="rounded-2xl border border-border/80 bg-card/75 backdrop-blur-md p-5 shadow-sm transition-all duration-300 hover:border-sky-500/30">
+        <div className="flex items-center justify-between pb-3 mb-2 border-b border-border/50">
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 rounded-full bg-indigo-500" />
+            <h3 className="text-sm font-semibold text-foreground tracking-tight">{t('dashboard.byYear')}</h3>
+          </div>
+        </div>
         <Chart
           option={lineOption}
           height={320}
@@ -218,8 +315,13 @@ export default function Dashboard() {
       </div>
 
       {categories.length > 0 && (
-        <div className="rounded border border-border p-4">
-          <div className="text-sm mb-2 font-medium">{t('dashboard.byCategory')}</div>
+        <div className="rounded-2xl border border-border/80 bg-card/75 backdrop-blur-md p-5 shadow-sm transition-all duration-300 hover:border-sky-500/30">
+          <div className="flex items-center justify-between pb-3 mb-2 border-b border-border/50">
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-purple-500" />
+              <h3 className="text-sm font-semibold text-foreground tracking-tight">{t('dashboard.byCategory')}</h3>
+            </div>
+          </div>
           <Chart
             option={categoryOption}
             height={300}
@@ -231,25 +333,31 @@ export default function Dashboard() {
         </div>
       )}
 
+      {/* Bookmarks List Section */}
       {mergedItems.length > 0 && (
-        <div className="rounded border border-border p-4">
+        <div className="rounded-2xl border border-border/80 bg-card/75 backdrop-blur-md p-5 shadow-sm">
           <button
             onClick={() => setShowList(!showList)}
-            className="flex items-center gap-2 text-sm font-medium mb-3 hover:text-sky-400 transition"
+            className="flex w-full items-center justify-between rounded-xl p-2.5 text-sm font-semibold text-foreground hover:bg-card-hover/80 transition-all duration-200"
             aria-expanded={showList}
             aria-controls="bookmark-list"
           >
-            <ChevronDown
-              className={`w-4 h-4 transition-transform ${showList ? 'rotate-180' : ''}`}
-            />
-            <span>
-              {t('dashboard.bookmarkList')} ({mergedItems.length} {t('dashboard.items')})
+            <div className="flex items-center gap-2.5">
+              <ChevronDown
+                className={`w-4 h-4 text-sky-500 transition-transform duration-300 ${showList ? 'rotate-180' : ''}`}
+              />
+              <span>
+                {t('dashboard.bookmarkList')} ({mergedItems.length} {t('dashboard.items')})
+              </span>
+            </div>
+            <span className="text-xs text-muted font-normal">
+              {showList ? '收起' : '展开'}
             </span>
           </button>
 
           {showList && (
             <div
-              className="space-y-2"
+              className="mt-4 space-y-2.5 pt-2"
               id="bookmark-list"
               role="list"
               aria-label={t('dashboard.chart.listAria')}
@@ -257,30 +365,33 @@ export default function Dashboard() {
               {displayItems.map((item) => (
                 <div
                   key={item.id}
-                  className="rounded bg-card/50 border border-border p-3 hover:border-sky-500/40 transition"
+                  className="group rounded-xl bg-card/60 border border-border/60 p-3.5 hover:bg-card hover:border-sky-500/40 hover:shadow-subtle transition-all duration-200"
                   role="listitem"
                 >
                   <SafeExternalLink
                     href={item.url}
-                    className="flex items-start gap-2 group"
-                    unsafeClassName="flex items-start gap-2 group"
+                    className="flex items-start gap-3 group"
+                    unsafeClassName="flex items-start gap-3 group"
                     ariaLabel={item.title || item.url}
                   >
-                    <ExternalLink
-                      className="w-4 h-4 text-muted mt-0.5 flex-shrink-0 group-hover:text-sky-400 transition"
-                      aria-hidden="true"
-                    />
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-card-hover text-muted group-hover:text-sky-500 group-hover:bg-sky-500/10 transition-all flex-shrink-0 mt-0.5">
+                      <ExternalLink
+                        className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                        aria-hidden="true"
+                      />
+                    </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm text-sky-400 group-hover:text-sky-300 break-all">
+                      <div className="text-sm font-semibold text-foreground group-hover:text-sky-500 dark:group-hover:text-sky-400 break-all transition-colors">
                         {item.title || item.url}
                       </div>
-                      <div className="text-xs text-muted mt-1 break-all">{item.url}</div>
+                      <div className="text-xs text-muted mt-1 break-all font-mono opacity-80">{item.url}</div>
                       {item.path && item.path.length > 0 && (
                         <div
-                          className="text-xs text-muted mt-1"
+                          className="chip mt-2"
                           aria-label={t('dashboard.folderLabel', { path: item.path.join(' / ') })}
                         >
-                          📁 {item.path.join(' / ')}
+                          <Folder className="w-3 h-3" />
+                          <span>{item.path.join(' / ')}</span>
                         </div>
                       )}
                     </div>
@@ -291,7 +402,7 @@ export default function Dashboard() {
               {mergedItems.length > limit && (
                 <button
                   onClick={() => setLimit(limit + 20)}
-                  className="w-full py-2 text-sm text-muted hover:text-sky-400 transition"
+                  className="w-full mt-2 py-3 rounded-xl border border-border/60 bg-card/40 hover:bg-card hover:border-sky-500/30 text-sm font-medium text-muted hover:text-sky-500 transition-all shadow-subtle"
                   aria-label={`${t('dashboard.loadMore')}, ${mergedItems.length - limit} ${t('dashboard.items')}`}
                 >
                   {t('dashboard.loadMore')} ({mergedItems.length - limit} {t('dashboard.items')})

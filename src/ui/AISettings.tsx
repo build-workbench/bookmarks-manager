@@ -106,10 +106,12 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
   }
 
   return (
-    <div className="bg-card rounded-xl p-6 border border-border">
+    <div className="glass-card p-6">
       <div className="flex items-center gap-3 mb-6">
-        <Settings className="w-6 h-6 text-sky-400" />
-        <h2 className="text-xl font-semibold text-foreground">{t('ai.configTitle')}</h2>
+        <div className="icon-badge h-11 w-11 bg-gradient-to-br from-violet-500/15 via-violet-500/10 to-sky-500/15 border border-violet-500/20 text-violet-500 dark:text-violet-400">
+          <Settings className="w-5 h-5" />
+        </div>
+        <h2 className="text-xl font-bold tracking-tight text-foreground">{t('ai.configTitle')}</h2>
       </div>
 
       <div className="space-y-6">
@@ -121,7 +123,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
           <select
             value={provider}
             onChange={(e) => setProvider(e.target.value as Provider)}
-            className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+            className="input-base"
           >
             <option value="openai">OpenAI</option>
             <option value="claude">Claude (Anthropic)</option>
@@ -140,7 +142,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
               placeholder={t('ai.apiKeyPlaceholder')}
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 pr-10 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              className="input-base pr-10 text-foreground placeholder:text-muted-foreground"
             />
             <button
               type="button"
@@ -164,7 +166,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
               value={baseUrl}
               onChange={(e) => setBaseUrl(e.target.value)}
               placeholder="https://your-api.com/v1"
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              className="input-base text-foreground placeholder:text-muted-foreground"
             />
           </div>
         )}
@@ -180,13 +182,13 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
               value={model}
               onChange={(e) => setModel(e.target.value)}
               placeholder={t('ai.modelPlaceholder')}
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              className="input-base text-foreground placeholder:text-muted-foreground"
             />
           ) : (
             <select
               value={model}
               onChange={(e) => setModel(e.target.value)}
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              className="input-base"
             >
               {models.map((m) => (
                 <option key={m} value={m}>
@@ -205,7 +207,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
               min={1}
               value={maxTokens}
               onChange={(e) => setMaxTokens(Number(e.target.value) || 1)}
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              className="input-base"
             />
           </label>
           <label>
@@ -217,7 +219,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
               step={0.1}
               value={temperature}
               onChange={(e) => setTemperature(Number(e.target.value))}
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 text-foreground focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              className="input-base"
             />
           </label>
         </div>
@@ -268,7 +270,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
           <button
             onClick={handleTestConnection}
             disabled={!apiKey || isTesting || (provider === 'custom' && !baseUrl)}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-card hover:bg-card-hover border border-border disabled:opacity-50 disabled:cursor-not-allowed text-foreground rounded-lg transition-colors font-medium"
+            className="flex-1 btn-secondary"
           >
             {isTesting ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -280,7 +282,7 @@ export function AISettings({ onConfigSaved }: AISettingsProps) {
           <button
             onClick={handleSave}
             disabled={!apiKey || !model || isSaving || (provider === 'custom' && !baseUrl)}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium shadow-sm"
+            className="flex-1 btn-primary"
           >
             {isSaving ? (
               <Loader2 className="w-4 h-4 animate-spin" />

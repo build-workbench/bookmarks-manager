@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Download, Upload, Database, Settings, Brain, AlertCircle, CheckCircle } from 'lucide-react'
+import { Download, Upload, Database, Settings, Brain, AlertCircle, CheckCircle, HelpCircle } from 'lucide-react'
 import {
   exportBackupAsJSON,
   parseBackup,
@@ -128,69 +128,79 @@ export default function Backup() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <div className="rounded-lg border border-border bg-card/50 p-6">
+      <div className="glass-card p-6">
         <div className="flex items-center gap-3 mb-4">
-          <Database className="w-6 h-6 text-sky-400" />
-          <h2 className="text-xl font-semibold">{t('backup.pageTitle')}</h2>
+          <div className="icon-badge h-11 w-11 bg-gradient-to-br from-sky-500/15 via-sky-500/10 to-indigo-500/15 border border-sky-500/20 text-sky-500 dark:text-sky-400">
+            <Database className="w-5 h-5" />
+          </div>
+          <h2 className="text-xl font-bold tracking-tight">{t('backup.pageTitle')}</h2>
         </div>
 
-        <p className="text-muted text-sm mb-6">
+        <p className="text-muted text-sm mb-6 leading-relaxed">
           {t('backup.description')}
           <br />
-          <span className="text-amber-400">{t('backup.localNote')}</span>
+          <span className="text-amber-500 dark:text-amber-400 font-medium">
+            {t('backup.localNote')}
+          </span>
         </p>
 
         {message && (
           <div
-            className={`rounded-lg border p-4 flex items-center gap-3 mb-6 ${
+            className={`rounded-xl border p-4 flex items-center gap-3 mb-6 shadow-sm backdrop-blur-sm animate-fade-in-down ${
               message.type === 'success'
-                ? 'bg-green-500/10 border-green-500/50 text-green-400'
-                : 'bg-red-500/10 border-red-500/50 text-red-400'
+                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-600 dark:text-emerald-300'
+                : 'bg-rose-500/10 border-rose-500/40 text-rose-600 dark:text-rose-300'
             }`}
           >
             {message.type === 'success' ? (
-              <CheckCircle className="w-5 h-5 flex-shrink-0" />
+              <div className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-500 flex-shrink-0">
+                <CheckCircle className="w-4 h-4" />
+              </div>
             ) : (
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <div className="p-1.5 rounded-lg bg-rose-500/20 text-rose-500 flex-shrink-0">
+                <AlertCircle className="w-4 h-4" />
+              </div>
             )}
-            <span className="text-sm">{message.text}</span>
+            <span className="text-sm font-medium">{message.text}</span>
           </div>
         )}
 
         {/* Backup Options */}
-        <div className="rounded-lg border border-border bg-card/30 p-4 mb-6">
-          <div className="flex items-center gap-2 mb-3 text-sm font-medium text-foreground">
-            <Settings className="w-4 h-4" />
+        <div className="rounded-xl border border-border/70 bg-card/40 p-5 mb-6">
+          <div className="flex items-center gap-2 mb-4 text-sm font-semibold text-foreground">
+            <div className="icon-badge h-8 w-8 bg-sky-500/10 text-sky-500 dark:text-sky-400">
+              <Settings className="w-4 h-4" />
+            </div>
             {t('backup.options')}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <label className="flex items-center gap-2 text-sm text-muted cursor-pointer">
+            <label className="flex items-center gap-3 text-sm text-muted cursor-pointer rounded-xl border border-border/60 bg-card/50 px-4 py-3 transition-all hover:border-sky-500/40 hover:bg-card hover:shadow-subtle">
               <input
                 type="checkbox"
                 checked={options.includeBookmarks}
                 onChange={(e) => setOptions((o) => ({ ...o, includeBookmarks: e.target.checked }))}
-                className="rounded border-border"
+                className="rounded border-border text-sky-500 focus:ring-sky-500/40"
               />
-              <Database className="w-4 h-4 text-muted" />
-              {t('backup.bookmarkData')}
+              <Database className="w-4 h-4 text-sky-400 flex-shrink-0" />
+              <span className="font-medium text-foreground">{t('backup.bookmarkData')}</span>
             </label>
 
-            <label className="flex items-center gap-2 text-sm text-muted cursor-pointer">
+            <label className="flex items-center gap-3 text-sm text-muted cursor-pointer rounded-xl border border-border/60 bg-card/50 px-4 py-3 transition-all hover:border-sky-500/40 hover:bg-card hover:shadow-subtle">
               <input
                 type="checkbox"
                 checked={options.includeAIConfig}
                 onChange={(e) => setOptions((o) => ({ ...o, includeAIConfig: e.target.checked }))}
-                className="rounded border-border"
+                className="rounded border-border text-sky-500 focus:ring-sky-500/40"
               />
-              <Brain className="w-4 h-4 text-muted" />
-              {t('backup.aiConfigData')}
+              <Brain className="w-4 h-4 text-violet-400 flex-shrink-0" />
+              <span className="font-medium text-foreground">{t('backup.aiConfigData')}</span>
             </label>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-border text-xs text-muted">
-            {t('backup.estimatedSize')}:{' '}
-            <span className="text-muted">{formatBytes(backupSize)}</span>
+          <div className="mt-4 pt-4 border-t border-border/60 text-xs text-muted flex items-center gap-2">
+            <span>{t('backup.estimatedSize')}:</span>
+            <span className="font-mono font-semibold text-foreground">{formatBytes(backupSize)}</span>
           </div>
         </div>
 
@@ -199,13 +209,13 @@ export default function Backup() {
           <button
             onClick={handleCreateBackup}
             disabled={isCreatingBackup}
-            className="px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
+            className="btn-primary"
           >
             <Download className="w-4 h-4" />
             {isCreatingBackup ? t('backup.creating') : t('backup.create')}
           </button>
 
-          <label className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2 cursor-pointer">
+          <label className="btn-success cursor-pointer">
             <Upload className="w-4 h-4" />
             {isRestoring ? t('backup.restoring') : t('backup.restore')}
             <input
@@ -221,23 +231,28 @@ export default function Backup() {
       </div>
 
       {/* FAQ */}
-      <div className="rounded-lg border border-border bg-card/30 p-6">
-        <h3 className="font-medium mb-4">{t('backup.faq.title')}</h3>
+      <div className="glass-card p-6">
+        <h3 className="flex items-center gap-2 font-semibold text-foreground mb-5">
+          <div className="icon-badge h-8 w-8 bg-violet-500/10 text-violet-500 dark:text-violet-400">
+            <HelpCircle className="w-4 h-4" />
+          </div>
+          {t('backup.faq.title')}
+        </h3>
 
         <div className="space-y-4 text-sm text-muted">
-          <div>
-            <div className="text-foreground font-medium mb-1">{t('backup.faq.q1')}</div>
-            <p>{t('backup.faq.a1')}</p>
+          <div className="rounded-xl border border-border/60 bg-card/40 p-4">
+            <div className="text-foreground font-medium mb-1.5">{t('backup.faq.q1')}</div>
+            <p className="leading-relaxed">{t('backup.faq.a1')}</p>
           </div>
 
-          <div>
-            <div className="text-foreground font-medium mb-1">{t('backup.faq.q2')}</div>
-            <p>{t('backup.faq.a2')}</p>
+          <div className="rounded-xl border border-border/60 bg-card/40 p-4">
+            <div className="text-foreground font-medium mb-1.5">{t('backup.faq.q2')}</div>
+            <p className="leading-relaxed">{t('backup.faq.a2')}</p>
           </div>
 
-          <div>
-            <div className="text-foreground font-medium mb-1">{t('backup.faq.q3')}</div>
-            <p>{t('backup.faq.a3')}</p>
+          <div className="rounded-xl border border-border/60 bg-card/40 p-4">
+            <div className="text-foreground font-medium mb-1.5">{t('backup.faq.q3')}</div>
+            <p className="leading-relaxed">{t('backup.faq.a3')}</p>
           </div>
         </div>
       </div>

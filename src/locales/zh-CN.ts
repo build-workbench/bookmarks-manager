@@ -296,6 +296,7 @@ export default {
   'search.searchHits': '（搜索命中 {count}）',
   'search.loadMore': '加载更多（{count} 条）',
   'search.exportedAs': '已导出为 {format} 格式',
+  'search.clear': '清空搜索',
 
   // Backup Page - Extended
   'backup.pageTitle': '数据备份与恢复',

@@ -302,6 +302,7 @@ export default {
   'search.searchHits': '(search hits: {count})',
   'search.loadMore': 'Load more ({count} items)',
   'search.exportedAs': 'Exported as {format} format',
+  'search.clear': 'Clear search',
 
   // Backup Page - Extended
   'backup.pageTitle': 'Data Backup & Restore',

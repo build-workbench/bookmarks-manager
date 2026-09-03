@@ -14,7 +14,7 @@ export function ThemeSwitch() {
 
   return (
     <div
-      className="flex items-center gap-0.5 rounded-lg bg-card-hover/50 p-1"
+      className="flex items-center gap-0.5 rounded-xl bg-card-hover/40 border border-border/40 p-1 shadow-subtle backdrop-blur-sm"
       role="radiogroup"
       aria-label={t('aria.themeSwitch')}
     >
@@ -27,9 +27,9 @@ export function ThemeSwitch() {
           <button
             key={option.value}
             onClick={() => setTheme(option.value)}
-            className={`rounded-md p-1.5 transition-colors ${
+            className={`rounded-lg p-1.5 transition-all duration-200 ${
               isActive
-                ? 'bg-sky-600 text-white shadow-sm'
+                ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-sm shadow-sky-500/25 scale-[1.02]'
                 : 'text-muted hover:bg-card-hover hover:text-foreground'
             }`}
             role="radio"

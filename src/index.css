@@ -14,33 +14,117 @@
     --muted-foreground: #94a3b8; /* slate-400 */
     --input: #e2e8f0; /* slate-200 */
     --ring: #0ea5e9; /* brand-500 */
-    --header-bg: rgba(248, 250, 252, 0.8); /* slate-50/80 */
+    --header-bg: rgba(248, 250, 252, 0.82); /* slate-50/82 */
   }
 
   .dark {
     /* 深色模式 */
     --background: #020617; /* slate-950 */
     --foreground: #f8fafc; /* slate-50 */
-    --card: #0f172a; /* slate-900 */
-    --card-hover: #1e293b; /* slate-800 */
+    --card: #0b132b; /* deep elegant navy slate */
+    --card-hover: #162244; /* deep navy hover */
     --border: #1e293b; /* slate-800 */
     --muted: #94a3b8; /* slate-400 */
     --muted-foreground: #64748b; /* slate-500 */
     --input: #1e293b; /* slate-800 */
     --ring: #0ea5e9; /* brand-500 */
-    --header-bg: rgba(2, 6, 23, 0.8); /* slate-950/80 */
+    --header-bg: rgba(2, 6, 23, 0.82); /* slate-950/82 */
   }
 
   * {
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased selection:bg-sky-500/20 selection:text-sky-900 dark:selection:text-sky-100;
     font-family: 'Code New Roman', 'Resource Han Rounded CN', ui-sans-serif, system-ui, sans-serif;
+    text-rendering: optimizeLegibility;
     transition:
-      background-color 0.2s,
-      color 0.2s;
+      background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+      color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-sky-500/60 ring-offset-2 ring-offset-background;
+  }
+
+  /* 精致平滑滚动条 */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.35);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.6);
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.2);
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.4);
+  }
+}
+
+@layer components {
+  /* 统一玻璃卡片 */
+  .glass-card {
+    @apply rounded-2xl border border-border bg-card backdrop-blur-md shadow-card;
+  }
+
+  /* 统一渐变主按钮 */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-sky-500/25 transition-all duration-200 hover:from-sky-400 hover:to-indigo-500 hover:shadow-sky-500/40 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* 统一次级描边按钮 */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground shadow-subtle backdrop-blur-sm transition-all duration-200 hover:border-sky-500/40 hover:bg-card-hover hover:text-foreground active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* 统一成功/导出按钮 */
+  .btn-success {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-600/25 transition-all duration-200 hover:bg-emerald-500 hover:shadow-emerald-500/40 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* 统一输入框 */
+  .input-base {
+    @apply w-full rounded-xl border border-border bg-card px-4 py-2.5 text-sm text-foreground shadow-subtle transition-all duration-200 placeholder:text-muted-foreground hover:border-sky-500/40 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/25;
+  }
+
+  /* 统一小徽章 */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-lg border border-border bg-card-hover px-2 py-1 text-xs font-medium text-muted;
+  }
+
+  /* 统一图标容器 */
+  .icon-badge {
+    @apply flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-card backdrop-blur-md border border-border shadow-card;
+  }
+
+  /* 渐变文字 */
+  .text-gradient {
+    @apply bg-gradient-to-r from-sky-500 to-indigo-500 bg-clip-text text-transparent;
   }
 }
 

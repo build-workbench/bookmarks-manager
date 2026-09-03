@@ -36,27 +36,32 @@ function AppHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-border bg-header-bg backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4">
+      <header className="sticky top-0 z-50 border-b border-border/70 bg-header-bg backdrop-blur-md shadow-subtle transition-all">
+        <div className="mx-auto flex h-15 max-w-6xl items-center justify-between gap-3 px-4 py-2">
           <Link
             to="/"
-            className="flex items-center gap-2 font-semibold text-foreground transition-colors hover:text-sky-400 flex-shrink-0"
+            className="group flex items-center gap-2.5 font-bold tracking-tight text-foreground transition flex-shrink-0"
           >
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-sky-500 to-indigo-500 text-white shadow-sm">
-              <BookMarked className="h-4 w-4" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 via-sky-600 to-indigo-600 text-white shadow-md shadow-sky-500/20 group-hover:scale-105 group-hover:shadow-sky-500/40 transition-all duration-300">
+              <BookMarked className="h-4.5 w-4.5" />
             </div>
-            <span className="hidden sm:inline">Bookmarks Manager</span>
+            <span className="hidden sm:inline bg-gradient-to-r from-foreground via-foreground to-foreground/80 bg-clip-text">
+              Bookmarks Manager
+            </span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <nav className="flex items-center gap-1 overflow-x-auto text-sm whitespace-nowrap py-1" aria-label={t('aria.mainNav')}>
+            <nav
+              className="flex items-center gap-1 p-1 rounded-xl bg-card-hover/40 border border-border/40 overflow-x-auto text-sm whitespace-nowrap shadow-subtle"
+              aria-label={t('aria.mainNav')}
+            >
               {appLinks.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
-                    `rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors whitespace-nowrap ${
+                    `rounded-lg px-3 py-1.5 text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap ${
                       isActive
-                        ? 'bg-sky-600 text-white shadow-sm'
+                        ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-sm shadow-sky-500/25 font-semibold'
                         : 'text-muted hover:bg-card-hover hover:text-foreground'
                     }`
                   }
@@ -65,8 +70,8 @@ function AppHeader() {
                 </NavLink>
               ))}
             </nav>
-            <div className="h-4 w-px bg-border flex-shrink-0 hidden xs:block" />
-            <div className="flex items-center gap-1 flex-shrink-0">
+            <div className="h-4 w-px bg-border/80 flex-shrink-0 hidden xs:block" />
+            <div className="flex items-center gap-1.5 flex-shrink-0">
               <ThemeSwitch />
               <LanguageSwitch />
             </div>
@@ -75,13 +80,20 @@ function AppHeader() {
       </header>
 
       {needsMerge && (
-        <div className="border-b border-amber-500/30 bg-amber-500/10 text-amber-300" role="alert">
-          <div className="mx-auto flex max-w-6xl items-start gap-2 px-4 py-2 text-sm">
-            <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" aria-hidden="true" />
-            <div className="flex-1">{t('alert.needsMerge')}</div>
+        <div
+          className="border-b border-amber-500/30 bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-amber-500/15 backdrop-blur-sm text-amber-700 dark:text-amber-300 shadow-sm"
+          role="alert"
+        >
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2.5 text-xs sm:text-sm">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="p-1 rounded-lg bg-amber-500/20 text-amber-500 flex-shrink-0">
+                <AlertCircle className="h-4 w-4" aria-hidden="true" />
+              </div>
+              <div className="truncate font-medium">{t('alert.needsMerge')}</div>
+            </div>
             <NavLink
               to="/app/upload"
-              className="rounded bg-amber-500/20 px-3 py-1 transition hover:bg-amber-500/30"
+              className="rounded-lg bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-800 dark:text-amber-200 transition hover:bg-amber-500/30 shadow-subtle flex-shrink-0"
             >
               {t('alert.goMerge')}
             </NavLink>
@@ -100,22 +112,23 @@ function AppContent() {
   }, [loadFromDB])
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen bg-background">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-sky-500/[0.04] via-indigo-500/[0.02] to-transparent dark:from-sky-500/[0.035]" />
       <AppHeader />
-      <main className="mx-auto max-w-6xl px-4 py-6">
+      <main className="relative mx-auto max-w-6xl px-4 py-8">
         <LazyErrorBoundary>
           <Suspense
             fallback={
               <div
-                className="flex items-center justify-center gap-2 py-20 text-sm text-muted"
+                className="flex items-center justify-center gap-3 py-24 text-sm text-muted"
                 role="status"
                 aria-live="polite"
               >
                 <div
-                  className="h-4 w-4 animate-spin rounded-full border-2 border-sky-400 border-t-transparent"
+                  className="h-5 w-5 animate-spin rounded-full border-2 border-sky-400 border-t-transparent shadow-sm"
                   aria-hidden="true"
                 />
-                <span>{t('common.loading')}</span>
+                <span className="font-medium">{t('common.loading')}</span>
               </div>
             }
           >

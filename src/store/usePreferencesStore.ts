@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { setI18nLanguage, detectBrowserLanguage, type Language } from '@/locales'
+import { setI18nLanguage, type Language } from '@/locales'
 
 export type Theme = 'light' | 'dark' | 'auto'
 export type { Language }
@@ -42,17 +42,23 @@ export const usePreferencesStore = create<PreferencesState>()(
       language: 'zh-CN',
 
       setTheme: (theme) => {
-        set({ theme })
         applyTheme(theme)
+        set({ theme })
       },
 
       setLanguage: (language) => {
-        set({ language })
         applyLanguage(language)
+        set({ language })
       }
     }),
     {
-      name: 'preferences'
+      name: 'preferences',
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          applyTheme(state.theme)
+          applyLanguage(state.language)
+        }
+      }
     }
   )
 )
@@ -62,16 +68,15 @@ export function initializePreferences() {
 
   const stored = localStorage.getItem('preferences')
   if (!stored) {
-    const detectedLang = detectBrowserLanguage()
     const detectedTheme = detectSystemTheme()
+
+    applyTheme(detectedTheme)
+    applyLanguage(state.language)
 
     usePreferencesStore.setState({
       theme: detectedTheme,
-      language: detectedLang
+      language: state.language
     })
-
-    applyTheme(detectedTheme)
-    applyLanguage(detectedLang)
   } else {
     applyTheme(state.theme)
     applyLanguage(state.language)

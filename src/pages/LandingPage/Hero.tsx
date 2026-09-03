@@ -1,5 +1,6 @@
-import { BookMarked, Shield, Zap, ArrowRight, Sparkles } from 'lucide-react'
+import { BookMarked, Shield, Zap, ArrowRight, Sparkles, Upload, Database } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { t } from '@/locales'
 
 export default function Hero() {
@@ -142,12 +143,20 @@ export default function Hero() {
 
                 {/* Action Buttons */}
                 <div className="flex gap-3">
-                  <div className="flex-1 bg-sky-500/20 border border-sky-500/30 rounded-lg py-2 text-center text-sm text-sky-400">
-                    {t('hero.preview.upload')}
-                  </div>
-                  <div className="flex-1 bg-card-hover/50 rounded-lg py-2 text-center text-sm text-muted">
-                    {t('hero.preview.backup')}
-                  </div>
+                  <Link
+                    to="/app/upload"
+                    className="flex-1 bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/30 hover:border-sky-500/50 rounded-lg py-2 text-center text-sm font-medium text-sky-400 transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
+                  >
+                    <Upload className="w-4 h-4" />
+                    <span>{t('hero.preview.upload')}</span>
+                  </Link>
+                  <Link
+                    to="/app/backup"
+                    className="flex-1 bg-card-hover/50 hover:bg-card-hover border border-border/40 hover:border-border rounded-lg py-2 text-center text-sm font-medium text-muted hover:text-foreground transition cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <Database className="w-4 h-4" />
+                    <span>{t('hero.preview.backup')}</span>
+                  </Link>
                 </div>
               </div>
             </div>

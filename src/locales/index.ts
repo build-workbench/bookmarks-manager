@@ -9,11 +9,40 @@ const translations = {
   'en-US': enUS
 } as const
 
-let currentLanguage: Language = 'zh-CN'
+// 检测浏览器语言
+export function detectBrowserLanguage(): Language {
+  if (typeof navigator !== 'undefined') {
+    const browserLang = navigator.language
+    if (browserLang && browserLang.startsWith('zh')) return 'zh-CN'
+  }
+  return 'en-US'
+}
+
+function getInitialLanguage(): Language {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const stored = localStorage.getItem('preferences')
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        if (parsed.state?.language === 'zh-CN' || parsed.state?.language === 'en-US') {
+          return parsed.state.language
+        }
+      }
+    }
+  } catch {}
+  return 'zh-CN'
+}
+
+let currentLanguage: Language = typeof window !== 'undefined' ? getInitialLanguage() : 'zh-CN'
+if (typeof document !== 'undefined') {
+  document.documentElement.lang = currentLanguage
+}
 
 export function setI18nLanguage(lang: Language): void {
   currentLanguage = lang
-  document.documentElement.lang = lang
+  if (typeof document !== 'undefined') {
+    document.documentElement.lang = lang
+  }
 }
 
 export function getI18nLanguage(): Language {
@@ -43,11 +72,4 @@ export function t(key: string, params?: Record<string, string | number | undefin
   // @ts-expect-error - Allow dynamic key access for flexibility
   const template = translationsForLang[key] || key
   return interpolate(template, params)
-}
-
-// 检测浏览器语言
-export function detectBrowserLanguage(): Language {
-  const browserLang = navigator.language
-  if (browserLang.startsWith('zh')) return 'zh-CN'
-  return 'en-US'
 }

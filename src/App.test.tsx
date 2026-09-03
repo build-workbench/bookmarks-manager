@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter, useLocation } from 'react-router-dom'
 import App from '@/App'
 
@@ -118,5 +118,23 @@ describe('App routing after closure hardening', () => {
     )
 
     expect(await screen.findByTestId('location-display')).toHaveTextContent('/app/upload')
+  })
+
+  it('switches navigation and header language when toggling LanguageSwitch', async () => {
+    render(
+      <MemoryRouter
+        initialEntries={['/app/upload']}
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      >
+        <App />
+      </MemoryRouter>
+    )
+
+    expect(screen.getByRole('link', { name: '上传合并' })).toBeInTheDocument()
+
+    const langButton = screen.getByRole('button', { name: /Switch to English|切换到/ })
+    fireEvent.click(langButton)
+
+    expect(await screen.findByRole('link', { name: 'Upload & Merge' })).toBeInTheDocument()
   })
 })

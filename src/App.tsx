@@ -2,7 +2,11 @@ import { Routes, Route, Navigate, NavLink, Link, useLocation } from 'react-route
 import { useEffect, Suspense, lazy } from 'react'
 import { AlertCircle } from 'lucide-react'
 import useBookmarksStore from '@/store/useBookmarksStore'
-import { initializePreferences, watchSystemTheme } from '@/store/usePreferencesStore'
+import {
+  usePreferencesStore,
+  initializePreferences,
+  watchSystemTheme
+} from '@/store/usePreferencesStore'
 import { LazyErrorBoundary } from '@/ui/ErrorBoundary'
 import { ThemeSwitch } from '@/ui/ThemeSwitch'
 import { LanguageSwitch } from '@/ui/LanguageSwitch'
@@ -28,6 +32,7 @@ const appLinks = [
 
 function AppHeader() {
   const { needsMerge } = useBookmarksStore()
+  usePreferencesStore((state) => state.language)
 
   return (
     <>
@@ -85,11 +90,7 @@ function AppContent() {
   const { loadFromDB } = useBookmarksStore()
 
   useEffect(() => {
-    // Initialize preferences (theme & language)
-    initializePreferences()
-    const cleanup = watchSystemTheme()
     void loadFromDB()
-    return cleanup
   }, [loadFromDB])
 
   return (
@@ -143,8 +144,16 @@ function LegacyRedirectHandler() {
 }
 
 export default function App() {
+  const language = usePreferencesStore((state) => state.language)
+
+  useEffect(() => {
+    initializePreferences()
+    const cleanup = watchSystemTheme()
+    return cleanup
+  }, [])
+
   return (
-    <>
+    <div key={language} className="min-h-screen bg-background text-foreground">
       <LegacyRedirectHandler />
       <Routes>
         <Route
@@ -164,6 +173,6 @@ export default function App() {
         <Route path="/app/*" element={<AppContent />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </>
+    </div>
   )
 }

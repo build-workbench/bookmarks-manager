@@ -32,6 +32,7 @@ export default function UploadMerge() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [dragActive, setDragActive] = useState(false)
   const dragCounter = useRef(0)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const importedFiles = useMemo(() => {
     const counts = new Map<string, number>()
@@ -177,9 +178,14 @@ export default function UploadMerge() {
           >
             <FileText className="w-12 h-12 mx-auto mb-3 text-muted" />
             <div className="text-sm text-muted mb-1">{t('upload.dragOrClick')}</div>
-            <div className="text-xs text-muted">{t('upload.supportedFormats')}</div>
+            <div className="text-xs text-muted mb-3">{t('upload.supportedFormats')}</div>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition shadow-sm">
+              <Upload className="w-4 h-4" />
+              <span>{t('upload.selectFiles')}</span>
+            </div>
           </div>
           <input
+            ref={fileInputRef}
             type="file"
             multiple
             accept=".html,.htm"
@@ -280,7 +286,16 @@ export default function UploadMerge() {
 
       <div className="flex flex-wrap gap-3">
         <button
-          disabled={busy || rawItems.length === 0}
+          type="button"
+          disabled={busy}
+          onClick={() => fileInputRef.current?.click()}
+          className="px-5 py-2.5 rounded-lg bg-sky-600/10 hover:bg-sky-600/20 border border-sky-500/30 text-sky-400 font-medium transition flex items-center gap-2"
+        >
+          <Upload className="w-4 h-4" />
+          {t('upload.selectFiles')}
+        </button>
+        <button
+          disabled={busy}
           onClick={onMerge}
           className="px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition flex items-center gap-2"
         >

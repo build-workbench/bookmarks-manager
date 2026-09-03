@@ -1,3 +1,4 @@
+import LandingHeader from './Header'
 import Hero from './Hero'
 import Features from './Features'
 import HowItWorks from './HowItWorks'
@@ -7,6 +8,7 @@ import Footer from './Footer'
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
+      <LandingHeader />
       <Hero />
       <section id="features">
         <Features />
@@ -14,7 +16,9 @@ export default function LandingPage() {
       <section id="how-it-works">
         <HowItWorks />
       </section>
-      <FAQ />
+      <section id="faq">
+        <FAQ />
+      </section>
       <Footer />
     </div>
   )

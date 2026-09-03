@@ -29,7 +29,9 @@ function getInitialLanguage(): Language {
         }
       }
     }
-  } catch {}
+  } catch {
+    // Ignore localStorage parse errors
+  }
   return 'zh-CN'
 }
 

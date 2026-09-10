@@ -42,7 +42,7 @@ const footerLinks: Record<string, { labelKey: string; links: FooterLink[] }> = {
     links: [
       {
         labelKey: 'footer.links.mitLicense',
-        href: 'https://github.com/build-workbench/bookmarks-manager/blob/master/LICENSE',
+        href: 'https://github.com/build-workbench/bookmarks-manager/blob/main/LICENSE',
         external: true
       },
       {

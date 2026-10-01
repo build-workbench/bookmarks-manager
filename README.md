@@ -24,7 +24,7 @@ A pure front-end, local-first cross-browser bookmark merging and smart cleanup t
 
 - **Local-first**: pure front-end architecture; data is stored only in the browser's local IndexedDB, with zero uploads, safeguarding privacy.
 - **Smart deduplication**: automatically cleans tracking parameters and normalizes URLs, supporting exact URL deduplication and title-similarity detection.
-- **Full-text search**: built-in local full-text search engine, supporting retrieval over titles, links, and folder hierarchies with keyword highlighting.
+- **Full-text search**: built-in local full-text search over titles, links, and folder hierarchies, with keyword highlighting.
 - **Automatic categorization**: intelligently grouped by domain (AI, development, learning, news, tools, etc.), with multi-dimensional visual analytics.
 - **Multiple format support**: compatible with standard Netscape HTML, supporting export to JSON, Markdown, CSV, and full-database snapshots.
 - **PWA support**: can be installed as an app on the desktop to run standalone, with offline access.

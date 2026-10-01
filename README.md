@@ -1,5 +1,84 @@
 # Bookmarks Manager
 
+A pure front-end, local-first cross-browser bookmark merging and smart cleanup tool. No registration, no backend service; data never leaves the browser.
+
+[Use Online](https://build-workbench.github.io/bookmarks-manager/) · [GitHub Repository](https://github.com/build-workbench/bookmarks-manager) · [Report an Issue](https://github.com/build-workbench/bookmarks-manager/issues)
+
+---
+
+## UI Preview
+
+|                    Landing page                    |                    Statistics dashboard                     |
+| :------------------------------------------: | :-----------------------------------------------: |
+| ![Landing page](./public/screenshots/landing.png)  | ![Statistics dashboard](./public/screenshots/dashboard.png) |
+|                 **Full-text search**                 |                   **Duplicate detection**                    |
+| ![Full-text search](./public/screenshots/search.png) | ![Duplicate detection](./public/screenshots/duplicates.png)  |
+
+---
+
+## Core Features
+
+- **Local-first**: pure front-end architecture; data is stored only in the browser's local IndexedDB, with zero uploads, safeguarding privacy.
+- **Smart deduplication**: automatically cleans tracking parameters and normalizes URLs, supporting exact URL deduplication and title-similarity detection.
+- **Full-text search**: built-in local full-text search engine, supporting retrieval over titles, links, and folder hierarchies with keyword highlighting.
+- **Automatic categorization**: intelligently grouped by domain (AI, development, learning, news, tools, etc.), with multi-dimensional visual analytics.
+- **Multiple format support**: compatible with standard Netscape HTML, supporting export to JSON, Markdown, CSV, and full-database snapshots.
+- **PWA support**: can be installed as an app on the desktop to run standalone, with offline access.
+
+---
+
+## User Guide
+
+### 1. Export Bookmarks
+
+Export a standard HTML bookmarks file from your browser:
+
+- **Chrome / Edge**: press `Ctrl + Shift + O` (macOS: `Cmd + Option + B`) to open the bookmark manager, click the menu in the top-right corner and choose **Export bookmarks**.
+- **Firefox**: press `Ctrl + Shift + O` to open the Bookmarks Library, click **Import and Backup** → **Export Bookmarks to HTML...**.
+- **Safari**: choose **File** → **Export Bookmarks...** from the top menu.
+
+### 2. Import and Organize
+
+1. Open [Bookmarks Manager](https://build-workbench.github.io/bookmarks-manager/), and drag in one or more bookmark HTML files (supports merging bookmarks from multiple browsers).
+2. On the **Deduplicate** page, review exact duplicates and similar bookmarks, and remove redundant items with one click.
+3. Search bookmarks on the **Search** page, or view domain and category statistics charts on the **Dashboard**.
+
+### 3. Import Back into the Browser
+
+1. Click **Export** in the top-right corner of the page and choose **HTML format** to download.
+2. Return to your browser's bookmark manager and click **Import bookmarks**.
+   > You can also export as JSON, Markdown, or CSV for knowledge-base archiving and backup.
+
+---
+
+## Local Development
+
+```bash
+git clone https://github.com/build-workbench/bookmarks-manager.git
+cd bookmarks-manager
+npm install
+npm run dev
+```
+
+Build and checks:
+
+```bash
+npm run validate   # 类型检查、代码检查与单元测试
+npm run build      # 生产构建
+```
+
+---
+
+## License
+
+[MIT](LICENSE)
+
+---
+
+<a id="chinese"></a>
+
+# Bookmarks Manager
+
 纯前端、本地优先的跨浏览器书签合并与智能清理工具。无需注册、无后端服务，数据不离开浏览器。
 
 [在线使用](https://build-workbench.github.io/bookmarks-manager/) · [GitHub 仓库](https://github.com/build-workbench/bookmarks-manager) · [报告问题](https://github.com/build-workbench/bookmarks-manager/issues)

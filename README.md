@@ -1,3 +1,7 @@
+**English** | [中文](#chinese)
+
+<a id="top"></a>
+
 # Bookmarks Manager
 
 A pure front-end, local-first cross-browser bookmark merging and smart cleanup tool. No registration, no backend service; data never leaves the browser.
@@ -76,6 +80,7 @@ npm run build      # 生产构建
 ---
 
 <a id="chinese"></a>
+[English](#top) | **中文**
 
 # Bookmarks Manager
 
